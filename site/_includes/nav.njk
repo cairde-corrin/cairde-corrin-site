@@ -1,11 +1,13 @@
 {#- The header, from _includes/nav.js. Included by every page. -#}
 {%- set r = page.url | root -%}
+<script>document.documentElement.classList.add('js')</script>
 <header class="nav" id="nav">
   <a class="brand" href="{{ r or './' }}">
     <img class="logo-c" src="{{ r }}assets/img/logo.webp" alt="Cáirde Corrin" width="400" height="144">
     <img class="logo-w" src="{{ r }}assets/img/logo-white.webp" alt="Cáirde Corrin" width="400" height="144">
   </a>
   <button class="navtoggle" id="navtoggle" aria-expanded="false" aria-controls="navlinks">Menu</button>
+  <noscript><a class="navtoggle" href="#site-links">Menu</a></noscript>
   <nav class="navlinks" id="navlinks" aria-label="Main"><ul class="navlist">
 {%- for g in page.url | navItems(collections.gallery.length) %}
 {%- if g.items %}

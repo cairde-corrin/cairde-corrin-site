@@ -2,8 +2,8 @@
 (function () {
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* Navigation. The CSS opens groups on hover and focus only while this class is absent. */
-  document.documentElement.classList.add('js');
+  /* Navigation. The 'js' class is set by an inline line at the top of the header
+     (_includes/nav.njk), early enough that the no-JavaScript styles never flash. */
   var tgl = document.getElementById('navtoggle'), links = document.getElementById('navlinks');
   var grps = document.querySelectorAll('.navgrp');
   /* Close every group that does not contain el (pass nothing to close them all) */
