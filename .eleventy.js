@@ -6,7 +6,7 @@
 // sources out of the output, and no other file format is a template, so nothing else is
 // parsed or rewritten. _data/ holds data the editor changes, such as the home page's
 // social posts.
-// assets/uploads/ holds photos exactly as uploaded, GPS and all. They are never copied:
+// assets/uploads/ holds the editor's uploads (already stripped in the browser). They are never copied:
 // _includes/images.js publishes re-encoded sizes under assets/img/news/ instead.
 const SOURCES = ['!**/*.njk', '!**/*.md', '!**/*.11tydata.js', '!_includes', '!_includes/**',
   '!_content', '!_content/**', '!_data', '!_data/**', '!assets/uploads', '!assets/uploads/**'];
