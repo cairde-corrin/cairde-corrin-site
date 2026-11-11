@@ -114,15 +114,15 @@ The modelled channel network in `cairde-corrin.geojson` is partial: finer tribut
 the source map did not trace cleanly. It is clipped to the catchment boundary, and no
 length is published for it.
 
-`assets/data/` holds one GeoJSON and one GPX. The four single-feature GeoJSON files that
+`assets/data/` holds one GeoJSON and one GPX, `glenabo-loop.gpx`: the walked loop with the
+three stops and the outlet as waypoints. It replaced `points.gpx`, whose address redirects to it. The four single-feature GeoJSON files that
 duplicated the combined one were removed.
 
 ## Still outstanding
 
 - GPX traces of the routes beyond the Glenabo loop. The loop itself was walked with a
-  GPS on 29 August 2026: `source-data/2026-08-29_glenabo_loop.gpx`, about 3 km and 193
-  points, starting and ending at Stop 1. It is source material and is not published as
-  it stands.
+  GPS on 29 August 2026 and is published on the trails page, cleaned by
+  `python3 tools/trail.py` from the raw track in `source-data/`, which is never published.
 - Stop positions 4 to 10
 - Audio recordings and transcripts
 - Committee names and roles on the About page

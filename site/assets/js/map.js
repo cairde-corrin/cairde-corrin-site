@@ -30,6 +30,8 @@
   el.catchFill = make('path', { fill: 'url(#hatch)', stroke: 'none' });
   el.catch = make('path', { fill: 'none', stroke: '#2F5219', 'stroke-width': 2.8, 'stroke-linejoin': 'round' });
   el.chan = make('path', { fill: 'none', stroke: '#009ADE', 'stroke-width': 2.1, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', filter: 'url(#glow)' });
+  el.trailCase = make('path', { fill: 'none', stroke: '#fff', 'stroke-width': 5.6, 'stroke-opacity': .9, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+  el.trail = make('path', { fill: 'none', stroke: '#08304F', 'stroke-width': 2.6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
   el.marks = make('g', {}); el.me = make('g', {});
 
   function ring(c) { var d = '', i; for (i = 0; i < c.length; i++) d += (i ? 'L' : 'M') + SX(c[i][0]).toFixed(1) + ' ' + SY(c[i][1]).toFixed(1); return d + 'Z' }
@@ -48,6 +50,8 @@
     var dc = vis('L-catch') ? ring(G.catchment) : '';
     el.catch.setAttribute('d', dc); el.catchFill.setAttribute('d', dc);
     el.chan.setAttribute('d', vis('L-chan') ? multi(G.channels) : '');
+    var dt = vis('L-trail') && G.trail ? multi([G.trail]) : '';
+    el.trailCase.setAttribute('d', dt); el.trail.setAttribute('d', dt);
     el.marks.textContent = '';
     if (vis('L-stops')) G.points.forEach(function (p) {
       var x = SX(p.c[0]), y = SY(p.c[1]);
@@ -204,7 +208,7 @@
         'Location unavailable';
     }, { enableHighAccuracy: true, timeout: 9000 });
   });
-  ['L-terr', 'L-action', 'L-catch', 'L-chan', 'L-stops'].forEach(function (id) {
+  ['L-terr', 'L-action', 'L-catch', 'L-chan', 'L-trail', 'L-stops'].forEach(function (id) {
     var c = $(id); if (c) c.addEventListener('change', draw);
   });
   var mlt = $('mlt'), mll = $('maplayers');
@@ -240,6 +244,7 @@
       catchment: f('Glenabo hydrological catchment').geometry.coordinates[0],
       action: f('Proposed area for action').geometry.coordinates[0],
       channels: f('Modelled channel network').geometry.coordinates,
+      trail: f('Walked loop').geometry.coordinates,
       points: fc.features.filter(function (x) { return x.geometry.type === 'Point' })
         .map(function (x) { return { n: x.properties.name, k: x.properties.kind, e: x.properties.elevation_m, b: x.properties.bearing_deg, c: x.geometry.coordinates } })
     };

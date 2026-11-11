@@ -93,7 +93,7 @@ Work that is not done, in rough order of what would improve the site most.
    52.116°N 8.295°W, where the routed boundary takes in 0.36 km² more.
 2. **Stops 4 to 10.** Seven positions to survey. Each needs a photograph with GPS, a bearing, and text. The pages and sign addresses already exist and will pick the content up.
 3. **Audio for stops 2 and 3.** Nineteen recordings exist from that morning but none matches those two stops in time or place: the nearest are a six-minute and a 105-second gap. Guessing a match would put the wrong sound under the wrong photograph. Both pages carry transcript blocks and no audio.
-4. **GPX traces of the routes beyond the Glenabo loop.** The loop itself was walked with a GPS on 29 August 2026: `source-data/2026-08-29_glenabo_loop.gpx`, about 3 km and 193 points, starting and ending at Stop 1. It is source material, not published as it stands, and it is what the stop elevations are checked against. The `points.gpx` in `site/assets/data/` still holds four points, not a route.
+4. **GPX traces of the routes beyond the Glenabo loop.** The loop itself was walked with a GPS on 29 August 2026 and is on the trails page as a map layer, an elevation profile and a GPX download (`site/assets/data/glenabo-loop.gpx`, which replaced `points.gpx`). The raw timestamped track stays in `source-data/` and is never published.
 5. **Committee names and structure**, once people consent.
 6. **The photographer credit.** The archive names the photographer of the April sets, who has not yet agreed to be credited by name. Not published until the group confirms.
 7. **The Pl@ntNet contributor's name.**

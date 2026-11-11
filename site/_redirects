@@ -11,3 +11,6 @@
 /s/9   /stops/stop-9.html   301
 /s/10  /stops/stop-10.html  301
 /s     /trails/             301
+
+# The four-point GPX was replaced by the walked loop, which carries the same four points.
+/assets/data/points.gpx  /assets/data/glenabo-loop.gpx  301

@@ -94,10 +94,16 @@ Times are Irish summer time (UTC+1), as the cameras recorded them.
    figure (Copernicus reads 131.7 m there). Do not "correct" it back down.
 7. Stop 2 is a few metres higher than Stop 3. Estimates of the difference run from 1 to
    6 m depending on the source, so the site gives no figure.
-8. The channel network length and segment count are withdrawn. The drawn network is
+8. The walked loop is about 2.3 km with about 65 m of climbing, walked with a GPS on
+   29 August 2026 and published by `python3 tools/trail.py` (map layer, profile, GPX).
+   Its profile uses the track's own elevations, never photograph EXIF. The raw track in
+   `source-data/` keeps its timestamps and is never published. Those timestamps carry a
+   Z, which GPX defines as UTC, so the walk ran 07:59-09:08 Irish summer time; nothing
+   else recorded that morning can confirm the clock, so publish the date only.
+9. The channel network length and segment count are withdrawn. The drawn network is
    modelled, not walked, partial, and clipped to the catchment boundary. Publish no
    figure for it.
-9. Positional accuracy: the catchment boundary is good to about one 30 m cell; the
+10. Positional accuracy: the catchment boundary is good to about one 30 m cell; the
    action area is traced and good to 10-20 m; stop and photograph positions are phone
    GPS, good to 10-20 m.
 
@@ -165,7 +171,9 @@ in production. `serve.py` also reads `site/_headers`, so caching behaves as it w
 ## Adding a new stop
 
 1. Copy `site/stops/stop-4.html` as the shape.
-2. Take position, elevation and bearing from the photograph EXIF. Do not estimate them.
+2. Take position and bearing from the photograph EXIF. Do not estimate them. Take the
+   elevation from a GPS track of the walk and Copernicus (`tools/dem_report.py`), rounded
+   to 5 m, never from the EXIF altitude (see note 5 above).
 3. Add the point to `site/assets/data/cairde-corrin.geojson` as a Point feature with
    `kind: "stop"`, `elevation_m`, `bearing_deg` and `recorded`.
 4. Add the name to `STOPNO` in `site/assets/js/map.js` and the photograph slug to
