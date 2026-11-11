@@ -215,12 +215,3 @@ collections:
         hint: >-
           Optional. Only fill this in if you make an important change to a post
           after it has been published.
-
-      - label: Practice post
-        name: sample
-        widget: boolean
-        required: false
-        default: false
-        hint: >-
-          Leave this off. When it is on, search engines are told to ignore the
-          post and it is left out of the sitemap. Only for test posts.

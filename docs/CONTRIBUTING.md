@@ -240,9 +240,15 @@ rules above: WebP at 1800 / 1100 / 700 px, a new file name for an edited picture
 real alt text. The usual rules apply in full: invent nothing, name no living person
 without consent, hyphens never dashes.
 
-`sample: true` marks a placeholder. It adds a notice and `noindex` to the post and keeps
-it out of the sitemap. The two sample posts exist only to show the layout and must be
-deleted before News goes live.
+`sample: true` marks a placeholder for checking a layout on the branch preview. It adds
+a notice and `noindex` to the post and keeps it out of the sitemap, but the post is
+still listed on `/news/`, so a sample post must never be merged to `main`. The news
+editor does not offer the field: editors practise with drafts, whose deploy previews
+never reach production.
+
+With no posts, `/news/` still exists and says so ("Nothing posted yet"), because the
+listing sets `generatePageOnEmptyData`. Without that, an empty collection writes no
+`/news/` page at all and the News link on every page 404s.
 
     # batch resize a folder of photographs
     python3 -c "
