@@ -6,6 +6,52 @@
 <meta name="robots" content="noindex, nofollow">
 <title>News editor - Cáirde Corrin</title>
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+<style>
+/* Hides the top-bar Media button. It opens the media library outside any post, where
+   uploads skip the 20 MB cap and the draft workflow and commit straight to main. Photos
+   are added from a post's photo fields or the Image button instead. The selector is the
+   label Decap gives that button (the Contents and Workflow links reuse its style, but are
+   links, not buttons, and carry AppHeaderNavLink too). After updating Decap, check that
+   Media is hidden and Contents and Workflow are not. */
+button[class*="-AppHeaderButton"]:not([class*="-AppHeaderNavLink"]){display:none !important}
+</style>
+<script>
+// Refuses HEIC photos before Decap uploads them. An iPhone hands Safari the original
+// HEIC when a photo is picked through Choose File (the Files app); the build cannot
+// decode HEIC, so the post would fail to publish with no sign why. Runs in the capture
+// phase, ahead of Decap's own handlers, for both the file picker and drag-and-drop.
+(function () {
+  var MSG = 'This photo is in Apple’s HEIC format, which the website cannot use, ' +
+    'so it has not been uploaded.\n\nOn an iPhone, choose it again from Photo Library ' +
+    'rather than Choose File: the iPhone then sends an ordinary JPEG. If the photo is ' +
+    'only in Files, open it there, tap Share, then Save Image, and choose it from ' +
+    'Photo Library.\n\nOn a computer, upload a JPEG copy instead.';
+  function isHeic(f) { return /hei[cf]/i.test(f.type) || /\.hei[cf]$/i.test(f.name); }
+  function guard(e, files) {
+    if (!files || !Array.prototype.some.call(files, isHeic)) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    if (e.target && 'value' in e.target) e.target.value = '';
+    alert(MSG);
+  }
+  addEventListener('change', function (e) {
+    if (e.target && e.target.type === 'file') guard(e, e.target.files);
+  }, true);
+  addEventListener('drop', function (e) { guard(e, e.dataTransfer && e.dataTransfer.files); }, true);
+
+  // The Image button in the post body offers "Insert from URL", which would make the
+  // public page load a photo from another website. The photo fields switch it off with
+  // choose_url: false, but Decap does not pass that setting to the body's Image button,
+  // and the URL buttons share their style with the upload buttons, so they are hidden by
+  // their text. The build also refuses a page that loads anything from another site.
+  var URL_BUTTONS = /^(Insert from URL|Replace with URL)$/;
+  new MutationObserver(function () {
+    Array.prototype.forEach.call(document.querySelectorAll('button'), function (b) {
+      if (URL_BUTTONS.test(b.textContent.trim())) b.style.display = 'none';
+    });
+  }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>
 <!-- Both scripts are served from this site at pinned versions; nothing loads from a CDN.
      The widget must load first: Decap uses it to log editors in, and it picks up the
      invite and password-reset links in the address that the Netlify emails point here. -->
