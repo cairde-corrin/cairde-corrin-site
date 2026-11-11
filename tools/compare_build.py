@@ -30,7 +30,7 @@ def main():
                              check=True).stdout.decode().split('\0')
     rels = {os.path.relpath(f, 'site') for f in tracked if f}
     source = lambda p: (p.endswith(('.njk', '.md', '.11tydata.js'))
-                        or p.split(os.sep)[0] in ('_includes', '_content')
+                        or p.split(os.sep)[0] in ('_includes', '_content', '_data')
                         or p.startswith(os.path.join('assets', 'uploads') + os.sep))
     expected = {p for p in rels if not source(p)}
     built = {os.path.relpath(os.path.join(d, f), OUT) for d, _, fs in os.walk(OUT) for f in fs}

@@ -15,3 +15,6 @@ archive/
 
 # Git cannot ignore by size. Files over 25 MB are refused by .githooks/pre-commit;
 # see docs/CONTRIBUTING.md for the one-line setup after cloning.
+
+# Video stills fetched at build time (eleventy-img keeps them here between builds)
+.cache/

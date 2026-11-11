@@ -1,8 +1,8 @@
 // Every post in this folder: front matter carries title, date, author, summary and,
 // optionally, hero, gallery and youtube. The Markdown below the front matter is the body.
-// The youtube field is carried but not rendered yet.
 const ld = require('../../_includes/ld.js');
 const images = require('../../_includes/images.js');
+const youtube = require('../../_includes/youtube.js');
 
 module.exports = {
   layout: 'post.njk',
@@ -13,6 +13,8 @@ module.exports = {
     // Uploaded photos are swapped for their re-encoded, metadata-free sizes (see images.js)
     hero: (data) => images.resolve(data.hero),
     gallery: (data) => (Array.isArray(data.gallery) ? Promise.all(data.gallery.map(images.resolve)) : data.gallery),
+    // A click-to-load player: the ID and a self-hosted still (see youtube.js)
+    video: (data) => youtube.resolve(data.youtube, data.page.inputPath),
     ld: (data) => ld.article(data),
   },
 };

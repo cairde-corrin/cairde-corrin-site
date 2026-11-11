@@ -1,0 +1,19 @@
+---
+layout: base.njk
+title: Gallery
+description: Photographs from the Glenabo-Corrin catchment, added by Cáirde Corrin.
+---
+{%- set r = page.url | root -%}
+    <p class="eyebrow rv">Gallery</p>
+    <h1 class="rv page-title">Gallery.</h1>
+    <p class="lede rv">Photographs from the catchment, newest first.</p>
+{%- if not collections.gallery.length %}
+    <p class="rv">No photographs here yet. They will appear here as soon as the first are added.</p>
+    <a class="cta rv" href="{{ r }}trails/">Explore the trail</a>
+{%- else %}
+    <div class="cards">
+{%- for item in collections.gallery %}{% set p = item.data.photo %}
+      <figure class="card rv">{% if item.data.taken %}<p class="k"><time datetime="{{ item.data.taken | isoDate }}">{{ item.data.taken | longDate }}</time></p>{% endif %}<div class="card-fig"><picture><img src="{{ p.srcset[0].split(' ')[0] | rel(r) }}" srcset="{% for s in p.srcset %}{{ s | rel(r) }}{% if not loop.last %}, {% endif %}{% endfor %}" sizes="(min-width:1100px) 340px, (min-width:640px) 45vw, calc(100vw - 96px)" width="{{ p.width }}" height="{{ p.height }}" alt="{{ p.alt }}" loading="lazy" decoding="async"></picture></div><figcaption><p>{{ item.data.caption }}</p></figcaption></figure>
+{%- endfor %}
+    </div>
+{%- endif %}

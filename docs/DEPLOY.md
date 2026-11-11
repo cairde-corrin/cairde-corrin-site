@@ -102,7 +102,7 @@ in the admin area loads from a CDN, and no public page loads any Netlify script.
 **The news editor commits straight to `main`, not to `build`.** A post saved as a
 draft goes to its own `cms/...` branch and pull request; pressing **Publish** merges it
 into `main`, and production redeploys. That bypasses the build branch on purpose, for
-news posts and their photos only. It is not a route for code: layouts, templates,
+news posts, gallery photos and the home page's social posts only. It is not a route for code: layouts, templates,
 `config.yml` and every other file still go through `build` and are merged by hand.
 After a post is published, bring `build` level with `git switch build && git merge
 main` before the next phase.
@@ -123,7 +123,7 @@ has no News section yet. Do not publish from the preview before the merge.
 Leave **Identity -> Emails** alone. Netlify sends its own default emails: the invite,
 the password reset and the email-address change. Each one links to the site root, with
 the token after a `#`, for example `https://www.cairdecorrin.ie/#invite_token=...`. A
-short inline script at the top of `site/index.html` notices one of those three tokens
+short inline script at the top of `site/index.njk` notices one of those three tokens
 and forwards the browser to `/admin/` with the `#...` part intact, where the login
 window takes over. On any other visit it does nothing; it loads nothing, sends nothing
 and sets no cookie. Do not remove it while the editor uses Netlify Identity, or invite
@@ -169,7 +169,7 @@ uploads; try one.
 
 | what | how long | why |
 |---|---|---|
-| `/assets/img/`, `/assets/video/`, `/assets/audio/`, `/assets/fonts/` | 1 year, immutable | the file name carries the width or the date, so a changed file is a new name. News photos under `/assets/img/news/` are named by a hash of their contents, so the same holds |
+| `/assets/img/`, `/assets/video/`, `/assets/audio/`, `/assets/fonts/` | 1 year, immutable | the file name carries the width or the date, so a changed file is a new name. Photos and video stills from the news editor, under `/assets/img/news/`, are named by a hash of their contents, so the same holds |
 | `/assets/css/`, `/assets/js/` | 1 hour, revalidated | `site.css` and `site.js` keep their names when their contents change |
 | `/assets/data/` | 1 day | |
 | everything else, including all pages | 5 minutes, revalidated | edits go live promptly |

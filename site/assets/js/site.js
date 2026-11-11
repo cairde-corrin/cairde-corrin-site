@@ -284,4 +284,22 @@
   addEventListener('scroll', onScroll, { passive: true });
   addEventListener('resize', onScroll, { passive: true });
   frame();
+
+  /* Click-to-load video. Until the visitor presses play the page holds only a still
+     served from this site, so nothing is requested from YouTube or Google. Pressing
+     play swaps in the youtube-nocookie.com player. A modified click (new tab) is left
+     alone and opens the video on YouTube itself. */
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[data-yt]');
+    if (!a || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    var f = document.createElement('iframe');
+    f.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(a.getAttribute('data-yt')) + '?autoplay=1&rel=0';
+    f.title = a.getAttribute('data-title') || 'Video';
+    f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+    f.allowFullscreen = true;
+    f.referrerPolicy = 'strict-origin-when-cross-origin';
+    a.replaceWith(f);
+    f.focus();
+  });
 })();

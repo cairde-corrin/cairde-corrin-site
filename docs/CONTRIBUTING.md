@@ -122,7 +122,7 @@ Times are Irish summer time (UTC+1), as the cameras recorded them.
 Give an edited photograph a **new file name**. Images are cached for a year, so
 overwriting one shows the old picture to anyone who has visited since.
 The same goes for the two home page maps: `tools/render_maps.py` writes them under an
-`EDITION` in the name; bump it on every redraw and update `site/index.html`.
+`EDITION` in the name; bump it on every redraw and update `site/index.njk`.
 
 `site/assets/js/map.js` and `site/assets/data/cairde-corrin.geojson` change together, so
 they are versioned together: bump `DATA_V` in `map.js` and the `?v=` on its script tag in
@@ -191,7 +191,8 @@ slug, without the date, becomes the address: `/news/short-slug/`. The front matt
               left out; the page then omits them rather than writing empty ones
     updated:  optional date of a significant later change, for dateModified
     gallery:  optional list of src, alt, width, height, caption
-    youtube:  optional video ID; carried, not shown on the page yet
+    youtube:  optional YouTube address or 11-character video ID, for the group's own
+              videos only; shown as a click-to-load player (see below)
 
 **Uploaded photos.** Photos uploaded through the news editor go to
 `site/assets/uploads/` exactly as the editor's phone produced them, with the phone's
@@ -202,14 +203,18 @@ phone model. They are never published as uploaded. At build time,
 all under `/assets/img/news/`. Re-encoding drops the EXIF and XMP blocks, GPS
 included; the colour profile is the only block kept. This covers the hero and gallery
 fields and photos placed in the body of a post with the Image button: a build step
-rewrites every `<img>` or link that points at `/assets/uploads/` in a News page to the
+rewrites every `<img>` or link that points at `/assets/uploads/` in a generated page to the
 processed copies. `assets/uploads/` is excluded from the copy, and
 `tools/compare_build.py` fails if an original ever reaches `_site/`. This is a privacy
 fix first: do not publish anything from `assets/uploads/` directly.
 
-The build stops, naming the post, rather than publish a page that would be broken or
-would break the site's promises: a reference to an upload that it cannot rewrite, a
-photo it cannot read, or an image, video or script loaded from another website. On
+The build stops, naming the post or page, rather than publish a page that would be
+broken or would break the site's promises: a reference to an upload that it cannot
+rewrite, a photo it cannot read, or anything the browser would load from another
+website by itself (an image, srcset entry, video poster, frame, script, embedded object,
+stylesheet or preload link, or a CSS `url()`). This check runs on every generated page:
+News, the gallery and the home page. The hand-written pages are copied without it.
+`node tools/selftest.js` exercises it. On
 Netlify a failed build leaves the previous deploy live, so the site never breaks; the
 new post simply does not appear until the cause is fixed.
 
@@ -246,6 +251,16 @@ still listed on `/news/`, so a sample post must never be merged to `main`. The n
 editor does not offer the field: editors practise with drafts, whose deploy previews
 never reach production.
 
+**Videos.** The `youtube` field takes the address of a video on the group's own
+YouTube channel, in any of its usual forms, or the bare ID; anything else stops the
+build. Use it only for videos the group made. `site/_includes/youtube.js` fetches the
+video's still from YouTube at build time and re-encodes it into `/assets/img/news/`,
+so the post shows a self-hosted still with a play button and nothing is requested from
+YouTube or Google when the page loads. Pressing play makes `site.js` swap in a
+`youtube-nocookie.com` player; `site/privacy/` describes what happens then. A post whose
+video still cannot be fetched (a wrong address, a private video, YouTube unreachable)
+stops the build with the video's ID.
+
 With no posts, `/news/` still exists and says so ("Nothing posted yet"), because the
 listing sets `generatePageOnEmptyData`. Without that, an empty collection writes no
 `/news/` page at all and the News link on every page 404s.
@@ -262,6 +277,38 @@ listing sets `generatePageOnEmptyData`. Without that, an empty collection writes
 
     # read GPS and elevation out of photograph EXIF. This is how stops 1-3 were placed.
     python3 tools/photos_exif.py /path/to/photos
+
+## The gallery and the home page's social posts
+
+Both are edited in the news editor and committed to `main` like news posts.
+
+**Gallery.** One Markdown file per photo in `site/_content/gallery/`, front matter only:
+
+    image:    /assets/uploads/... - must be an upload; the build stops otherwise
+    alt:      what is in the photo, for screen readers
+    caption:  the line shown under the photo
+    taken:    optional date the photo was taken, YYYY-MM-DD
+
+The photo goes through exactly the same re-encoding as a news photo: WebP at 700, 1100
+and 1800 px, no EXIF, XMP or GPS, original never published. `/gallery/` shows dated
+photos newest first, then undated ones, newest added first, as cards with the hover zoom
+the rest of the site uses. The entries make no pages of their own. With no photos the
+page says so, the home page shows no link to it, and the sitemap leaves it out. The
+gallery is not in the main navigation yet (see `docs/OPEN-ITEMS.md`): the home page's
+photo section links to it once it has a photo.
+
+**Social posts.** `site/_data/social.json` holds up to three Instagram or Facebook post
+addresses, each with a caption the editor types. The home page shows them as cards
+linking out, in a section that only exists when the list is not empty. Nothing is
+embedded and nothing is fetched from Meta, at build time or in the browser. The build
+checks each address is an `https://` Instagram or Facebook address, removes the
+share-tracking parameters (`igsh`, `mibextid` and the like) that identify whoever copied
+the link, and stops on anything else.
+
+**The home page is a template.** `site/index.njk` is the hand-written home page with
+those two blocks added; everything else in it is written out exactly as it is. With no
+gallery photos and no social posts the built `index.html` is byte-identical to the file
+before it became a template, which is how to check that nothing else has drifted.
 
 ## Adding a new stop
 
@@ -307,8 +354,8 @@ Two branches:
     main    what is live. Netlify deploys every push to it.
     build   where all work happens. Never commit to main directly.
 
-The one exception is the news editor at `/admin/`. It commits news posts and their
-photos straight to `main`, bypassing `build`, and that is intended: it is for content,
+The one exception is the news editor at `/admin/`. It commits news posts, gallery
+photos and the home page's social posts straight to `main`, bypassing `build`, and that is intended: it is for content,
 never for code. Do not use it, or GitHub's web editor, to change anything else. Because
 `main` moves on its own, run `git switch build && git merge main` before starting work
 and before merging a phase, so the merge does not undo a post.
