@@ -124,7 +124,7 @@ def main(photo_dirs=()):
     for name, (lat, lon, pub, rec) in stops.items():
         k = dod(lat, lon)
         c, fb = cop.sample(lat, lon) + k, fab.sample(lat, lon) + k
-        want = rec.replace('-', ':').replace('T', ' ').rstrip('Z')  # 'Z' but local time
+        want = rec[:19].replace('-', ':').replace('T', ' ')  # local time, whatever the suffix
         hit = [r for r in rows if r[1] == want]
         ex = float(hit[0][5]) - osg.sample(lat, lon) if hit else float('nan')
         d = [metres(lat, lon, a, b) for a, b in zip(glat, glon)]
@@ -191,7 +191,7 @@ def main(photo_dirs=()):
           % (outlet['properties']['elevation_m'], cop.sample(olat, olon) + dod(olat, olon),
              fab.sample(olat, olon) + dod(olat, olon)))
 
-    print('\n== 7. Source of the published 34-228 m')
+    print('\n== 7. Source of the withdrawn 34-228 m range (the original map)')
     tx, ty, tv = terrarium_in_ring(ring)
     lo, hi = int(np.argmin(tv)), int(np.argmax(tv))
     print('AWS Terrain Tiles z13 inside the polygon: min %.1f at %.5f,%.5f   max %.1f at %.5f,%.5f'
@@ -247,7 +247,7 @@ def main(photo_dirs=()):
                      5 * round(est / 5)))
     a, b = seen.get((11, '07:54')), seen.get((11, '08:07'))
     if a is not None and b is not None:
-        print('the "136 metres apart, within one metre" pair (07:54, 08:07): estimates differ by %.1f m'
+        print('the home page photograph pair (07:54, 08:07): estimates differ by %.1f m'
               % abs(a - b))
     la, lo = 52.11222, -8.32292
     print('at the highest Copernicus cell (%.5f, %.5f): COP - FAB %+.1f m' % (
