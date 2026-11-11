@@ -1,7 +1,8 @@
-# Decap CMS settings for the News section. Served at /admin/config.yml.
+# Decap CMS settings for News, the Gallery and the home page's social posts. Served at
+# /admin/config.yml.
 #
 # The CMS saves straight to the main branch, not to build. That is intended for
-# news posts and their photos only. Code, layouts and every other page still go
+# that content and its photos only. Code, layouts and every other page still go
 # through build and are merged by hand. See docs/CONTRIBUTING.md.
 
 backend:
@@ -198,11 +199,13 @@ collections:
         name: youtube
         widget: string
         required: false
-        pattern: ['^[A-Za-z0-9_-]{11}$', 'This should be the 11 letters and numbers at the end of the YouTube address, after "watch?v=".']
+        pattern: ['^\s*([A-Za-z0-9_-]{11}|https://(www\.|m\.)?(youtube\.com|youtu\.be|youtube-nocookie\.com)/\S+)\s*$', 'Paste the address of the video on YouTube, starting https://, or just the 11 letters and numbers after "watch?v=".']
         hint: >-
-          Optional. If there is a YouTube video to go with the post, paste the
-          part of its address after "watch?v=", for example dQw4w9WgXcQ. The
-          video is not shown on the page yet; it is kept for later.
+          Optional. Only for videos Cáirde Corrin made and put on its own YouTube
+          channel. Paste the address of the video, for example
+          https://www.youtube.com/watch?v=dQw4w9WgXcQ. The post shows a still from
+          the video with a play button; nothing loads from YouTube until a visitor
+          presses play.
 
       - label: Date last changed
         name: updated
@@ -215,3 +218,89 @@ collections:
         hint: >-
           Optional. Only fill this in if you make an important change to a post
           after it has been published.
+
+  - name: gallery
+    label: Gallery
+    label_singular: photo
+    description: >-
+      Photographs for the Gallery page on the website. Add one with the button
+      above. Nothing you add appears on the website until it is published.
+    folder: site/_content/gallery
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    identifier_field: caption
+    summary: "{{caption}}"
+    sortable_fields: [taken, caption]
+    fields:
+      - label: Photo
+        name: image
+        widget: image
+        media_library: { config: { max_file_size: 20000000 } }
+        choose_url: false
+        hint: >-
+          Choose or upload a photo. Please use a photo you took yourself, or one
+          you have permission to use. Photos straight from a phone are fine: the
+          website makes smaller copies and removes the location the phone stored
+          in them.
+      - label: Describe the photo for people who cannot see it
+        name: alt
+        widget: string
+        hint: >-
+          One sentence saying what is in the photo. Screen readers read this aloud
+          to blind visitors. Do not start with "A photo of".
+      - label: Caption
+        name: caption
+        widget: string
+        hint: >-
+          A line of text shown under the photo, for example where it was taken or
+          what it shows. The web address of the entry is made from this when you
+          first save it.
+      - label: Date taken
+        name: taken
+        widget: datetime
+        format: YYYY-MM-DD
+        date_format: D MMMM YYYY
+        time_format: false
+        picker_utc: true
+        required: false
+        hint: >-
+          Optional. The day the photo was taken. Dated photos are shown newest
+          first; photos without a date come after them.
+
+  - name: home
+    label: Home page
+    description: >-
+      Parts of the home page you can change. Nothing you change appears on the
+      website until it is published.
+    files:
+      - name: social
+        label: Social media posts
+        file: site/_data/social.json
+        fields:
+          - label: Posts
+            name: posts
+            widget: list
+            required: false
+            max: 3
+            label_singular: post
+            summary: "{{fields.caption}}"
+            hint: >-
+              Up to three Instagram or Facebook posts to show on the home page, as
+              cards that link to the post. Nothing is loaded from Instagram or
+              Facebook: the card shows only the caption you type here. Leave the
+              list empty and the home page shows no social section at all.
+            fields:
+              - label: Address of the post
+                name: url
+                widget: string
+                pattern: ['^\s*https://(www\.|m\.)?(instagram\.com|facebook\.com)/\S+\s*$', 'Paste the full address of one Instagram or Facebook post, starting https://']
+                hint: >-
+                  Open the post, use Share, then Copy link, and paste it here. It
+                  must be a post on Instagram or Facebook.
+              - label: Caption
+                name: caption
+                widget: string
+                pattern: ['^.{1,160}$', 'Keep the caption to one short line, under 160 characters.']
+                hint: One short line saying what the post is about. This is what the card shows.

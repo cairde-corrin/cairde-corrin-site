@@ -28,7 +28,7 @@ CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 OVERPASS = 'https://overpass-api.de/api/interpreter'
 OSM_BBOX = (52.085, -8.38, 52.16, -8.22)  # south, west, north, east
 R = 6378137.0
-EDITION = '202611'  # bump on every redraw, then update site/index.html
+EDITION = '202611'  # bump on every redraw, then update site/index.njk
 FRAME = (74, 213, 1652, 1233)  # x, y, width, height of the map frame in an 1800 px canvas
 SANS = '"Helvetica Neue", Helvetica, Arial, sans-serif'
 

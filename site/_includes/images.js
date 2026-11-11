@@ -64,16 +64,41 @@ async function replaceAsync(str, re, fn) {
   return out + str.slice(last);
 }
 
+// The first thing in a page that the browser would fetch from another website on load,
+// or null. Links a visitor chooses to follow (<a href>) are fine; this looks only at what
+// loads by itself: media and frame sources, srcset entries, video posters, <object>,
+// stylesheet/preload/icon <link>s and CSS url().
+const LOADS = /<(img|source|video|audio|track|iframe|frame|script|embed|object|input|link)\b[^>]*>/gi;
+const ATTR = /\s(src|srcset|poster|data|href)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi;
+const FETCHING_LINK = /\srel\s*=\s*["']?[^"'>]*\b(?:stylesheet|preload|modulepreload|prefetch|icon|manifest)\b/i;
+const FAR = /^(?:https?:)?\/\//i;
+function externalLoad(html) {
+  for (const [tag, name] of html.matchAll(LOADS)) {
+    const el = name.toLowerCase();
+    if (el === 'link' && !FETCHING_LINK.test(tag)) continue;
+    for (const [, attr, a, b, c] of tag.matchAll(ATTR)) {
+      const at = attr.toLowerCase();
+      if ((at === 'href') !== (el === 'link') || (at === 'data' && el !== 'object')) continue;
+      const v = (a ?? b ?? c).trim();
+      const urls = at === 'srcset' ? v.split(',').map((s) => s.trim().split(/\s+/)[0]) : [v];
+      if (urls.some((u) => FAR.test(u))) return tag;
+    }
+  }
+  const css = html.match(/url\(\s*["']?\s*(?:https?:)?\/\/[^)]*\)/i);
+  return css ? css[0] : null;
+}
+
 // Rewrites every reference to an uploaded original in a finished page: <img> gets the
 // processed sizes, a link gets the largest processed size. root is the page's relative
 // prefix (../../ for a post), matching how every other link on the site is written.
 // Anything still pointing at assets/uploads/ afterwards would 404, so the build stops.
+// Runs on every generated page: News, the gallery and the home page.
 async function rewriteHtml(html, root, where) {
   // The public site loads nothing from another website. A photo inserted into a post by
   // URL, or typed in as Markdown, would break that, so it stops the build instead.
-  const outside = html.match(/<(?:img|source|video|audio|iframe|script|embed)\b[^>]*\s(?:src|srcset)="\s*(?:https?:)?\/\/[^"]*"/i);
+  const outside = externalLoad(html);
   if (outside) {
-    throw new Error(`${where} loads something from another website: ${outside[0]}. `
+    throw new Error(`${where} loads something from another website: ${outside}. `
       + 'The site loads nothing from other sites; upload the photo instead.');
   }
   if (!html.includes('assets/uploads/')) return html;
@@ -96,4 +121,4 @@ async function rewriteHtml(html, root, where) {
   return html;
 }
 
-module.exports = { resolve, rewriteHtml, UPLOADS };
+module.exports = { resolve, rewriteHtml, externalLoad, UPLOADS, OUT };

@@ -295,9 +295,22 @@ if (/^#(invite|recovery|email_change)_token=/.test(location.hash)) location.repl
       </ul>
     </div>
   </div>
+{% if collections.gallery.length %}  <div class="wrap" style="margin-top:36px"><a class="cta rv" href="gallery/">See all photographs</a></div>
+{% endif %}</section>
+
+{% set posts = social | socialPosts %}{% if posts.length %}<section class="plain">
+  <div class="wrap">
+    <p class="eyebrow rv">Elsewhere</p>
+    <h2 class="rv">Recent posts<br>from the group.</h2>
+    <div class="cards">
+{%- for p in posts %}
+      <article class="card rv"><p class="k">{{ p.platform }}</p><p>{{ p.caption }}</p><a class="card-link" href="{{ p.url }}" aria-label="View on {{ p.platform }}: {{ p.caption }}">View on {{ p.platform }}</a></article>
+{%- endfor %}
+    </div>
+  </div>
 </section>
 
-<section class="plain">
+{% endif %}<section class="plain">
   <div class="wrap">
     <p class="eyebrow rv">Get involved</p>
     <h2 class="rv">It is a small catchment.<br>That is the good news.</h2>

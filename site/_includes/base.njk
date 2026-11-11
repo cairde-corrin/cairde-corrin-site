@@ -37,7 +37,7 @@
     <img class="logo-w" src="{{ r }}assets/img/logo-white.webp" alt="Cáirde Corrin" width="400" height="144">
   </a>
   <button class="navtoggle" id="navtoggle" aria-expanded="false" aria-controls="navlinks">Menu</button>
-  <nav class="navlinks" id="navlinks"><a class="n" href="{{ r }}trails/">Trails</a><a class="n" href="{{ r }}species/">Species</a><a class="n" href="{{ r }}folklore/">Folklore</a><a class="n" href="{{ r }}new-spaces/">New spaces</a><a class="n" href="{{ r }}water/">Water &amp; ecosystems</a><a class="n" href="{{ r }}recordings/">Recordings</a><a class="n" href="{{ r }}news/" aria-current="page">News</a><a class="n" href="{{ r }}about/">About</a><a class="n" href="{{ r }}links/">Links</a></nav>
+  <nav class="navlinks" id="navlinks"><a class="n" href="{{ r }}trails/">Trails</a><a class="n" href="{{ r }}species/">Species</a><a class="n" href="{{ r }}folklore/">Folklore</a><a class="n" href="{{ r }}new-spaces/">New spaces</a><a class="n" href="{{ r }}water/">Water &amp; ecosystems</a><a class="n" href="{{ r }}recordings/">Recordings</a><a class="n" href="{{ r }}news/"{% if page.url.startsWith("/news/") %} aria-current="page"{% endif %}>News</a><a class="n" href="{{ r }}about/">About</a><a class="n" href="{{ r }}links/">Links</a></nav>
 </header>
 <main id="main" class="page-head reading">
   <div class="wrap">

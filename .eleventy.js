@@ -1,12 +1,15 @@
 // Every file already in site/ is published byte for byte: it is copied, never rendered.
-// The only templates are the News sources: .njk pages, .md posts in _content/news/, and
-// the layouts in _includes/. The copy filter keeps those sources out of the output, and
-// no other file format is a template, so nothing else is parsed or rewritten.
-// assets/uploads/ holds news photos exactly as uploaded, GPS and all. They are never copied:
+// The only templates are the .njk pages (the home page, News, the gallery, the sitemap),
+// the .md entries in _content/ and the layouts in _includes/. The copy filter keeps those
+// sources out of the output, and no other file format is a template, so nothing else is
+// parsed or rewritten. _data/ holds data the editor changes, such as the home page's
+// social posts.
+// assets/uploads/ holds photos exactly as uploaded, GPS and all. They are never copied:
 // _includes/images.js publishes re-encoded sizes under assets/img/news/ instead.
 const SOURCES = ['!**/*.njk', '!**/*.md', '!**/*.11tydata.js', '!_includes', '!_includes/**',
-  '!_content', '!_content/**', '!assets/uploads', '!assets/uploads/**'];
+  '!_content', '!_content/**', '!_data', '!_data/**', '!assets/uploads', '!assets/uploads/**'];
 const images = require('./site/_includes/images.js');
+const social = require('./site/_includes/social.js');
 const root = (url) => '../'.repeat(url.split('/').filter(Boolean).length);
 
 module.exports = function (eleventyConfig) {
@@ -14,8 +17,9 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ site: '/' }, { filter: ['**', ...SOURCES] });
 
   // Photos placed in a post's body come out of Markdown as <img src="/assets/uploads/...">.
-  // This sends them through the same re-encoding as the hero and gallery. Templates only:
-  // copied files never pass through a transform.
+  // This sends them through the same re-encoding as the hero and gallery, and stops the
+  // build if a generated page (News, the gallery, the home page) would load anything from
+  // another website. Templates only: copied files never pass through a transform.
   eleventyConfig.addTransform('uploads', function (content) {
     const out = this.page.outputPath;
     return typeof out === 'string' && out.endsWith('.html')
@@ -24,6 +28,12 @@ module.exports = function (eleventyConfig) {
 
   eleventyConfig.addCollection('news', (api) =>
     api.getFilteredByGlob('site/_content/news/*.md').sort((a, b) => b.date - a.date));
+  // Newest photo first by the date it was taken; undated photos after, newest added first
+  const taken = (item) => (item.data.taken ? +new Date(item.data.taken) : -Infinity);
+  eleventyConfig.addCollection('gallery', (api) =>
+    api.getFilteredByGlob('site/_content/gallery/*.md')
+      .sort((a, b) => (taken(b) - taken(a)) || b.inputPath.localeCompare(a.inputPath)));
+  eleventyConfig.addFilter('socialPosts', social.posts);
 
   // Relative root for a page URL, as every existing page writes its links: /news/ -> ../
   eleventyConfig.addFilter('root', root);

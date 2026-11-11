@@ -55,12 +55,15 @@ Then open http://localhost:8080
 
     site/                   Everything that deploys, and nothing else
       _content/news/        News posts, one Markdown file each. Built, not copied
-      _includes/            The News layouts and images.js. Built, not copied
+      _content/gallery/     Gallery photos, one Markdown file each. Built, not copied
+      _data/social.json     The home page's social posts, up to three. Built, not copied
+      _includes/            Layouts, images.js, youtube.js, social.js. Built, not copied
       news/index.njk        The News listing, ten to a page
+      gallery/index.njk     The Gallery page
       sitemap.njk           Writes sitemap.xml, adding each news post
       admin/                The news editor (Decap CMS). Login required, commits to main
       admin/vendor/         Decap and the Identity widget, pinned, served from this site
-      index.html            Home - scrubbed film, then a descent from 213 m to the river at about 21 m
+      index.njk             Home - scrubbed film, then a descent from 213 m to the river at about 21 m
       trails/index.html     Interactive map and the ten stops
       stops/stop-1..10.html One page per stop. Three recorded, seven reserved
       species/index.html    13 species with determinations and reference photographs
@@ -79,12 +82,12 @@ Then open http://localhost:8080
       assets/js/map.js      Vector map
       assets/data/          GeoJSON and GPX
       assets/img/           Photography, logo, terrain basemap, species/ reference set
-      assets/uploads/       News photos as uploaded. Never published; re-encoded to assets/img/news/
+      assets/uploads/       Photos as uploaded. Never published; re-encoded to assets/img/news/
       assets/audio/         Nineteen field recordings and the stop 1 clip
       assets/video/         hero-1920.mp4
       assets/fonts/         Five subsetted woff2 faces
 
-    docs/                   CONTRIBUTING.md, DEPLOY.md, CMS-MIGRATION.md and PROJECT-SUMMARY.md
+    docs/                   CONTRIBUTING.md, DEPLOY.md, CMS-MIGRATION.md, OPEN-ITEMS.md and PROJECT-SUMMARY.md
     source-data/            Inputs the site is made from. Tracked, never published.
     archive/                Masters and source material. Not deployed, not tracked.
     tools/                  serve.py, linkcheck.py, cdp.mjs and friends. Not part of the build.
