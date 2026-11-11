@@ -28,13 +28,15 @@ this size, and Firefox paid all of it. Worth revisiting again.
 
 ## The site
 
-Static site. No build step, no framework, no package manager. Netlify publishes
-`site/` exactly as it sits; `netlify.toml` says so and sets an empty build command.
+Static site. No framework and no templating. The build, `npm run build`, is Eleventy
+configured as a pure passthrough: it copies `site/` to `_site/` byte for byte and
+renders nothing, and Netlify publishes `_site/`. So `site/` is still exactly the
+website. `python3 tools/compare_build.py` proves the two are identical.
 
 ## Before you edit
 
 Read `docs/CONTRIBUTING.md`. It carries the rules that keep this site
-trustworthy: no build step, nothing invented, the sign addresses never change,
+trustworthy: a build that changes nothing, nothing invented, the sign addresses never change,
 and everything borrowed is credited.
 
 ## Local preview
@@ -78,7 +80,7 @@ Then open http://localhost:8080
     docs/                   CONTRIBUTING.md, DEPLOY.md and PROJECT-SUMMARY.md
     source-data/            Inputs the site is made from. Tracked, never published.
     archive/                Masters and source material. Not deployed, not tracked.
-    tools/                  serve.py, linkcheck.py, cdp.mjs and friends. Not a build step.
+    tools/                  serve.py, linkcheck.py, cdp.mjs and friends. Not part of the build.
 
 ## Brand
 

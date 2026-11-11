@@ -1,5 +1,6 @@
 .DS_Store
 node_modules/
+_site/
 
 # Masters and source material live in archive/ and are not deployed and not
 # tracked. archive/README.md, kept locally with them, explains each one.

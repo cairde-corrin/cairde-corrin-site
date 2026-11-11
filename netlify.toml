@@ -1,13 +1,14 @@
 # Cáirde Corrin - https://www.cairdecorrin.ie/
 #
-# There is no build step and there never will be one. Netlify publishes the
-# contents of site/ exactly as they are. _headers and _redirects live inside
-# site/ and are read from there.
+# The build is Eleventy configured as a pure passthrough (.eleventy.js): it copies
+# every file in site/ to _site/ unchanged and renders nothing, so _site/ is
+# byte-identical to site/. Check with: npm run build && python3 tools/compare_build.py
+# _headers and _redirects live in site/ and are copied with everything else.
 
 [build]
-  publish = "site"
-  command = ""
+  publish = "_site"
+  command = "npm run build"
 
 [build.environment]
-  # Nothing to install. Stated so a future Netlify default cannot introduce one.
-  NPM_FLAGS = "--version"
+  # Exact Node version, the one the passthrough build was verified with.
+  NODE_VERSION = "24.13.0"

@@ -1,7 +1,8 @@
 # Deploying cairdecorrin.ie
 
-The site is static. There is no build, no npm, no framework and nothing to
-compile. Netlify takes the `site/` folder and serves it exactly as it is.
+The site is static. The build is Eleventy as a pure passthrough: it copies the
+`site/` folder to `_site/` unchanged and compiles nothing, and Netlify serves
+`_site/`. Because the two are identical, dragging `site/` by hand still works.
 
 If you can drag a folder onto a web page, you can deploy this.
 
@@ -39,12 +40,13 @@ Set this up once and every push deploys itself.
 2. Netlify reads `netlify.toml` at the repository root and fills in the
    settings itself:
 
-       publish   = "site"
-       command   = ""            (empty on purpose)
+       publish   = "_site"
+       command   = "npm run build"
+       NODE_VERSION = "24.13.0"
 
-   If the interface offers to install dependencies or run a build, say no.
-   There is nothing to install. `netlify.toml` also pins `NPM_FLAGS` to
-   `--version` so that a future Netlify default cannot quietly add a build step.
+   Keep these in `netlify.toml`, not the Netlify interface, so they travel with the
+   repository. Netlify installs the one pinned dependency, Eleventy, from
+   `package-lock.json`, and the build copies `site/` into `_site/` unchanged.
 3. **Deploy site.**
 
 After that, every push to the main branch redeploys. Pull requests get their own
