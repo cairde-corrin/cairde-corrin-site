@@ -10,6 +10,8 @@
 // fixOrientation bakes the camera's rotation into the pixels first, because the
 // orientation tag is dropped along with everything else.
 //
+// resolve() handles the hero and gallery fields; rewriteHtml() handles photos placed in
+// the body of a post, which reach the page as <img src="/assets/uploads/...">.
 // Any other image path (the hand-made -700/-1100 files under /assets/img/) is returned
 // unchanged, so posts that use them render exactly as before.
 const path = require('node:path');
@@ -23,12 +25,25 @@ const OUT = {
   fixOrientation: true,
 };
 const WIDTHS = [700, 1100, 1800];
+const BODY_SIZES = '(min-width:900px) 760px, calc(100vw - 64px)';
+
+async function encode(src, options) {
+  try {
+    return await Image(path.join(SITE, src), { ...OUT, ...options });
+  } catch (e) {
+    // The prebuilt image library cannot decode HEVC, so an iPhone HEIC photo fails here.
+    // The news editor refuses HEIC uploads; this message is for anything that slips past.
+    const heic = /\.hei[cf]$/i.test(src) || /HEVC|heif/i.test(e.message);
+    throw new Error(`News photo ${src} could not be processed: ${heic
+      ? 'it is an iPhone HEIC photo, which the build cannot read. Replace it with a JPEG.'
+      : e.message}`);
+  }
+}
 
 async function resolve(img) {
   if (!img || typeof img.src !== 'string' || !img.src.startsWith(UPLOADS)) return img;
-  const file = path.join(SITE, img.src);
-  const webp = (await Image(file, { ...OUT, widths: WIDTHS, formats: ['webp'] })).webp;
-  const og = (await Image(file, { ...OUT, widths: [1200], formats: ['jpeg'] })).jpeg[0];
+  const webp = (await encode(img.src, { widths: WIDTHS, formats: ['webp'] })).webp;
+  const og = (await encode(img.src, { widths: [1200], formats: ['jpeg'] })).jpeg[0];
   // webp is sorted by width; a photo narrower than 1800 px yields fewer, never upscaled, sizes
   const main = webp.find((s) => s.width >= 1100) || webp[webp.length - 1];
   return {
@@ -41,4 +56,44 @@ async function resolve(img) {
   };
 }
 
-module.exports = { resolve, UPLOADS };
+async function replaceAsync(str, re, fn) {
+  const found = [...str.matchAll(re)];
+  const swaps = await Promise.all(found.map((m) => fn(...m)));
+  let out = '', last = 0;
+  found.forEach((m, i) => { out += str.slice(last, m.index) + swaps[i]; last = m.index + m[0].length; });
+  return out + str.slice(last);
+}
+
+// Rewrites every reference to an uploaded original in a finished page: <img> gets the
+// processed sizes, a link gets the largest processed size. root is the page's relative
+// prefix (../../ for a post), matching how every other link on the site is written.
+// Anything still pointing at assets/uploads/ afterwards would 404, so the build stops.
+async function rewriteHtml(html, root, where) {
+  // The public site loads nothing from another website. A photo inserted into a post by
+  // URL, or typed in as Markdown, would break that, so it stops the build instead.
+  const outside = html.match(/<(?:img|source|video|audio|iframe|script|embed)\b[^>]*\s(?:src|srcset)="\s*(?:https?:)?\/\/[^"]*"/i);
+  if (outside) {
+    throw new Error(`${where} loads something from another website: ${outside[0]}. `
+      + 'The site loads nothing from other sites; upload the photo instead.');
+  }
+  if (!html.includes('assets/uploads/')) return html;
+  const rel = (u) => root + u.slice(1);
+  html = await replaceAsync(html, /<img\b[^>]*\ssrc="(\/assets\/uploads\/[^"]+)"[^>]*>/g, async (tag, src) => {
+    const img = await resolve({ src: decodeURI(src) });
+    const attrs = ` src="${rel(img.src)}" srcset="${img.srcset.map(rel).join(', ')}" sizes="${BODY_SIZES}"`
+      + ` width="${img.width}" height="${img.height}" loading="lazy" decoding="async"`;
+    return tag.replace(/\ssrc="[^"]*"/, attrs);
+  });
+  html = await replaceAsync(html, /\shref="(\/assets\/uploads\/[^"]+)"/g, async (attr, src) => {
+    const img = await resolve({ src: decodeURI(src) });
+    return ` href="${rel(img.srcset[img.srcset.length - 1].split(' ')[0])}"`;
+  });
+  const left = html.match(/[^"'\s(]*assets\/uploads\/[^"'\s)]*/);
+  if (left) {
+    throw new Error(`${where} still refers to ${left[0]}. Uploaded photos are never published `
+      + 'as uploaded; put photos in a post with the photo fields or the Image button.');
+  }
+  return html;
+}
+
+module.exports = { resolve, rewriteHtml, UPLOADS };
