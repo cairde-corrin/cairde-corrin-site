@@ -69,7 +69,8 @@ any other change. Publish or delete any open drafts first (the **Workflow** tab)
    `netlify-identity-widget` script line and the comment above it. Delete
    `site/admin/status.json`, `site/admin/emails/` and
    `site/admin/vendor/netlify-identity-widget-2.0.3/`, and remove the widget lines from
-   `tools/vendor_cms.sh`.
+   `tools/vendor_cms.sh`. Remove the inline script at the top of `site/index.html` that
+   forwards invite links to `/admin/`; nothing sends those links any more.
 5. **Update the privacy page in the same commit.** The admin area will then also talk
    to GitHub, not only Netlify: `api.github.com` for every save, `githubstatus.com`
    for a status check Decap makes on each login (the GitHub backend has no setting to
