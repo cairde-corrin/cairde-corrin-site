@@ -1,0 +1,24 @@
+---
+layout: base.njk
+---
+{%- set r = page.url | root -%}
+{%- if sample %}
+    <div class="note"><p><strong>Sample post.</strong> Placeholder content for checking the News layout. Delete it before anything is published.</p></div>
+{%- endif %}
+    <p class="eyebrow rv"><time datetime="{{ page.date | isoDate }}">{{ page.date | longDate }}</time> · {{ author }}</p>
+    <h1 class="rv page-title">{{ title }}</h1>
+    <p class="lede rv">{{ summary }}</p>
+{%- if hero and hero.src %}
+    <figure class="mapfig rv"><img src="{{ hero.src | rel(r) }}"{% if hero.srcset %} srcset="{% for s in hero.srcset %}{{ s | rel(r) }}{% if not loop.last %}, {% endif %}{% endfor %}" sizes="(min-width:900px) 760px, calc(100vw - 64px)"{% endif %} width="{{ hero.width }}" height="{{ hero.height }}" alt="{{ hero.alt }}" fetchpriority="high" decoding="async">{% if hero.caption %}<figcaption>{{ hero.caption }}</figcaption>{% endif %}</figure>
+{%- endif %}
+    <div class="post-body rv">
+{{ content | safe }}
+    </div>
+{%- if gallery and gallery.length %}
+    <div class="post-gallery rv">
+{%- for g in gallery %}
+      <figure class="card-fig"><img src="{{ g.src | rel(r) }}" width="{{ g.width }}" height="{{ g.height }}" alt="{{ g.alt }}" loading="lazy" decoding="async">{% if g.caption %}<figcaption>{{ g.caption }}</figcaption>{% endif %}</figure>
+{%- endfor %}
+    </div>
+{%- endif %}
+    <p class="rv" style="margin-top:44px"><a class="card-link" href="{{ r }}news/">All news</a></p>

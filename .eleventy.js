@@ -1,8 +1,28 @@
-// Passthrough only. Every file under site/ is copied to _site/ byte for byte, and no
-// file is a template: templateFormats is empty, so Eleventy parses, renders and
-// rewrites nothing. The published output is identical to site/.
+// Every file already in site/ is published byte for byte: it is copied, never rendered.
+// The only templates are the News sources: .njk pages, .md posts in _content/news/, and
+// the layouts in _includes/. The copy filter keeps those sources out of the output, and
+// no other file format is a template, so nothing else is parsed or rewritten.
+const SOURCES = ['!**/*.njk', '!**/*.md', '!**/*.11tydata.js', '!_includes', '!_includes/**',
+  '!_content', '!_content/**'];
+
 module.exports = function (eleventyConfig) {
-  eleventyConfig.setTemplateFormats([]);
-  eleventyConfig.addPassthroughCopy({ site: '/' });
-  return { dir: { input: 'site', output: '_site' } };
+  eleventyConfig.setTemplateFormats(['njk', 'md']);
+  eleventyConfig.addPassthroughCopy({ site: '/' }, { filter: ['**', ...SOURCES] });
+
+  eleventyConfig.addCollection('news', (api) =>
+    api.getFilteredByGlob('site/_content/news/*.md').sort((a, b) => b.date - a.date));
+
+  // Relative root for a page URL, as every existing page writes its links: /news/ -> ../
+  eleventyConfig.addFilter('root', (url) => '../'.repeat(url.split('/').filter(Boolean).length));
+  // A root-absolute asset path from front matter, written relative like the rest of the page
+  eleventyConfig.addFilter('rel', (src, root) => (src.startsWith('/') ? root + src.slice(1) : src));
+  eleventyConfig.addFilter('isoDate', (d) => new Date(d).toISOString().slice(0, 10));
+  eleventyConfig.addFilter('longDate', (d) => new Date(d).toLocaleDateString('en-IE',
+    { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }));
+
+  return {
+    dir: { input: 'site', output: '_site', includes: '_includes' },
+    markdownTemplateEngine: false,
+    htmlTemplateEngine: false,
+  };
 };

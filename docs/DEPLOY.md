@@ -1,8 +1,8 @@
 # Deploying cairdecorrin.ie
 
-The site is static. The build is Eleventy as a pure passthrough: it copies the
-`site/` folder to `_site/` unchanged and compiles nothing, and Netlify serves
-`_site/`. Because the two are identical, dragging `site/` by hand still works.
+The site is static. The build is Eleventy: it copies every hand-written file in
+`site/` to `_site/` unchanged, renders the News section and `sitemap.xml`, and
+Netlify serves `_site/`.
 
 If you can drag a folder onto a web page, you can deploy this.
 
@@ -19,15 +19,17 @@ show a picture until the domain resolves.
 
 ## The short version
 
-1. Go to <https://app.netlify.com/drop>
-2. Drag the **`site`** folder onto it.
-3. Wait about twenty seconds.
+1. Run `npm install` once, then `npm run build`. That writes `_site/`.
+2. Go to <https://app.netlify.com/drop>
+3. Drag the **`_site`** folder onto it.
+4. Wait about twenty seconds.
 
 That publishes a separate working copy at a random `*.netlify.app` address.
 Useful for showing someone a one-off copy. It does not touch the production site
 at cairde-corrin.netlify.app or the domain.
 
-**Drag `site/`, not the folder above it.** If you drag the whole repository you
+**Drag `_site/`, not `site/` and not the folder above it.** `site/` has no News pages
+and no sitemap. If you drag the whole repository you
 will publish a site whose home page is a directory listing, and the `/s/1` sign
 addresses will not work.
 
@@ -73,10 +75,10 @@ preview URL.
 
 ## Checks before you deploy
 
-Run these from the repository root. None of them needs anything installed
-beyond Python 3, Pillow, and a copy of Chrome.
+Run these from the repository root, after `npm run build`. Beyond the build, none of
+them needs anything installed except Python 3, Pillow, and a copy of Chrome.
 
-    python3 tools/serve.py site 8080      # then open http://localhost:8080
+    python3 tools/serve.py _site 8080     # then open http://localhost:8080
     python3 tools/linkcheck.py --external
 
 `linkcheck.py` exits non-zero if any internal link is dead. The external pass is
