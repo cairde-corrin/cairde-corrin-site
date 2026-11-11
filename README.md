@@ -119,7 +119,10 @@ duplicated the combined one were removed.
 
 ## Still outstanding
 
-- GPX traces of the actual trails (nobody has walked them with a GPS yet)
+- GPX traces of the routes beyond the Glenabo loop. The loop itself was walked with a
+  GPS on 29 August 2026: `source-data/2026-08-29_glenabo_loop.gpx`, about 3 km and 193
+  points, starting and ending at Stop 1. It is source material and is not published as
+  it stands.
 - Stop positions 4 to 10
 - Audio recordings and transcripts
 - Committee names and roles on the About page
