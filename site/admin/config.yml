@@ -202,10 +202,9 @@ collections:
         pattern: ['^\s*([A-Za-z0-9_-]{11}|https://(www\.|m\.)?(youtube\.com|youtu\.be|youtube-nocookie\.com)/\S+)\s*$', 'Paste the address of the video on YouTube, starting https://, or just the 11 letters and numbers after "watch?v=".']
         hint: >-
           Optional. Only for videos Cáirde Corrin made and put on its own YouTube
-          channel. Paste the address of the video, for example
-          https://www.youtube.com/watch?v=dQw4w9WgXcQ. The post shows a still from
-          the video with a play button; nothing loads from YouTube until a visitor
-          presses play.
+          channel. On YouTube, press Share under the video, copy the address and
+          paste it here. The post shows a still from the video with a play button;
+          nothing loads from YouTube until a visitor presses play.
 
       - label: Date last changed
         name: updated
