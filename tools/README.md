@@ -5,7 +5,8 @@ step.** `site/` is deployed exactly as it sits; nothing here has to run for the
 site to work, and nothing here is deployed. They exist so that anyone can repeat the
 checks rather than take the published numbers on trust.
 
-Everything is Python 3 with Pillow, or Node with no dependencies at all.
+Everything is Python 3 with Pillow (plus numpy for the two DEM tools), or Node with
+no dependencies at all.
 
 | file | what it does |
 |---|---|
@@ -14,6 +15,8 @@ Everything is Python 3 with Pillow, or Node with no dependencies at all.
 | `linkcheck.py` | Walks every page and reports dead internal links, missing assets and unreachable external URLs. `--reveal` also measures the scroll-reveal blocks and flags any taller than eight viewports. |
 | `commons_fetch.py` | Finds a licensed Wikimedia Commons photograph per binomial, records photographer, licence and file page, and writes the local copies. |
 | `photos_exif.py` | Reads GPS, elevation and timestamp out of the photograph archive and reports which frames fall inside the catchment. |
+| `fetch_dem.py` | Downloads the Copernicus GLO-30 elevation tiles covering the catchment and the EGM2008 and OSGM15 geoid grids into `~/.cache/cairde-corrin-dem`. Raster data never enters the repository. Sources, resolution, datums and licence are in its docstring. |
+| `dem_report.py` | Compares the published stop elevations, the GPX in `source-data/` and the catchment range against the DEM and geoid models. Read-only. `python3 tools/dem_report.py [photo folder]` |
 
 ## Why the reveal height matters
 
