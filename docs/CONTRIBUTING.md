@@ -5,10 +5,16 @@ the rest is reference.
 
 ## Repository layout
 
-    site/       everything that deploys, and nothing else. Netlify publishes this.
-    docs/       this file, the deployment guide and the project summary
-    archive/    masters and source material. Not deployed, not tracked.
-    tools/      helper scripts. Not a build step; nothing here has to run.
+    site/         everything that deploys, and nothing else. Netlify publishes this.
+    docs/         this file, the deployment guide and the project summary
+    source-data/  inputs that the site is made from. Tracked, never published.
+    archive/      masters and source material. Not deployed, not tracked.
+    tools/        helper scripts. Not a build step; nothing here has to run.
+
+`source-data/` holds raw inputs, such as route exports, that are processed into files
+under `site/`. Nothing in it is ever published directly: Netlify publishes only
+`site/`, and nothing on the site links into `source-data/`. To publish something
+derived from it, write the processed result into `site/` and commit both.
 
 ## What this is
 

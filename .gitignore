@@ -12,8 +12,5 @@ archive/
 *.MXF
 *-master.*
 
-# Third-party route export, not linked from the site and not ours to publish.
-site/assets/data/2026-08-29_glenabo_loop.gpx
-
 # Git cannot ignore by size. Files over 25 MB are refused by .githooks/pre-commit;
 # see docs/CONTRIBUTING.md for the one-line setup after cloning.

@@ -76,6 +76,7 @@ Then open http://localhost:8080
       assets/fonts/         Five subsetted woff2 faces
 
     docs/                   CONTRIBUTING.md, DEPLOY.md and PROJECT-SUMMARY.md
+    source-data/            Inputs the site is made from. Tracked, never published.
     archive/                Masters and source material. Not deployed, not tracked.
     tools/                  serve.py, linkcheck.py, cdp.mjs and friends. Not a build step.
 
