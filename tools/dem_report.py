@@ -218,7 +218,7 @@ def main(photo_dirs=()):
         d = [a - cop.sample(la, lo) - dod(la, lo) for la, lo, a in iph]
         print('iPhone fixes in the catchment, EXIF - COP(OD): median %+.1f m (n=%d); '
               'near 0 means the iPhone already reports height above sea level' % (np.median(d), len(d)))
-    pages = ['site/index.njk', 'site/water/index.html']
+    pages = ['site/index.njk', 'site/water/index.njk']
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     seen = {}
     for page in pages:

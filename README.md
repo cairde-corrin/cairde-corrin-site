@@ -57,23 +57,23 @@ Then open http://localhost:8080
       _content/news/        News posts, one Markdown file each. Built, not copied
       _content/gallery/     Gallery photos, one Markdown file each. Built, not copied
       _data/social.json     The home page's social posts, up to three. Built, not copied
-      _includes/            Layouts, images.js, youtube.js, social.js. Built, not copied
+      _includes/            Layouts, the shared nav (nav.js), images.js, youtube.js, social.js
       news/index.njk        The News listing, ten to a page
       gallery/index.njk     The Gallery page
       sitemap.njk           Writes sitemap.xml, adding each news post
       admin/                The news editor (Decap CMS). Login required, commits to main
       admin/vendor/         Decap and the Identity widget, pinned, served from this site
       index.njk             Home - scrubbed film, then a descent from 213 m to the river at about 21 m
-      trails/index.html     Interactive map and the ten stops
-      stops/stop-1..10.html One page per stop. Three recorded, seven reserved
-      species/index.html    13 species with determinations and reference photographs
-      folklore/index.html   Five stories summarised and linked to duchas.ie
-      new-spaces/index.html Strand 2, four phases
-      water/index.html      Strand 3, invasive species
-      recordings/index.html Nineteen field recordings from 11 April 2026
-      about/index.html      Vision, mission, partners
-      links/index.html      Related sites
-      credits/index.html    Every source, licence and attribution
+      trails/index.njk      Interactive map and the ten stops
+      stops/stop-1..10.njk  One page per stop. Three recorded, seven reserved
+      species/index.njk     13 species with determinations and reference photographs
+      folklore/index.njk    Five stories summarised and linked to duchas.ie
+      new-spaces/index.njk  Strand 2, four phases
+      water/index.njk       Strand 3, invasive species
+      recordings/index.njk  Nineteen field recordings from 11 April 2026
+      about/index.njk       Vision, mission, partners
+      links/index.njk       Related sites
+      credits/index.njk     Every source, licence and attribution
       privacy/ terms/       Drafts. Not reviewed by a solicitor.
       _redirects            QR sign addresses - /s/1 to /s/10. Never change these.
       _headers              Cache-Control

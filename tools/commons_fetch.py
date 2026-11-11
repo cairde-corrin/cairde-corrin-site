@@ -11,7 +11,7 @@ so the photograph can be checked against the name it is published under.
 It does NOT choose for you. A human looks at the shortlist and picks, because
 "in the category for Salix cinerea" is not the same as "is a good photograph of
 Salix cinerea". The chosen files, their photographers and their licences are
-recorded on site/credits/index.html.
+recorded on site/credits/index.njk.
 """
 import html, json, os, re, sys, urllib.parse, urllib.request
 

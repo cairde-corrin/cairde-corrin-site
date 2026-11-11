@@ -2,11 +2,35 @@
 (function () {
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* mobile nav */
+  /* Navigation. The CSS opens groups on hover and focus only while this class is absent. */
+  document.documentElement.classList.add('js');
   var tgl = document.getElementById('navtoggle'), links = document.getElementById('navlinks');
+  var grps = document.querySelectorAll('.navgrp');
+  /* Close every group that does not contain el (pass nothing to close them all) */
+  function closeGroups(el) {
+    grps.forEach(function (b) { if (!el || !b.parentNode.contains(el)) b.setAttribute('aria-expanded', 'false'); });
+  }
+  grps.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var open = b.getAttribute('aria-expanded') !== 'true';
+      closeGroups(b);
+      b.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  });
+  document.addEventListener('click', function (e) { if (e.target !== tgl) closeGroups(e.target); });
+  document.addEventListener('focusin', function (e) { closeGroups(e.target); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var open = document.querySelector('.navgrp[aria-expanded="true"]');
+    if (open) { closeGroups(); open.focus(); }
+    else if (links && links.classList.contains('open')) { tgl.click(); tgl.focus(); }
+  });
+  /* Menu, below the menu breakpoint. Opening it also opens the group holding this page. */
   if (tgl && links) tgl.addEventListener('click', function () {
     var open = links.classList.toggle('open');
     tgl.setAttribute('aria-expanded', open ? 'true' : 'false');
+    var cur = document.querySelector('.navgrp.cur');
+    if (open && cur) cur.setAttribute('aria-expanded', 'true');
   });
 
   /* Scroll reveals. threshold must stay 0: it is a fraction of the TARGET's area, so

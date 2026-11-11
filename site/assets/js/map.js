@@ -10,7 +10,7 @@
   /* map.js and the GeoJSON change together, so they are versioned together: bump DATA_V
      and the ?v= on this script in trails/index.html whenever either changes. Without it
      a browser can pair a new script with a day-old cached data file, or the reverse. */
-  var DATA_V = '2026-11-11';
+  var DATA_V = '2026-11-11b';
   var STOPNO = { 'Stop 01 - the stream': 1, 'Stop 02 - closed canopy': 2, 'Stop 03 - the mossy stand': 3 };
   var PHOTO = { 1: 'stream', 2: 'plantation', 3: 'mossy' };
 
@@ -69,7 +69,7 @@
         make('circle', { cx: x, cy: y, r: 6.4, fill: '#009ADE', stroke: '#fff', 'stroke-width': 2.4 }, g);
       }
       if (k > 0.05) {
-        var t = make('text', { x: x + 15, y: y + 4, 'font-family': 'IBM Plex Mono,monospace', 'font-size': 11, fill: '#152616', stroke: '#fff', 'stroke-width': 3, 'paint-order': 'stroke' }, g);
+        var t = make('text', { x: x + 15, y: y + 4, 'font-family': 'IBM Plex Mono,monospace', 'font-size': 12, fill: '#152616', stroke: '#fff', 'stroke-width': 3, 'paint-order': 'stroke' }, g);
         t.textContent = (p.k === 'outlet' ? 'Outlet' : 'Stop ' + (no || '')) + ' · about ' + p.e + ' m';
       }
     });

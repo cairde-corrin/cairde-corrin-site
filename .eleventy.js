@@ -1,6 +1,8 @@
 // Every file already in site/ is published byte for byte: it is copied, never rendered.
-// The only templates are the .njk pages (the home page, News, the gallery, the sitemap),
-// the .md entries in _content/ and the layouts in _includes/. The copy filter keeps those
+// The only templates are the .njk pages, the .md entries in _content/ and the layouts in
+// _includes/. Every page is a .njk file so that its header and footer can be built from
+// one definition (_includes/nav.js); apart from those two includes, a hand-written page
+// is written out exactly as it is. The copy filter keeps those
 // sources out of the output, and no other file format is a template, so nothing else is
 // parsed or rewritten. _data/ holds data the editor changes, such as the home page's
 // social posts.
@@ -10,11 +12,18 @@ const SOURCES = ['!**/*.njk', '!**/*.md', '!**/*.11tydata.js', '!_includes', '!_
   '!_content', '!_content/**', '!_data', '!_data/**', '!assets/uploads', '!assets/uploads/**'];
 const images = require('./site/_includes/images.js');
 const social = require('./site/_includes/social.js');
-const root = (url) => '../'.repeat(url.split('/').filter(Boolean).length);
+const { nav } = require('./site/_includes/nav.js');
+// Relative prefix back to the site root: /news/x/ -> ../../, /stops/stop-1.html -> ../
+const root = (url) => '../'.repeat(url.replace(/[^/]*$/, '').split('/').filter(Boolean).length);
 
 module.exports = function (eleventyConfig) {
   eleventyConfig.setTemplateFormats(['njk', 'md']);
   eleventyConfig.addPassthroughCopy({ site: '/' }, { filter: ['**', ...SOURCES] });
+  // Each page keeps the address it had as a hand-written file: trails/index.njk ->
+  // trails/index.html, stops/stop-1.njk -> stops/stop-1.html. Front matter or a
+  // directory data file (News, the sitemap) overrides this.
+  eleventyConfig.addGlobalData('permalink', () => (data) => `${data.page.filePathStem.slice(1)}.html`);
+  eleventyConfig.addFilter('navItems', nav);
 
   // Photos placed in a post's body come out of Markdown as <img src="/assets/uploads/...">.
   // This sends them through the same re-encoding as the hero and gallery, and stops the

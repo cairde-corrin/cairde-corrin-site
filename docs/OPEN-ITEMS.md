@@ -14,6 +14,8 @@ this file and removes what it settles, so it stays the one place to look.
 - **The video player with a real group video.** The click-to-load player was tested
   with a public test video, not one the group owns. Check the thumbnail and playback on
   the first real post with a video.
+- **The new navigation in Safari and Firefox.** Built and checked in Chrome only: the
+  groups opening on click and with the keyboard, Escape, and the Menu panel on a phone.
 - **The social block with real posts.** Tested with made-up Instagram and Facebook
   addresses. Check the cards and links once the group adds real ones.
 
@@ -30,17 +32,19 @@ this file and removes what it settles, so it stays the one place to look.
   emails instead.
 - **Netlify injects a promotional HTML comment on production.** Unknown whether that is
   a setting or a plan feature.
-- **The gallery is not in the main navigation.** The nav already holds nine items and
-  is tight between 901 and 1000 px, so a tenth waits for the Phase 8 nav work. Until
-  then the gallery is reached from the home page's photo section, which links to it
-  once it has at least one photo.
 - **Video thumbnails depend on YouTube at build time.** If YouTube cannot be reached
   while Netlify builds, the build stops with a message naming the video, and nothing is
   published until it succeeds.
 
+- **Decap's login button fails contrast.** Lighthouse measures its text at 3.4:1
+  (#798291 on #eff0f4) on `/admin/`. It is Decap's own interface, not the site's; it
+  could be overridden in `site/admin/index.html`, but only through Decap's generated
+  class names.
+- **Text over the home page film is not machine-checked for contrast.** Lighthouse
+  cannot measure text over video, and the frames vary.
+
 ## Deferred to Phase 8
 
-- **Sub-11px type site-wide.** Interacts with the 901-1000 px nav rule.
 - **Trail structured data for AEO:** distance and ascent.
 - **Netlify Pretty URLs creates two working URLs per page.**
 - **The domain.** Canonicals and og:image point at www.cairdecorrin.ie, which does not
