@@ -374,6 +374,51 @@ STOP_SOURCE = ('position, bearing and time: photo EXIF, Pixel 8a; elevation: wal
                'Copernicus GLO-30, rounded to 5 m')
 CATCHMENT_SOURCE = ('Copernicus GLO-30 DEM, flow-routed (Priority-Flood fill, D8) to the '
                     'Glenabo-Blackwater confluence; tools/catchment.py')
+STATED_AREA_KM2 = 3.6  # published as "about 3.6 km2 / about 360 ha", matching the boundary
+ACTION_NOTE = ('A drawn proposal: the Glenabo catchment with Glenabo Wood, Corrin Hill and '
+               'Knockananig Reservoir added. Offered for discussion, not a designation.')
+
+
+def clip_lines(lines, ring):
+    """Keep the parts of each line inside the ring, ending each part on the boundary.
+    shortcut: a segment with both ends outside that cuts across a corner of the ring is
+    dropped rather than split; at this network's 2-15 m vertex spacing that loses nothing."""
+    X = lambda pts: in_ring(ring, np.array([p[0] for p in pts]), np.array([p[1] for p in pts]))
+
+    def crossing(a, b):
+        best = None
+        for (x1, y1), (x2, y2) in zip(ring, ring[1:]):
+            d = (b[0] - a[0]) * (y2 - y1) - (b[1] - a[1]) * (x2 - x1)
+            if d == 0:
+                continue
+            t = ((x1 - a[0]) * (y2 - y1) - (y1 - a[1]) * (x2 - x1)) / d
+            u = ((x1 - a[0]) * (b[1] - a[1]) - (y1 - a[1]) * (b[0] - a[0])) / d
+            if 0 <= t <= 1 and 0 <= u <= 1 and (best is None or t < best):
+                best = t
+        t = best if best is not None else 0.5
+        return [round(a[0] + (b[0] - a[0]) * t, 6), round(a[1] + (b[1] - a[1]) * t, 6)]
+
+    out = []
+    for ln in lines:
+        ins = X(ln)
+        cur = [ln[0]] if ins[0] else []
+        for i in range(1, len(ln)):
+            a, b = ln[i - 1], ln[i]
+            if ins[i - 1] and ins[i]:
+                cur.append(b)
+            elif ins[i - 1]:
+                cur.append(crossing(a, b))
+                out.append(cur)
+                cur = []
+            elif ins[i]:
+                cur = [crossing(b, a), b]
+        if len(cur) > 1:
+            out.append(cur)
+    return [ln for ln in out if len(ln) > 1]
+
+
+def line_metres(lines):
+    return sum(metres(a[1], a[0], b[1], b[0]) for ln in lines for a, b in zip(ln, ln[1:]))
 
 
 def write_geojson(g, ws, pour, egm, osg):
@@ -391,19 +436,28 @@ def write_geojson(g, ws, pour, egm, osg):
         if p.get('name') == 'Glenabo hydrological catchment':
             f['geometry']['coordinates'] = [ring]
             p.update(area_km2=round(area, 2), area_ha=round(area * 100, 1),
-                     source=CATCHMENT_SOURCE, stated_area_km2=3.7, elevation_min_m=OUTLET_OD,
-                     elevation_max_m=int(round(zod[top])), longest_flow_path_km=round(lfp, 1))
+                     source=CATCHMENT_SOURCE, stated_area_km2=STATED_AREA_KM2,
+                     elevation_min_m=OUTLET_OD, elevation_max_m=int(round(zod[top])),
+                     longest_flow_path_km=round(lfp, 1))
         elif p.get('name') == 'Modelled channel network':
             p.pop('segments', None)          # figure withdrawn, not corrected
             p.pop('total_length_km', None)
+            before = f['geometry']['coordinates']
+            after = clip_lines(before, ring)
+            f['geometry']['coordinates'] = after
+            print('channel network clipped to the boundary: %.0f m -> %.0f m, %d -> %d lines'
+                  % (line_metres(before), line_metres(after), len(before), len(after)))
         elif p.get('name') == 'Proposed area for action':
             a = ring_area(f['geometry']['coordinates'][0][:-1]) / 1e6
-            p.update(area_km2=round(a, 3), area_ha=round(a * 100, 1))
+            p.update(area_km2=round(a, 3), area_ha=round(a * 100, 1), note=ACTION_NOTE)
         elif p.get('kind') == 'outlet':
             p['elevation_m'] = OUTLET_OD
         elif p.get('kind') == 'stop':
             p['elevation_m'] = STOP_OD[p['name']]
             p['source'] = STOP_SOURCE
+            # the camera wrote local Irish summer time; the old 'Z' claimed UTC
+            if p.get('recorded', '').endswith('Z'):
+                p['recorded'] = p['recorded'][:-1] + '+01:00'
     fc['generated'] = __import__('datetime').date.today().isoformat()
     with open(GEOJSON, 'w', encoding='utf-8') as fh:
         fh.write(json.dumps(fc, ensure_ascii=False))  # single line, as the file has always been
@@ -453,9 +507,9 @@ def main(outdir=None, write=False):
     south, north, west, east = min(ys) - .0075, max(ys) + .0075, min(xs) - .012, max(xs) + .012
 
     print('== Published polygons (vector area on the WGS84 ellipsoid)')
-    print('traced catchment   %.3f km2 (properties say %s, site says 3.30)'
+    print('shipped catchment  %.3f km2 (properties say %s)'
           % (ring_area(traced) / 1e6, traced_f['properties'].get('area_km2')))
-    print('action area        %.3f km2 (properties say %s, site says 9.9 / 989 ha)'
+    print('action area        %.3f km2 (properties say %s)'
           % (ring_area(action) / 1e6, action_f['properties'].get('area_km2')))
 
     results = {}
