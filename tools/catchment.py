@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """Delineate the Glenabo catchment by flow routing and compare it with the traced polygons.
 
-    python3 tools/catchment.py [outdir]
+    python3 tools/catchment.py [--write] [outdir]
 
 Reads FABDEM V1-2 and Copernicus GLO-30 through tools/fetch_dem.py and the published
-geometry in site/assets/data/cairde-corrin.geojson. Changes nothing in the repository.
-With an outdir it writes the routed boundaries as GeoJSON and a comparison PNG there.
+geometry in site/assets/data/cairde-corrin.geojson. Without --write it changes nothing.
+With --write it regenerates the shipped data file: the catchment becomes the Copernicus
+routed boundary (FABDEM is a cross-check only and nothing derived from it is written),
+and the catchment, outlet and stop figures in that file are recomputed. With an outdir it
+also writes the routed boundaries as GeoJSON and a comparison PNG there.
 
 Method, on each model's own grid:
   1. Priority-Flood + epsilon (Barnes et al. 2014): every sink is filled and every flat
@@ -263,6 +266,55 @@ def boundary_ring(g, mask):
             for r, c in ring]
 
 
+def tidy(g, mask):
+    """Make a D8 watershed traceable as one simple polygon: close diagonal-only contacts
+    (which would make the outline touch itself) and fill enclosed holes.
+    Returns the new mask, cells added for pinches, cells added for holes."""
+    m = mask.reshape(g.R, g.C).copy()
+    pinch = 0
+    while True:
+        a, b, c, d = m[:-1, :-1], m[:-1, 1:], m[1:, :-1], m[1:, 1:]
+        p1 = a & d & ~b & ~c  # diagonal one way: fill the cell to the right
+        p2 = b & c & ~a & ~d  # diagonal the other way: fill the cell to the left
+        if not (p1.any() or p2.any()):
+            break
+        for (r, cc) in zip(*np.nonzero(p1)):
+            m[r, cc + 1] = True
+            pinch += 1
+        for (r, cc) in zip(*np.nonzero(p2)):
+            if not (m[r, cc] or m[r + 1, cc + 1]):
+                m[r, cc] = True
+                pinch += 1
+    outside = np.zeros_like(m)
+    stack = [(r, c) for r in range(g.R) for c in (0, g.C - 1) if not m[r, c]] + \
+            [(r, c) for c in range(g.C) for r in (0, g.R - 1) if not m[r, c]]
+    for s in stack:
+        outside[s] = True
+    while stack:
+        r, c = stack.pop()
+        for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            rr, cc = r + dr, c + dc
+            if 0 <= rr < g.R and 0 <= cc < g.C and not m[rr, cc] and not outside[rr, cc]:
+                outside[rr, cc] = True
+                stack.append((rr, cc))
+    holes = ~m & ~outside
+    m |= holes
+    return m.ravel(), pinch, int(holes.sum())
+
+
+def shipped_ring(g, mask):
+    """Closed, anticlockwise lon/lat ring of a tidied mask, collinear vertices removed."""
+    ring = boundary_ring(g, mask)
+    n = len(ring)
+    out = [ring[i] for i in range(n)
+           if not (ring[i - 1][0] == ring[i][0] == ring[(i + 1) % n][0] or
+                   ring[i - 1][1] == ring[i][1] == ring[(i + 1) % n][1])]
+    s = sum((x2 - x1) * (y2 + y1) for (x1, y1), (x2, y2) in zip(out, out[1:] + out[:1]))
+    if s > 0:  # clockwise; GeoJSON (RFC 7946) exteriors are anticlockwise, as the file has
+        out.reverse()
+    return out + [out[0]]
+
+
 def channel_network(g, ws, thresh_m2):
     ch = ws & (g.acc >= thresh_m2)
     idx = np.nonzero(ch)[0]
@@ -307,9 +359,82 @@ def longest_flow_path(g, ws, p):
     return dist.max() / 1000
 
 
+# ---------- writing the shipped data file ----------
+
+# Low end of the catchment: river level at the confluence. Model heights on open water are
+# unreliable, so this comes from OPW station 18124 Fermoy U/S Rowing, 1.4 km downstream:
+# gauge zero 21.187 m above Malin Head OD (OSGM15); 7 Oct-11 Nov 2026 levels 20.64-22.11.
+OUTLET_OD = 21
+# Stop elevations, m OD, rounded to 5 m: the walk's own GPX (source-data/) and Copernicus
+# GLO-30 agree to within 4-8 m at each stop (tools/dem_report.py). The original EXIF
+# altitudes were ellipsoidal heights, about 57 m above OD.
+STOP_OD = {'Stop 01 - the stream': 60, 'Stop 02 - closed canopy': 110,
+           'Stop 03 - the mossy stand': 105}
+STOP_SOURCE = ('position, bearing and time: photo EXIF, Pixel 8a; elevation: walk GPX and '
+               'Copernicus GLO-30, rounded to 5 m')
+CATCHMENT_SOURCE = ('Copernicus GLO-30 DEM, flow-routed (Priority-Flood fill, D8) to the '
+                    'Glenabo-Blackwater confluence; tools/catchment.py')
+
+
+def write_geojson(g, ws, pour, egm, osg):
+    shipped, pinch, holes = tidy(g, ws)
+    ring = shipped_ring(g, shipped)
+    area = ring_area(ring[:-1]) / 1e6
+    zod = g.z.ravel() + np.array([egm.sample(y, x) - osg.sample(y, x)
+                                  for x, y in zip(g.X.ravel(), g.Y.ravel())])
+    top = int(np.argmax(np.where(shipped, zod, -np.inf)))
+    lfp = longest_flow_path(g, ws, pour)
+
+    fc = json.load(open(GEOJSON))
+    for f in fc['features']:
+        p, kind = f['properties'], f['geometry']['type']
+        if p.get('name') == 'Glenabo hydrological catchment':
+            f['geometry']['coordinates'] = [ring]
+            p.update(area_km2=round(area, 2), area_ha=round(area * 100, 1),
+                     source=CATCHMENT_SOURCE, stated_area_km2=3.7, elevation_min_m=OUTLET_OD,
+                     elevation_max_m=int(round(zod[top])), longest_flow_path_km=round(lfp, 1))
+        elif p.get('name') == 'Modelled channel network':
+            p.pop('segments', None)          # figure withdrawn, not corrected
+            p.pop('total_length_km', None)
+        elif p.get('name') == 'Proposed area for action':
+            a = ring_area(f['geometry']['coordinates'][0][:-1]) / 1e6
+            p.update(area_km2=round(a, 3), area_ha=round(a * 100, 1))
+        elif p.get('kind') == 'outlet':
+            p['elevation_m'] = OUTLET_OD
+        elif p.get('kind') == 'stop':
+            p['elevation_m'] = STOP_OD[p['name']]
+            p['source'] = STOP_SOURCE
+    fc['generated'] = __import__('datetime').date.today().isoformat()
+    with open(GEOJSON, 'w', encoding='utf-8') as fh:
+        fh.write(json.dumps(fc, ensure_ascii=False))  # single line, as the file has always been
+
+    print('\n== Written %s' % os.path.relpath(GEOJSON))
+    print('tidy: %d cells added to close diagonal contacts, %d hole cells filled (%.4f km2)'
+          % (pinch, holes, g.area_km2(shipped & ~ws)))
+    print('shipped catchment: %d vertices, %.3f km2 (%.1f ha) on the ellipsoid'
+          % (len(ring), area, area * 100))
+    print('highest ground inside: %.1f m OD at %.5f, %.5f (Copernicus surface)'
+          % (zod[top], g.Y.ravel()[top], g.X.ravel()[top]))
+    print('longest flow path (D8) %.2f km; low end %d m OD from OPW 18124' % (lfp, OUTLET_OD))
+    # checks against the ring as written
+    for f in fc['features']:
+        if f['properties'].get('kind') == 'stop':
+            lon, lat = f['geometry']['coordinates'][:2]
+            ok = in_ring(ring, np.array([lon]), np.array([lat]))[0]
+            print('  %-28s inside: %s' % (f['properties']['name'], ok))
+    net = next(f for f in fc['features'] if f['geometry']['type'] == 'MultiLineString')
+    pts = [(x, y) for ln in net['geometry']['coordinates'] for x, y in ln]
+    ins = in_ring(ring, np.array([p[0] for p in pts]), np.array([p[1] for p in pts]))
+    print('  channel network vertices inside: %d of %d' % (ins.sum(), len(ins)))
+    for (x, y), ok in zip(pts, ins):
+        if not ok:
+            print('    outside: %.6f, %.6f' % (y, x))
+    return shipped
+
+
 # ---------- main ----------
 
-def main(outdir=None):
+def main(outdir=None, write=False):
     got = fetch()
     feats = json.load(open(GEOJSON))['features']
     poly = lambda key: next(f for f in feats if key in f['properties'].get('name', '').lower()
@@ -371,6 +496,11 @@ def main(outdir=None):
               ' domain alone' % g.area_km2(g.watershed(conf)))
         print('longest flow path %.2f km; ground %.1f-%.1f m (EGM2008, this model)'
               % (longest_flow_path(g, ws, pour), g.z.ravel()[ws].min(), g.z.ravel()[ws].max()))
+        s1 = g.cell(*STOP1)
+        r1, c1 = g.rc(s1)
+        near = [rr * g.C + cc for rr in range(r1 - 2, r1 + 3) for cc in range(c1 - 2, c1 + 3)]
+        ch = max(near, key=lambda i: g.acc[i])  # the stream cell beside Stop 1
+        print('upstream of the stream at Stop 1: %.3f km2' % g.area_km2(g.watershed(ch)))
         results[name] = (g, ws, pour)
 
     g, ws, pour = results['FABDEM']
@@ -412,6 +542,11 @@ def main(outdir=None):
         km, n = channel_network(g, ws, ha * 1e4)
         print('  FABDEM network, cells draining >= %2d ha: %.2f km in %d segments' % (ha, km, n))
 
+    if write:
+        gc, wsc, pourc = results['Copernicus']
+        rasters = Mosaic([got['egm2008']]).tiles[0], Mosaic([got['osgm15']]).tiles[0]
+        write_geojson(gc, wsc, pourc, *rasters)
+
     if outdir:
         os.makedirs(outdir, exist_ok=True)
         fc = {'type': 'FeatureCollection', 'features': [
@@ -438,4 +573,5 @@ def main(outdir=None):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1] if len(sys.argv) > 1 else None)
+    args = [a for a in sys.argv[1:] if a != '--write']
+    main(args[0] if args else None, write='--write' in sys.argv)

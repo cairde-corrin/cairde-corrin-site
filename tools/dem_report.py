@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Check the published elevations against two elevation models and the geoid.
 
-    python3 tools/dem_report.py ["/path/to/stop photographs"]
+    python3 tools/dem_report.py ["/path/to/photographs" ...]
 
 Reads site/assets/data/cairde-corrin.geojson and source-data/*.gpx, changes
 nothing. With a photograph folder (needs exiftool) it also uses the unrounded
@@ -36,11 +36,12 @@ def metres(lat1, lon1, lat2, lon2):
 
 
 def exif_rows(folder):
-    out = subprocess.run(['exiftool', '-q', '-n', '-T', '-filename', '-DateTimeOriginal',
+    """filename, local time, GPS time, lat, lon, altitude, altitude ref, camera model"""
+    out = subprocess.run(['exiftool', '-q', '-r', '-n', '-T', '-filename', '-DateTimeOriginal',
                           '-GPSDateTime', '-GPSLatitude', '-GPSLongitude', '-GPSAltitude',
-                          '-GPSAltitudeRef', folder], capture_output=True, text=True,
+                          '-GPSAltitudeRef', '-Model', folder], capture_output=True, text=True,
                          check=True).stdout
-    return [r.split('\t') for r in out.splitlines() if r.count('\t') == 6]
+    return [r.split('\t') for r in out.splitlines() if r.count('\t') == 7]
 
 
 def inside_mask(ring, lons, lats):
@@ -90,7 +91,7 @@ def terrarium_in_ring(ring, z=13):
     return np.concatenate(L), np.concatenate(Lo), np.concatenate(H)
 
 
-def main(photo_dir=None):
+def main(photo_dirs=()):
     g = fetch()
     cop, fab = Mosaic(g['dem']), Mosaic(g['fabdem'])
     egm, osg = Raster(g['egm2008']), Raster(g['osgm15'])
@@ -113,7 +114,7 @@ def main(photo_dir=None):
         if p.get('kind') == 'stop':
             lon, lat = f['geometry']['coordinates'][:2]
             stops[p['name']] = (lat, lon, p['elevation_m'], p['recorded'])
-    rows = exif_rows(photo_dir) if photo_dir else []
+    rows = [r for d in photo_dirs for r in exif_rows(d)]
 
     print('== Stops, all in m OD (Malin Head)')
     print('%-26s %5s %8s %7s %7s %7s %13s %6s %9s' % (
@@ -138,7 +139,8 @@ def main(photo_dir=None):
             name, pub, ex, c, fb, c - fb, gp, max(est) - min(est), nb.min(), nb.max()))
     print('(GPX ele is shown as recorded; section 3 shows it is already on a sea-level datum)')
     if rows:
-        fixes = {(r[2], r[3], r[4]): tuple(map(float, r[3:6])) for r in rows if r[5] != '-'}
+        fixes = {(r[2], r[3], r[4]): tuple(map(float, r[3:6])) for r in rows
+                 if r[5] != '-' and 'Pixel' in r[7]}
         rn = [a - egm.sample(la, lo) - fab.sample(la, lo) for la, lo, a in fixes.values()]
         print('every distinct photo fix, EXIF - N08 - FAB (zero if EXIF is ellipsoidal):',
               stats(rn))
@@ -207,6 +209,50 @@ def main(photo_dir=None):
     except Exception as e:  # the report stands without it; say so rather than hide it
         print('OPW 18124 data not available:', e)
 
+    if not rows:
+        return
+    print('\n== Recording and photograph elevations printed on the site, re-derived')
+    iph = [(float(r[3]), float(r[4]), float(r[5])) for r in rows
+           if 'iPhone' in r[7] and r[5] != '-' and 52.10 < float(r[3]) < 52.14]
+    if iph:
+        d = [a - cop.sample(la, lo) - dod(la, lo) for la, lo, a in iph]
+        print('iPhone fixes in the catchment, EXIF - COP(OD): median %+.1f m (n=%d); '
+              'near 0 means the iPhone already reports height above sea level' % (np.median(d), len(d)))
+    pages = ['site/index.html', 'site/water/index.html']
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    seen = {}
+    for page in pages:
+        txt = open(os.path.join(root, page)).read()
+        for pub, day, hm in re.findall(r'(\d+) m OD - (\d+) April 2026, (\d\d:\d\d)', txt):
+            key = (int(day), hm)
+            want = '2026:04:%02d %s' % key
+            hit = sorted((r for r in rows if r[1].startswith(want) and r[5] != '-'),
+                         key=lambda r: abs(float(r[5]) - int(pub)))
+            if not hit:
+                print('%-22s %4s m OD  %2s Apr %s  no photograph found' % (page, pub, day, hm))
+                continue
+            r = hit[0]
+            la, lo, alt = float(r[3]), float(r[4]), float(r[5])
+            k = dod(la, lo)
+            c, fb = cop.sample(la, lo) + k, fab.sample(la, lo) + k
+            dist = [metres(la, lo, a, b) for a, b in zip(glat, glon)]
+            i = int(np.argmin(dist))
+            gp = gele[i] if dist[i] <= 25 else None
+            est = (c + gp) / 2 if gp is not None else c
+            seen[key] = est
+            print('%-22s %4s m OD  %2s Apr %s  %-26s %-17s EXIF %6.1f  COP %5.1f  FAB %5.1f  '
+                  'GPX %s  -> about %d m'
+                  % (page, pub, day, hm, r[0], r[7], alt, c, fb,
+                     '%5.1f@%2.0fm' % (gp, dist[i]) if gp is not None else '   none  ',
+                     5 * round(est / 5)))
+    a, b = seen.get((11, '07:54')), seen.get((11, '08:07'))
+    if a is not None and b is not None:
+        print('the "136 metres apart, within one metre" pair (07:54, 08:07): estimates differ by %.1f m'
+              % abs(a - b))
+    la, lo = 52.11222, -8.32292
+    print('at the highest Copernicus cell (%.5f, %.5f): COP - FAB %+.1f m' % (
+        la, lo, cop.sample(la, lo) - fab.sample(la, lo)))
+
 
 if __name__ == '__main__':
-    main(sys.argv[1] if len(sys.argv) > 1 else None)
+    main(sys.argv[1:])
