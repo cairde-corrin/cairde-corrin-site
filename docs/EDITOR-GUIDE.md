@@ -37,7 +37,8 @@ Each box has a short explanation under it. The ones that matter:
 
 - **Headline.** Keep it short. The post's web address is made from the headline the
   first time you save, and stays the same afterwards even if you change the headline.
-- **Date.** Press **Now** to fill in today's date. The post cannot be saved without one.
+- **Date.** Already filled in with today's date. Change it only if the post should
+  carry another date.
 - **Written by.** Leave it as Cáirde Corrin, or put the name of the person who wrote it.
 - **Short summary.** One or two sentences. This is what people see in the list of news
   and when the post is shared on social media.
@@ -54,9 +55,14 @@ log in to the editor can see it.
 Use photos you took yourself, or ones you have permission to use. Do not post a photo in
 which someone can be recognised unless they have agreed.
 
-Photos straight from a phone are fine, however large (up to 20 MB). The website makes
-smaller copies for visitors and **removes the location your phone stored in the photo**,
-so where you were standing is never shown to visitors.
+Photos straight from a phone are fine, however large. Before a photo is sent anywhere,
+the editor makes a smaller copy of it on your own phone or computer, and only that copy
+is uploaded. The copy keeps the picture and nothing else: **the location your phone
+stored in the photo, and the time and the phone's details, never leave your device.**
+Your original photo is not changed.
+
+Add photos with the **Choose an image** button. Dragging a photo onto the page, or
+pasting one in, is refused with a message, because that would skip this step.
 
 **A main photo at the top of the post.** Under **Main photo (optional)**, press
 **Choose an image**, then upload a photo from your computer or phone, or pick one you
@@ -72,11 +78,10 @@ line. Press the **+** button at the right of the buttons above the text and choo
 **Image**. Press **Choose an image**, upload or pick the photo, and fill in **Alt Text**
 with the one-sentence description. Leave **Title** empty.
 
-**On an iPhone.** When you choose a photo, pick it from **Photo Library**, not **Choose
-File**. Photo Library hands the website an ordinary picture. Choose File can hand it the
-iPhone's own photo format, which the website cannot use; if that happens the editor stops
-you with a message saying so, and nothing is uploaded. Pick the photo again from Photo
-Library and it works.
+**On an iPhone,** Photo Library, Take Photo and Choose File all work. On a computer, an
+iPhone photo in Apple's own format (HEIC) works in Safari; in Chrome or Firefox the
+editor says it cannot read it, and nothing is uploaded. Upload a JPEG copy instead, or use
+Safari.
 
 ## A YouTube video
 
@@ -155,8 +160,9 @@ privacy and terms pages, and anything about the look of the site.
   status to **Ready** and publish it. If it is not there but still is not on the website,
   something stopped the update. The website stays exactly as it was, so nothing is
   broken; tell the person who looks after the website.
-- **A photo will not upload.** It is either over 20 MB or in the iPhone's own format (see
-  "On an iPhone" above). Try a smaller copy, or pick it again from Photo Library.
+- **A photo will not upload.** If the editor says it cannot read it, it is probably an
+  iPhone photo in Apple's own format opened in Chrome or Firefox (see "On an iPhone"
+  above). If you dragged it onto the page, use **Choose an image** instead.
 - **The video shows a play button but no picture.** YouTube could not be reached at the
   moment the website updated. The video still plays. The picture appears by itself the
   next time anything is published.

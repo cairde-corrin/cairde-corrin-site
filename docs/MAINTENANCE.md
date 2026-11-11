@@ -112,7 +112,9 @@ affects the editors); it works as it is.
      hidden on purpose: it uploads straight to the live site with no size limit);
    - the **+** -> **Image** in the post text offers **Choose an image** and **no "Insert
      from URL"** (hidden so that no post loads a picture from another website);
-   - choosing a `.heic` file is refused with a message;
+   - a phone photo uploaded through **Choose an image** arrives in the media library as
+     `.webp` (`.jpg` in Safari), and Chrome refuses a `.heic` file with a message; this is
+     the step that keeps photo locations out of the repository, so do not skip it;
    - a draft saves. Do not publish from the preview; delete the draft instead.
 4. Merge to `main` as usual.
 
@@ -133,9 +135,12 @@ buttons by Decap's internal labels, which an update can rename.
 - **Someone asks for a change to a page with figures on it** (trails, stops, species,
   folklore). `CONTRIBUTING.md` says where every figure comes from and how to change one
   safely. Nothing gets published that cannot be traced to a source.
-- **Photos in the repository.** Every photo uploaded in the editor is kept in the
-  repository as uploaded, location and all; the site only ever shows re-encoded copies.
-  See `OPEN-ITEMS.md` on whether the repository should stay public.
+- **Photos in the repository.** The editor shrinks every photo to at most 2000 px and
+  strips its location, time and camera details in the editor's own browser before upload,
+  so the public repository holds only those copies, about a megabyte each. If a photo
+  ever arrives by another route (a hand commit), the build strips it again before
+  publishing, but the file in the repository would keep its metadata: shrink and strip
+  it first (`CONTRIBUTING.md`, "Uploaded photos").
 
 ## Where everything else is
 

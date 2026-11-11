@@ -15,30 +15,9 @@
    Media is hidden and Contents and Workflow are not. */
 button[class*="-AppHeaderButton"]:not([class*="-AppHeaderNavLink"]){display:none !important}
 </style>
+<script src="photos.js"></script>
 <script>
-// Refuses HEIC photos before Decap uploads them. An iPhone hands Safari the original
-// HEIC when a photo is picked through Choose File (the Files app); the build cannot
-// decode HEIC, so the post would fail to publish with no sign why. Runs in the capture
-// phase, ahead of Decap's own handlers, for both the file picker and drag-and-drop.
 (function () {
-  var MSG = 'This photo is in Apple’s HEIC format, which the website cannot use, ' +
-    'so it has not been uploaded.\n\nOn an iPhone, choose it again from Photo Library ' +
-    'rather than Choose File: the iPhone then sends an ordinary JPEG. If the photo is ' +
-    'only in Files, open it there, tap Share, then Save Image, and choose it from ' +
-    'Photo Library.\n\nOn a computer, upload a JPEG copy instead.';
-  function isHeic(f) { return /hei[cf]/i.test(f.type) || /\.hei[cf]$/i.test(f.name); }
-  function guard(e, files) {
-    if (!files || !Array.prototype.some.call(files, isHeic)) return;
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    if (e.target && 'value' in e.target) e.target.value = '';
-    alert(MSG);
-  }
-  addEventListener('change', function (e) {
-    if (e.target && e.target.type === 'file') guard(e, e.target.files);
-  }, true);
-  addEventListener('drop', function (e) { guard(e, e.dataTransfer && e.dataTransfer.files); }, true);
-
   // The Image button in the post body offers "Insert from URL", which would make the
   // public page load a photo from another website. The photo fields switch it off with
   // choose_url: false, but Decap does not pass that setting to the body's Image button,

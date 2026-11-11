@@ -22,11 +22,11 @@ logo_url: /assets/img/logo.webp
 
 media_folder: site/assets/uploads
 public_folder: /assets/uploads
-# Uploads are never published as they are: the build re-encodes each one, which removes
-# its GPS position and other metadata (site/_includes/images.js). Each image field below
-# caps uploads at 20 MB, only as a backstop against videos and very large files; phone
-# photos here run 2.4 to 12.5 MB. Decap reads the cap per field: a top-level
-# media_library block without a name is a config error.
+# Photos are shrunk to 2000 px and stripped of their metadata in the editor's browser before
+# Decap uploads them (site/admin/index.html), and re-encoded again at build time
+# (site/_includes/images.js). Each image field below caps uploads at 20 MB, only as a
+# backstop against videos and very large files. Decap reads the cap per field: a
+# top-level media_library block without a name is a config error.
 
 slug:
   encoding: ascii
@@ -62,8 +62,10 @@ collections:
         date_format: D MMMM YYYY
         time_format: false
         picker_utc: true
+        default: '{{now}}'
         hint: >-
-          The date shown on the post. Newest posts appear first on the News page.
+          Filled in with today's date. Change it only if the post should carry another
+          date. Newest posts appear first on the News page.
 
       - label: Written by
         name: author

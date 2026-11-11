@@ -1,11 +1,11 @@
-// Photos uploaded through the news editor land in site/assets/uploads/ exactly as the
-// phone produced them, often 5 to 12 MB and carrying GPS position in their EXIF. They are
-// never published as uploaded. Each one is re-encoded here, at build time, into WebP at
-// 700, 1100 and 1800 px wide, plus one 1200 px JPEG for social media previews.
+// Photos uploaded through the editor land in site/assets/uploads/ already shrunk to 2000 px
+// and stripped of their metadata in the editor's browser (site/admin/index.html). They are
+// still never published as uploaded. Each one is re-encoded here, at build time, into WebP
+// at 700, 1100 and 1800 px wide, plus one 1200 px JPEG for social media previews.
 //
-// Re-encoding is the privacy fix: the output keeps no EXIF or XMP, so the GPS position,
-// the time, the phone model and the rest stay in the repository and never reach a
-// visitor. The one block kept is the ICC colour profile (eleventy-img always keeps it, so
+// Re-encoding is the second line of defence: the output keeps no EXIF or XMP, so even a
+// photo that reached the repository some other way, GPS and all, never shows a visitor
+// its position, time or phone model. The one block kept is the ICC colour profile (eleventy-img always keeps it, so
 // wide-gamut phone photos keep their colours); it holds no position, time or serial.
 // fixOrientation bakes the camera's rotation into the pixels first, because the
 // orientation tag is dropped along with everything else.
@@ -32,7 +32,7 @@ async function encode(src, options) {
     return await Image(path.join(SITE, src), { ...OUT, ...options });
   } catch (e) {
     // The prebuilt image library cannot decode HEVC, so an iPhone HEIC photo fails here.
-    // The news editor refuses HEIC uploads; this message is for anything that slips past.
+    // The editor converts or refuses HEIC before upload; this message is for anything that slips past.
     const heic = /\.hei[cf]$/i.test(src) || /HEVC|heif/i.test(e.message);
     throw new Error(`News photo ${src} could not be processed: ${heic
       ? 'it is an iPhone HEIC photo, which the build cannot read. Replace it with a JPEG.'

@@ -60,4 +60,29 @@ assert.ok(!moor.find((g) => g.id === 'explore').current);
 assert.ok(nav('/news/some-post/', 0).find((g) => g.href === 'news/').current);
 assert.ok(nav('/', 0).every((g) => !g.current));
 
-console.log('selftest: all checks passed');
+// The editor's photo step: strip() must leave no EXIF, XMP or comment in what it uploads
+const photos = { exports: {} };
+new Function('module', 'window', require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'site', 'admin', 'photos.js'), 'utf8'))(photos, undefined);
+const { strip } = photos.exports;
+const seg = (marker, text) => { const body = Buffer.from(text, 'latin1'); const n = body.length + 2; return Buffer.concat([Buffer.from([0xFF, marker, n >> 8, n & 255]), body]); };
+const scan = Buffer.from([0xFF, 0xDA, 0, 2, 1, 2, 3, 0xFF, 0xD9]);  // start of scan, data, end of image
+const jpeg = Buffer.concat([Buffer.from([0xFF, 0xD8]), seg(0xE0, 'JFIF\0\x01\x01'), seg(0xE1, 'Exif\0\0GPS 52.12 N Pixel 8a'),
+  seg(0xE2, 'ICC_PROFILE\0'), seg(0xED, 'Photoshop 3.0\0'), seg(0xE1, 'http://ns.adobe.com/xap/1.0/\0<x:xmpmeta>'), seg(0xFE, 'a comment'),
+  seg(0xDB, 'quant'), scan]);
+const chunk = (id, text) => { const body = Buffer.from(text, 'latin1'); const n = body.length; const pad = n & 1 ? Buffer.from([0]) : Buffer.alloc(0);
+  return Buffer.concat([Buffer.from(id, 'latin1'), Buffer.from([n & 255, (n >> 8) & 255, 0, 0]), body, pad]); };
+const vp8x = chunk('VP8X', '\x0C\0\0\0\0\0\0\0\0\0');  // flags: has EXIF, has XMP
+const webpBody = Buffer.concat([vp8x, chunk('VP8 ', 'pixels!'), chunk('EXIF', 'GPS 52.12 N'), chunk('XMP ', '<x:xmpmeta/>')]);
+const webp = Buffer.concat([Buffer.from('RIFF'), Buffer.from([(webpBody.length + 4) & 255, (webpBody.length + 4) >> 8, 0, 0]), Buffer.from('WEBP'), webpBody]);
+(async () => {
+  const j = Buffer.from(await strip(new Uint8Array(jpeg), 'image/jpeg').arrayBuffer());
+  for (const gone of ['Exif', 'GPS', 'Pixel', 'Photoshop', 'xmpmeta', 'a comment']) assert.ok(!j.includes(gone), `JPEG still holds ${gone}`);
+  for (const kept of ['JFIF', 'ICC_PROFILE', 'quant']) assert.ok(j.includes(kept), `JPEG lost ${kept}`);
+  assert.ok(j.subarray(0, 2).equals(Buffer.from([0xFF, 0xD8])) && j.subarray(-scan.length).equals(scan), 'JPEG start or image data damaged');
+  const w = Buffer.from(await strip(new Uint8Array(webp), 'image/webp').arrayBuffer());
+  assert.ok(!w.includes('EXIF') && !w.includes('GPS') && !w.includes('xmpmeta'), 'WebP still holds EXIF or XMP');
+  assert.ok(w.includes('VP8 ') && w.includes('pixels!'), 'WebP lost its image data');
+  assert.equal(w.readUInt32LE(4), w.length - 8, 'WebP RIFF size wrong after stripping');
+  assert.equal(w[20] & 0x0C, 0, 'WebP still flags EXIF or XMP');
+  console.log('selftest: all checks passed');
+})().catch((e) => { console.error(e); process.exit(1); });

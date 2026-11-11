@@ -8,29 +8,21 @@ Last reviewed 11 November 2026.
 
 ## Needs a decision
 
-1. **The repository is public, and would hold the location of every uploaded photo.**
-   The website only ever shows re-encoded copies with the location removed, but the
-   originals are stored in the GitHub repository exactly as uploaded, GPS and all, and
-   anyone can read that repository. No photo has been uploaded yet, so nothing has been
-   exposed. Decide before the first upload: make the repository private (the site works
-   the same; Git Gateway may need reconnecting, `MAINTENANCE.md`), or keep it public and
-   build the browser-side shrink below so that locations never reach it. Making it private
-   is the quick, complete answer.
-2. **What to do if Netlify's free allowance runs out.** On the credit-based free plan,
+1. **What to do if Netlify's free allowance runs out.** On the credit-based free plan,
    each editor publish costs 15 of 300 monthly credits and visitors' bandwidth costs more,
    so a busy month could pause the site until the next (`MAINTENANCE.md`). Options if it
    happens: a paid plan, Netlify's open-source programme (larger allowance, its own
    conditions), or serving less (the home page film is the largest item). First check
    which plan the account is on.
-3. **When to move the editor off Git Gateway.** Netlify has deprecated it; it works, but
+2. **When to move the editor off Git Gateway.** Netlify has deprecated it; it works, but
    will not be fixed if it breaks. `CMS-MIGRATION.md` says what would trigger the move
    and what it costs editors (each would need a GitHub account).
-4. **The fourteen "ecology films" in `archive/`.** Screen recordings of a third-party
+3. **The fourteen "ecology films" in `archive/`.** Screen recordings of a third-party
    plant platform, not field footage, 131 MB. Keep, or let go.
-5. **Firefox downloads the 8 MB home page film and cannot show it** (it shows a still
+4. **Firefox downloads the 8 MB home page film and cannot show it** (it shows a still
    instead). Accepted so far as the price of the film working everywhere else; worth
    revisiting if Firefox use matters.
-6. **Netlify's promotional comment.** Netlify adds an invisible "This site is hosted on
+5. **Netlify's promotional comment.** Netlify adds an invisible "This site is hosted on
    Netlify..." HTML comment to every production page. It is not a documented setting or
    plan feature, Netlify has not answered the two forum threads asking about it, and it
    is not the "Powered by Netlify" badge (which has an off switch and which this site does
@@ -39,8 +31,6 @@ Last reviewed 11 November 2026.
 
 ## Needs code
 
-- **Shrink and strip photos in the browser before upload,** if the repository stays
-  public, and in any case to stop the repository growing by 2 to 13 MB per photo.
 - **Decap's login button fails contrast** (3.4:1, its own styling). It could be
   overridden in `site/admin/index.html`, but only through Decap's generated class names,
   which an update can change.
@@ -93,8 +83,9 @@ Last reviewed 11 November 2026.
 - The editor end to end, by a committee member: accept an invitation, write a post with a
   photo in the text, save it, check it is not live, publish, check it on the site, delete
   it. The invitation itself has only been tested with made-up codes.
-- An iPhone photo chosen through **Choose File** rather than Photo Library. The behaviour
-  described in `EDITOR-GUIDE.md` comes from WebKit's source code, not from a real phone.
+- Photos chosen on a real iPhone, from Photo Library and through **Choose File**. The
+  browser-side shrink, which also converts iPhone HEIC, was tested in Safari's engine,
+  Chrome and Firefox on a computer, not on a phone.
 - The navigation and the map on a real phone, by finger, outdoors. So far tested in
   Safari's engine, Chrome, Firefox and the iPhone simulator, driven by script.
 - A screen reader (VoiceOver, TalkBack or NVDA). Labels were checked in the browser's

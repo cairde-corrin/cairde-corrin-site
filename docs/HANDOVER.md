@@ -21,13 +21,10 @@ together.
 Nothing else is needed. There is no database, no server, no paid service and no
 password anywhere in the repository.
 
-**The repository is public.** Anyone can read it. That is fine for the code and the
-pages, but every photo uploaded through the editor is stored there exactly as uploaded,
-with the location the phone recorded, even though the website only ever shows copies
-with the location removed. No photo has been uploaded yet. Decide before the first one
-whether to make the repository private (the site works the same either way; a private
-repository may need Git Gateway reconnected, see `MAINTENANCE.md`) or to accept it. This
-is the first item in `OPEN-ITEMS.md`.
+**The repository is public.** Anyone can read it, and that is fine: it holds the code, the
+pages, and the photos uploaded through the editor, which are shrunk and stripped of their
+location, time and camera details in the editor's browser before they are uploaded
+(`CONTRIBUTING.md`, "Uploaded photos"). No geotagged file ever reaches it.
 
 ## Before you start
 
