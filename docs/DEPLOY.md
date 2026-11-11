@@ -142,7 +142,11 @@ move the editor to Decap's GitHub backend.
 versions from npm, checks the tarballs against the recorded SHA-256 and copies the
 files into `site/admin/vendor/`. To move to a new version, change the version and
 hash in that script, change the two paths in `site/admin/index.html`, and check
-`/admin/` on the branch preview before merging.
+`/admin/` on the branch preview before merging. `site/admin/index.html` hides two
+pieces of Decap by their style label and button text, so after an update check that
+the top-bar **Media** button is still hidden while **Contents** and **Workflow** show,
+and that the body's Image button offers no "Insert from URL". It also refuses HEIC
+uploads; try one.
 
 ## Checks after you deploy
 
