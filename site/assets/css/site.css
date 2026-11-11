@@ -103,8 +103,12 @@ em.hy{font-style:italic;font-family:var(--display)}
 .navlist > li:last-child .sub{left:auto;right:0}
 .sub .n{white-space:nowrap}
 .navgrp[aria-expanded="true"] + .sub{display:block}
-/* Without JavaScript the groups open on hover and keyboard focus instead */
+/* Without JavaScript the groups open on hover and keyboard focus instead, and below the
+   menu breakpoint the Menu button, which would do nothing, gives way to a Menu link to
+   the full list of pages in the footer. */
 html:not(.js) .grp:hover .sub,html:not(.js) .grp:focus-within .sub{display:block}
+html:not(.js) button.navtoggle{display:none}
+a.navtoggle{text-decoration:none;align-items:center}
 .nav.over .navlist > li > .n{color:rgba(238,245,234,.82)}
 .nav.over .navlist > li > .n:hover{color:#fff;background:rgba(255,255,255,.14)}
 .nav.over .navlist > li > .n[aria-current],.nav.over .navgrp.cur{color:#fff}
@@ -577,6 +581,7 @@ footer .pillars span{border:1px solid var(--glass-line);border-radius:var(--r-pi
    Re-measure if the entries or their type change (docs/CONTRIBUTING.md, "The navigation"). */
 @media (max-width:679px){
   .navtoggle{display:block}
+  a.navtoggle{display:flex}
   /* Opaque: a translucent panel inside the blurred header let the page text show through */
   .navlinks{display:none;position:absolute;top:100%;left:0;right:0;max-height:calc(100dvh - 66px);
     overflow-y:auto;background:var(--paper);padding:10px 16px 16px;border-bottom:1px solid rgba(36,69,26,.12)}
