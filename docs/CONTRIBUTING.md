@@ -26,13 +26,27 @@ News section and the sitemap. News posts can also be written in the news editor 
 
 ## Hard rules
 
-- **The build copies, and renders only News.** `npm run build` runs Eleventy, which
-  copies every hand-written file in `site/` to `_site/` byte for byte and renders only
-  the News section and `sitemap.xml` from `.njk` and `.md` sources. Netlify publishes
-  `_site/`. Every hand-written page is still exactly what you see in `site/`. Do not add templates, layouts,
-  plugins, a bundler, Tailwind or React without a decision to do so. After any change to
-  the build, `npm run build && python3 tools/compare_build.py` must report no
-  differences.
+- **The build copies files and renders pages.** `npm run build` runs Eleventy, which
+  copies every asset in `site/` (images, audio, video, fonts, CSS, JavaScript, data,
+  `_redirects`, `_headers`, the editor) to `_site/` byte for byte, and renders every page
+  from a `.njk` or `.md` source. Netlify publishes `_site/`. Do not add plugins, a bundler,
+  Tailwind or React without a decision to do so. After any change to the build,
+  `npm run build && python3 tools/compare_build.py` must report no differences in the
+  copied files.
+- **The byte-for-byte guarantee no longer covers the pages.** Until Phase 8 the 23
+  hand-written pages (trails, the ten stops, species, folklore, recordings, water, new
+  spaces and its two proposals, about, links, credits, privacy, terms) were copied exactly
+  as written, so `compare_build.py` proved the build could not alter them; the home page
+  had already become a template in Phase 7. They are now templates too, so that the header and footer come from one place
+  (`_includes/nav.js`). Each page is still written out as it is in the repository apart
+  from what the build adds: the header and footer, a second structured-data block
+  (`_includes/ld-pages.js`) and the checks in `_includes/images.js`. But
+  `compare_build.py` now lists them as generated rather than proving them unchanged, and
+  **a change to a layout, an include or `.eleventy.js` reaches every page at once**,
+  including the pages that carry the verified figures below (areas, heights, distances,
+  coordinates, species determinations). After such a change, diff the built pages against
+  the previous build and read every difference; a figure must never change as a side
+  effect of a template edit.
 - **Hyphens, never em or en dashes** as sentence punctuation. Use `-` throughout, in
   prose, in ranges and in data files.
 - **The name is Cáirde Corrin**, always with the fada on the á.
@@ -253,13 +267,21 @@ never reach production.
 
 **Videos.** The `youtube` field takes the address of a video on the group's own
 YouTube channel, in any of its usual forms, or the bare ID; anything else stops the
-build. Use it only for videos the group made. `site/_includes/youtube.js` fetches the
-video's still from YouTube at build time and re-encodes it into `/assets/img/news/`,
-so the post shows a self-hosted still with a play button and nothing is requested from
-YouTube or Google when the page loads. Pressing play makes `site.js` swap in a
-`youtube-nocookie.com` player; `site/privacy/` describes what happens then. A post whose
-video still cannot be fetched (a wrong address, a private video, YouTube unreachable)
-stops the build with the video's ID.
+build. Use it only for videos the group made. The post shows a still with a play button,
+served from this site, so nothing is requested from YouTube or Google when the page
+loads. Pressing play makes `site.js` swap in a `youtube-nocookie.com` player;
+`site/privacy/` describes what happens then.
+
+The stills are kept in the repository, in `site/assets/img/video/` as
+`<id>-<width>x<height>.webp`, so a normal build never contacts YouTube. When a post names
+a video whose still is not there yet, the build (`site/_includes/youtube.js`) fetches it
+once, writes it into that folder and says so in the build log. **Commit it:** after a
+post with a new video is published through the editor, run `git switch build && git
+merge main && npm run build` and commit the new files in `site/assets/img/video/`. Until
+then Netlify fetches the still again on every build. If YouTube cannot be reached, or the
+address is wrong or the video private, the build does not stop: the post shows the play
+button on a plain panel, and the build log names the video. Fix the address or build
+again later, then commit the still.
 
 With no posts, `/news/` still exists and says so ("Nothing posted yet"), because the
 listing sets `generatePageOnEmptyData`. Without that, an empty collection writes no
@@ -352,6 +374,8 @@ the labels never show under 11 px; check them if you change the profile.
 
     python3 tools/linkcheck.py --external
     python3 tools/linkcheck.py --reveal
+    python3 tools/ldcheck.py                 # structured data, against schema.org
+    node tools/selftest.js
 
 The second flags any scroll-reveal block taller than eight viewports. Those fade in as
 one slab, and the observer that reveals them measures a fraction of the element's own

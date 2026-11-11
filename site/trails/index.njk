@@ -66,6 +66,128 @@
      "name": "Trails"
     }
    ]
+  },
+  {
+   "@type": "TouristAttraction",
+   "@id": "https://www.cairdecorrin.ie/trails/#glenabo-loop",
+   "name": "Glenabo loop",
+   "description": "A walked loop of about 2.3 km from Stop 1 down the east side of the valley and back up the west side, passing all three recorded stops. The track runs from about 60 to about 115 metres, with about 65 metres of climbing.",
+   "url": "https://www.cairdecorrin.ie/trails/",
+   "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 52.12752,
+    "longitude": -8.29878,
+    "elevation": 60
+   },
+   "additionalProperty": [
+    {
+     "@type": "PropertyValue",
+     "name": "Length",
+     "value": 2.3,
+     "unitCode": "KMT",
+     "unitText": "km"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "Total ascent",
+     "value": 65,
+     "unitCode": "MTR",
+     "unitText": "m"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "Lowest point",
+     "value": 60,
+     "unitCode": "MTR",
+     "unitText": "m"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "Highest point",
+     "value": 115,
+     "unitCode": "MTR",
+     "unitText": "m"
+    }
+   ],
+   "containsPlace": [
+    {
+     "@id": "https://www.cairdecorrin.ie/stops/stop-1.html#place"
+    },
+    {
+     "@id": "https://www.cairdecorrin.ie/stops/stop-2.html#place"
+    },
+    {
+     "@id": "https://www.cairdecorrin.ie/stops/stop-3.html#place"
+    }
+   ],
+   "containedInPlace": {
+    "@id": "https://www.cairdecorrin.ie/#glenabo-catchment"
+   },
+   "hasMap": "https://www.cairdecorrin.ie/trails/",
+   "subjectOf": {
+    "@type": "DataDownload",
+    "name": "GPS track of the Glenabo loop",
+    "contentUrl": "https://www.cairdecorrin.ie/assets/data/glenabo-loop.gpx",
+    "encodingFormat": "application/gpx+xml"
+   }
+  },
+  {
+   "@type": "Place",
+   "@id": "https://www.cairdecorrin.ie/#glenabo-catchment",
+   "name": "Glenabo catchment",
+   "description": "The Glenabo catchment covers about 3.6 km² (about 360 ha) and falls from 213 m to its outlet at about 21 m OD on the Munster Blackwater (HA 18). Longest flow path about 4 km.",
+   "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 52.1333,
+    "longitude": -8.3002
+   },
+   "additionalProperty": [
+    {
+     "@type": "PropertyValue",
+     "name": "Area",
+     "value": 360,
+     "unitCode": "HAR",
+     "unitText": "ha"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "Highest point",
+     "value": 213,
+     "unitCode": "MTR",
+     "unitText": "m"
+    },
+    {
+     "@type": "PropertyValue",
+     "name": "Outlet",
+     "value": 21,
+     "unitCode": "MTR",
+     "unitText": "m OD"
+    }
+   ],
+   "containedInPlace": {
+    "@type": "Place",
+    "name": "Fermoy, County Cork, Ireland"
+   },
+   "hasMap": "https://www.cairdecorrin.ie/trails/"
+  },
+  {
+   "@type": "Place",
+   "@id": "https://www.cairdecorrin.ie/trails/#action-area",
+   "name": "Proposed area for action",
+   "description": "A drawn proposal of about 990 ha: the Glenabo catchment with Glenabo Wood, Corrin Hill and Knockananig Reservoir added. Offered for discussion, not a designation.",
+   "additionalProperty": [
+    {
+     "@type": "PropertyValue",
+     "name": "Area",
+     "value": 990,
+     "unitCode": "HAR",
+     "unitText": "ha"
+    }
+   ],
+   "containsPlace": {
+    "@id": "https://www.cairdecorrin.ie/#glenabo-catchment"
+   },
+   "hasMap": "https://www.cairdecorrin.ie/trails/"
   }
  ]
 }
@@ -82,7 +204,7 @@
 
     <div class="maprig rv">
       <div class="mapshell">
-        <svg id="map" role="img" aria-label="Interactive map of the Glenabo catchment showing relief, boundary, drainage, the walked loop and recorded stops"></svg>
+        <svg id="map" role="img" tabindex="0" aria-label="Interactive map of the Glenabo catchment showing relief, boundary, drainage, the walked loop and recorded stops. Arrow keys move the map, plus and minus zoom, zero resets it."></svg>
         <button class="maplayers-toggle" id="mlt" aria-expanded="false" aria-controls="maplayers">Layers</button>
         <div class="maplayers" id="maplayers">
           <label><input type="checkbox" id="L-terr" checked> Relief <i>21-213 m</i></label>
@@ -93,10 +215,10 @@
           <label><input type="checkbox" id="L-stops" checked> Stops <i>3 recorded</i></label>
         </div>
         <div class="mapctl">
-          <button id="mz-in" title="Zoom in">+</button>
-          <button id="mz-out" title="Zoom out">−</button>
-          <button id="mz-fit" title="Reset view">⤢</button>
-          <button id="mz-loc" title="Show my position">◎</button>
+          <button id="mz-in" title="Zoom in" aria-label="Zoom in">+</button>
+          <button id="mz-out" title="Zoom out" aria-label="Zoom out">−</button>
+          <button id="mz-fit" title="Reset view" aria-label="Reset view">⤢</button>
+          <button id="mz-loc" title="Show my position" aria-label="Show my position">◎</button>
         </div>
         <div class="mapscale"><div class="bar" id="scbar"></div><span id="sctxt">500 m</span></div>
         <div class="mapread" id="mapread">Glenabo catchment</div>
@@ -161,7 +283,7 @@
   </div>
 </footer>
 
-<script src="../assets/js/map.js?v=2026-11-11b" defer></script>
+<script src="../assets/js/map.js?v=2026-11-11c" defer></script>
 <script src="../assets/js/site.js" defer></script>
 </body>
 </html>

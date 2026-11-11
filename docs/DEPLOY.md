@@ -11,7 +11,7 @@ push, so there is nothing to upload by hand.
 
     production       https://cairde-corrin.netlify.app         deploys from main
     branch preview   https://build--cairde-corrin.netlify.app  deploys from build
-    cairdecorrin.ie  registered, DNS not yet pointed at Netlify: pending
+    cairdecorrin.ie  registered with Letshost, DNS at Letshost, not yet pointed at Netlify
 
 Until the domain is connected (see "Connecting the domain" below), the site is only
 reachable at the two netlify.app addresses. The site's canonical URLs and its social
@@ -59,22 +59,13 @@ redeploys the branch preview.
 
 ## Connecting the domain
 
-1. Netlify: **Domain management -> Add a domain** -> `cairdecorrin.ie`.
-2. Set `www.cairdecorrin.ie` as the primary domain, and let Netlify redirect the
-   bare domain to it. Every canonical URL in the site's own markup is
-   `https://www.cairdecorrin.ie/...`, so the two must agree or search engines
-   will see the site twice.
-3. Point DNS at Netlify. Either delegate the nameservers to Netlify DNS, or, if
-   the registrar keeps the zone, add:
-
-       www   CNAME   cairde-corrin.netlify.app
-       @     ALIAS   apex-loadbalancer.netlify.com      (or the registrar's
-                                                         equivalent of ALIAS)
-
-4. Wait for the certificate. Netlify issues a Let's Encrypt certificate
-   automatically once DNS resolves; it usually takes a few minutes and can take
-   an hour. Do not announce the address until `https://` works.
-5. Turn on **Force HTTPS**.
+`docs/DOMAIN-SETUP.md` is the complete procedure, written to be followed cold: the Netlify
+steps, the two DNS records to change at Letshost, the forwarding to switch off, the
+`config.yml` change and the checks afterwards. In short: add `www.cairdecorrin.ie` in
+Netlify and make it the primary domain, keep DNS at Letshost, point `@` at `75.2.60.5`
+and `www` at `cairde-corrin.netlify.app`, and **leave the email records alone**: the
+domain's email is hosted by Letshost, which is why moving the name servers to Netlify DNS
+is not recommended here.
 
 ## Checks before you deploy
 

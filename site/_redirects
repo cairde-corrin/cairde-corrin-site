@@ -20,7 +20,7 @@
 # Later redraws get a new dated name and no redirect; do not extend this list.
 /assets/img/og-trails.jpg               /assets/img/og-trails-202611.jpg               301
 /assets/img/og-new-spaces.jpg           /assets/img/og-new-spaces-202611.jpg           301
-/assets/img/map-catchment-1800.webp     /assets/img/map-catchment-202611-1800.webp     301
-/assets/img/map-catchment-1000.webp     /assets/img/map-catchment-202611-1000.webp     301
-/assets/img/map-action-1800.webp        /assets/img/map-action-202611-1800.webp        301
-/assets/img/map-action-1000.webp        /assets/img/map-action-202611-1000.webp        301
+/assets/img/map-catchment-1800.webp     /assets/img/map-catchment-202611b-1800.webp    301
+/assets/img/map-catchment-1000.webp     /assets/img/map-catchment-202611b-1000.webp    301
+/assets/img/map-action-1800.webp        /assets/img/map-action-202611b-1800.webp       301
+/assets/img/map-action-1000.webp        /assets/img/map-action-202611b-1000.webp       301

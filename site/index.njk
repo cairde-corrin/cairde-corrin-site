@@ -15,6 +15,11 @@ if (/^#(invite|recovery|email_change)_token=/.test(location.hash)) location.repl
 <meta property="og:title" content="Cáirde Corrin - caring for land, connecting community"><meta property="og:description" content="A community group protecting, restoring and celebrating the Glenabo-Corrin catchment above Fermoy, Co. Cork.">
 <meta property="og:type" content="website"><meta property="og:url" content="https://www.cairdecorrin.ie/">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png"><link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<!-- The film's text is set in these three faces. Fetched with the stylesheet rather than after
+     it, they arrive before the first frame, so the text does not re-flow when they swap in. -->
+<link rel="preload" href="assets/fonts/ebgaramond-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/ebgaramond-italic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/plexmono-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/site.css">
 <meta property="og:site_name" content="Cáirde Corrin"><meta property="og:locale" content="en_IE">
 <meta property="og:image" content="https://www.cairdecorrin.ie/assets/img/og-default.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
@@ -132,7 +137,7 @@ if (/^#(invite|recovery|email_change)_token=/.test(location.hash)) location.repl
       <div class="fig"><dt>Longest flow path</dt><dd><small>about</small>4<small>km</small></dd></div>
     </dl>
     <figure class="mapfig rv">
-      <img src="assets/img/map-catchment-202611-1800.webp" srcset="assets/img/map-catchment-202611-1000.webp 1000w, assets/img/map-catchment-202611-1800.webp 1800w" sizes="(min-width:1200px) 1136px, (min-width:901px) calc(100vw - 64px), calc(100vw - 44px)" width="1800" height="1547" loading="lazy" decoding="async" alt="Map of the Glenabo hydrological catchment showing boundary, modelled channel network and outlet to the Munster Blackwater">
+      <img src="assets/img/map-catchment-202611b-1800.webp" srcset="assets/img/map-catchment-202611b-1000.webp 1000w, assets/img/map-catchment-202611b-1800.webp 1800w" sizes="(min-width:1200px) 1136px, (min-width:901px) calc(100vw - 64px), calc(100vw - 44px)" width="1800" height="1547" loading="lazy" decoding="async" alt="Map of the Glenabo hydrological catchment showing boundary, modelled channel network and outlet to the Munster Blackwater">
       <figcaption>The Glenabo hydrological catchment, its modelled channel network, and the outlet to the Munster Blackwater.</figcaption>
     </figure>
   </div>
@@ -185,7 +190,7 @@ if (/^#(invite|recovery|email_change)_token=/.test(location.hash)) location.repl
       <div class="fig"><dt>Proposed loop route</dt><dd>~15<small>km</small></dd></div>
     </dl>
     <figure class="mapfig rv">
-      <img src="assets/img/map-action-202611-1800.webp" srcset="assets/img/map-action-202611-1000.webp 1000w, assets/img/map-action-202611-1800.webp 1800w" sizes="(min-width:1200px) 1136px, (min-width:901px) calc(100vw - 64px), calc(100vw - 44px)" width="1800" height="1549" loading="lazy" decoding="async" alt="Map of the proposed area for action around Glenabo, Corrin Hill and Knockananig Reservoir">
+      <img src="assets/img/map-action-202611b-1800.webp" srcset="assets/img/map-action-202611b-1000.webp 1000w, assets/img/map-action-202611b-1800.webp 1800w" sizes="(min-width:1200px) 1136px, (min-width:901px) calc(100vw - 64px), calc(100vw - 44px)" width="1800" height="1549" loading="lazy" decoding="async" alt="Map of the proposed area for action around Glenabo, Corrin Hill and Knockananig Reservoir">
       <figcaption>The proposed area for action, taking in the Glenabo catchment, Glenabo Wood, Corrin Hill and Knockananig Reservoir.</figcaption>
     </figure>
     <a class="cta" href="trails/">Explore the interactive map</a>

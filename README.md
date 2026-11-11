@@ -87,7 +87,7 @@ Then open http://localhost:8080
       assets/video/         hero-1920.mp4
       assets/fonts/         Five subsetted woff2 faces
 
-    docs/                   CONTRIBUTING.md, DEPLOY.md, CMS-MIGRATION.md, OPEN-ITEMS.md and PROJECT-SUMMARY.md
+    docs/                   CONTRIBUTING, DEPLOY, DOMAIN-SETUP, CMS-MIGRATION, OPEN-ITEMS, PROJECT-SUMMARY
     source-data/            Inputs the site is made from. Tracked, never published.
     archive/                Masters and source material. Not deployed, not tracked.
     tools/                  serve.py, linkcheck.py, cdp.mjs and friends. Not part of the build.

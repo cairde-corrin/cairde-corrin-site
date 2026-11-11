@@ -23,6 +23,7 @@ with no dependencies at all. `render_maps.py` also drives the installed Google C
 | `compare_build.py` | Proves the build changed no hand-written file: compares every git-tracked file in `site/` (template sources excepted) with `_site/` by SHA-256 and byte by byte, fails on any difference, missing file or leaked template source, lists the generated pages, and prints the `_redirects` and `_headers` hashes side by side. `npm run build && python3 tools/compare_build.py` |
 | `vendor_cms.sh` | Rebuilds `site/admin/vendor/` from npm at the pinned Decap CMS and Netlify Identity widget versions, after checking each tarball's SHA-256. The news editor then loads nothing from a CDN. `tools/vendor_cms.sh` |
 | `selftest.js` | Checks the build code that parses what an editor types or what a page contains: YouTube addresses, social post addresses, and the check that stops any generated page loading something from another website. No network, no build needed. `node tools/selftest.js` |
+| `ldcheck.py` | Validates the structured data on every built page against the schema.org vocabulary: every type and property exists, each property is allowed on its type, nested types are accepted, and every `@id` reference is defined somewhere on the site. Downloads the vocabulary once into `.cache/`. `npm run build && python3 tools/ldcheck.py` |
 
 ## Why the reveal height matters
 

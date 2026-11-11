@@ -75,17 +75,14 @@
   },
   {
    "@type": "TouristAttraction",
+   "@id": "https://www.cairdecorrin.ie/stops/stop-1.html#place",
    "name": "Stop 01 - The stream at about 60 metres",
    "url": "https://www.cairdecorrin.ie/stops/stop-1.html",
    "geo": {
     "@type": "GeoCoordinates",
     "latitude": 52.12752,
-    "longitude": -8.29878
-   },
-   "elevation": {
-    "@type": "QuantitativeValue",
-    "value": 60,
-    "unitCode": "MTR"
+    "longitude": -8.29878,
+    "elevation": 60
    },
    "photo": {
     "@type": "ImageObject",
@@ -99,12 +96,14 @@
      }
     }
    },
-   "containedInPlace": {
-    "@id": "https://www.cairdecorrin.ie/#glenabo-catchment"
-   },
-   "isPartOf": {
-    "@id": "https://www.cairdecorrin.ie/#website"
-   }
+   "containedInPlace": [
+    {
+     "@id": "https://www.cairdecorrin.ie/#glenabo-catchment"
+    },
+    {
+     "@id": "https://www.cairdecorrin.ie/trails/#glenabo-loop"
+    }
+   ]
   }
  ]
 }
@@ -129,7 +128,7 @@
     <div class="audio">
       <h2 class="as-h4">Listen</h2>
       <p class="audio-meta">Recorded here on 11 April 2026, starting at 07:10. The photograph above was taken fourteen seconds into it. 7 minutes 33 seconds.</p>
-      <audio controls preload="none" src="../assets/audio/stop-1.mp3">
+      <audio aria-label="Recording at stop 1, 11 April 2026, from 07:10" controls preload="none" src="../assets/audio/stop-1.mp3">
         <a href="../assets/audio/stop-1.mp3">Download the recording</a>
       </audio>
     </div>

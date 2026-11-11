@@ -10,7 +10,7 @@
   /* map.js and the GeoJSON change together, so they are versioned together: bump DATA_V
      and the ?v= on this script in trails/index.html whenever either changes. Without it
      a browser can pair a new script with a day-old cached data file, or the reverse. */
-  var DATA_V = '2026-11-11b';
+  var DATA_V = '2026-11-11c';
   var STOPNO = { 'Stop 01 - the stream': 1, 'Stop 02 - closed canopy': 2, 'Stop 03 - the mossy stand': 3 };
   var PHOTO = { 1: 'stream', 2: 'plantation', 3: 'mossy' };
 
@@ -187,6 +187,19 @@
     e.preventDefault(); var r = svg.getBoundingClientRect();
     zoom(Math.exp(-e.deltaY * 0.0016), e.clientX - r.left, e.clientY - r.top);
   }, { passive: false });
+  /* Keyboard: with the map focused, arrow keys move it, + and - zoom, 0 resets the view. */
+  svg.addEventListener('keydown', function (e) {
+    var s = 80 / k, key = e.key;
+    if (key === 'ArrowLeft') { cx -= s; draw(); }
+    else if (key === 'ArrowRight') { cx += s; draw(); }
+    else if (key === 'ArrowUp') { cy += s; draw(); }
+    else if (key === 'ArrowDown') { cy -= s; draw(); }
+    else if (key === '+' || key === '=') zoom(1.5, W / 2, H / 2);
+    else if (key === '-' || key === '_') zoom(1 / 1.5, W / 2, H / 2);
+    else if (key === '0') fit();
+    else return;
+    e.preventDefault();  /* the page must not scroll while the map moves */
+  });
   function bind(id, fn) { var b = $(id); if (b) b.onclick = fn }
   bind('mz-in', function () { zoom(1.5, W / 2, H / 2) });
   bind('mz-out', function () { zoom(1 / 1.5, W / 2, H / 2) });

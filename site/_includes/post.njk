@@ -15,7 +15,7 @@ layout: base.njk
 {{ content | safe }}
     </div>
 {%- if video %}
-    <figure class="mapfig yt rv"><a class="yt-play" href="https://www.youtube.com/watch?v={{ video.id }}" data-yt="{{ video.id }}" data-title="{{ title }}" aria-label="Play the video: {{ title }}"><img src="{{ video.src | rel(r) }}" srcset="{% for s in video.srcset %}{{ s | rel(r) }}{% if not loop.last %}, {% endif %}{% endfor %}" sizes="(min-width:900px) 760px, calc(100vw - 64px)" width="{{ video.width }}" height="{{ video.height }}" alt="" loading="lazy" decoding="async"><span class="yt-btn" aria-hidden="true"></span></a><figcaption>Plays from YouTube. Nothing is loaded from YouTube until you press play. <a href="{{ r }}privacy/">Privacy</a></figcaption></figure>
+    <figure class="mapfig yt rv"><a class="yt-play" href="https://www.youtube.com/watch?v={{ video.id }}" data-yt="{{ video.id }}" data-title="{{ title }}" aria-label="Play the video: {{ title }}">{% if video.src %}<img src="{{ video.src | rel(r) }}" srcset="{% for s in video.srcset %}{{ s | rel(r) }}{% if not loop.last %}, {% endif %}{% endfor %}" sizes="(min-width:900px) 760px, calc(100vw - 64px)" width="{{ video.width }}" height="{{ video.height }}" alt="" loading="lazy" decoding="async">{% endif %}<span class="yt-btn" aria-hidden="true"></span></a><figcaption>Plays from YouTube. Nothing is loaded from YouTube until you press play. <a href="{{ r }}privacy/">Privacy</a></figcaption></figure>
 {%- endif %}
 {%- if gallery and gallery.length %}
     <div class="post-gallery rv">
