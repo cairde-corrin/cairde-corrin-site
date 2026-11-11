@@ -1,0 +1,13 @@
+# QR sign redirects. These addresses are reserved for interpretation signage that is
+# in development. Once a sign is printed, its address can never change.
+/s/1   /stops/stop-1.html   301
+/s/2   /stops/stop-2.html   301
+/s/3   /stops/stop-3.html   301
+/s/4   /stops/stop-4.html   301
+/s/5   /stops/stop-5.html   301
+/s/6   /stops/stop-6.html   301
+/s/7   /stops/stop-7.html   301
+/s/8   /stops/stop-8.html   301
+/s/9   /stops/stop-9.html   301
+/s/10  /stops/stop-10.html  301
+/s     /trails/             301

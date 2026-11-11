@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Refuse any staged file over 25 MB. Git has no size rule in .gitignore.
+limit=26214400
+git diff --cached --name-only --diff-filter=AM -z | while IFS= read -r -d '' f; do
+  s=$(git cat-file -s ":$f")
+  if [ "$s" -gt "$limit" ]; then
+    echo "pre-commit: $f is $((s/1048576)) MB, over the 25 MB limit." >&2
+    exit 1
+  fi
+done

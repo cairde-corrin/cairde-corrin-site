@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="Cáirde Corrin" xmlns="http://www.topografix.com/GPX/1/1">
+  <wpt lat="52.1333" lon="-8.3002"><ele>34</ele><name>Catchment outlet</name><type>outlet</type></wpt>
+  <wpt lat="52.12752" lon="-8.29878"><ele>110</ele><name>Stop 01 - the stream</name><type>stop</type></wpt>
+  <wpt lat="52.1224" lon="-8.30604"><ele>177</ele><name>Stop 02 - closed canopy</name><type>stop</type></wpt>
+  <wpt lat="52.12344" lon="-8.30538"><ele>174</ele><name>Stop 03 - the mossy stand</name><type>stop</type></wpt>
+</gpx>

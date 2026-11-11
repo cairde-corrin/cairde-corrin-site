@@ -1,0 +1,13 @@
+# Cáirde Corrin - https://www.cairdecorrin.ie/
+#
+# There is no build step and there never will be one. Netlify publishes the
+# contents of site/ exactly as they are. _headers and _redirects live inside
+# site/ and are read from there.
+
+[build]
+  publish = "site"
+  command = ""
+
+[build.environment]
+  # Nothing to install. Stated so a future Netlify default cannot introduce one.
+  NPM_FLAGS = "--version"

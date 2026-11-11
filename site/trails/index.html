@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en-IE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trails and stops - Cáirde Corrin</title>
+<meta name="description" content="An interactive map of the Glenabo catchment with relief, drainage and the recorded interpretation stops.">
+<link rel="canonical" href="https://www.cairdecorrin.ie/trails/">
+<meta property="og:title" content="Trails and stops - Cáirde Corrin"><meta property="og:description" content="An interactive map of the Glenabo catchment with relief, drainage and the recorded interpretation stops.">
+<meta property="og:type" content="website"><meta property="og:url" content="https://www.cairdecorrin.ie/trails/">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png"><link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+<link rel="preload" href="../assets/fonts/ebgaramond-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/css/site.css">
+<meta property="og:site_name" content="Cáirde Corrin"><meta property="og:locale" content="en_IE">
+<meta property="og:image" content="https://www.cairdecorrin.ie/assets/img/og-trails.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Trails and stops - Cáirde Corrin">
+<meta name="twitter:description" content="An interactive map of the Glenabo catchment with relief, drainage and the recorded interpretation stops."><meta name="twitter:image" content="https://www.cairdecorrin.ie/assets/img/og-trails.jpg">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "NGO",
+   "@id": "https://www.cairdecorrin.ie/#organisation",
+   "name": "Cáirde Corrin",
+   "url": "https://www.cairdecorrin.ie/",
+   "logo": {
+    "@type": "ImageObject",
+    "url": "https://www.cairdecorrin.ie/assets/img/logo.webp",
+    "width": 400,
+    "height": 144
+   },
+   "areaServed": {
+    "@type": "Place",
+    "name": "Fermoy, County Cork, Ireland",
+    "address": {
+     "@type": "PostalAddress",
+     "addressLocality": "Fermoy",
+     "addressRegion": "County Cork",
+     "addressCountry": "IE"
+    }
+   }
+  },
+  {
+   "@type": "WebSite",
+   "@id": "https://www.cairdecorrin.ie/#website",
+   "name": "Cáirde Corrin",
+   "url": "https://www.cairdecorrin.ie/",
+   "inLanguage": "en-IE",
+   "publisher": {
+    "@id": "https://www.cairdecorrin.ie/#organisation"
+   }
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "Home",
+     "item": "https://www.cairdecorrin.ie/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "Trails"
+    }
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav" id="nav">
+  <a class="brand" href="../">
+    <img class="logo-c" src="../assets/img/logo.webp" alt="Cáirde Corrin" width="400" height="144">
+    <img class="logo-w" src="../assets/img/logo-white.webp" alt="Cáirde Corrin" width="400" height="144">
+  </a>
+  <button class="navtoggle" id="navtoggle" aria-expanded="false" aria-controls="navlinks">Menu</button>
+  <nav class="navlinks" id="navlinks"><a class="n" href="../trails/" aria-current="page">Trails</a><a class="n" href="../species/">Species</a><a class="n" href="../folklore/">Folklore</a><a class="n" href="../new-spaces/">New spaces</a><a class="n" href="../water/">Water &amp; ecosystems</a><a class="n" href="../recordings/">Recordings</a><a class="n" href="../about/">About</a><a class="n" href="../links/">Links</a></nav>
+</header>
+<main id="main" class="page-head">
+  <div class="wrap">
+    <p class="eyebrow rv">Strand 1 - Points of interest</p>
+    <h1 class="rv page-title">Three stops recorded, seven to survey.</h1>
+    <p class="lede rv">Each recorded stop carries a short piece on what is in front of you. Signs are being planned for the trail; until they are up, you can read it here.</p>
+
+    <div class="maprig rv">
+      <div class="mapshell">
+        <svg id="map" role="img" aria-label="Interactive map of the Glenabo catchment showing relief, boundary, drainage and recorded stops"></svg>
+        <button class="maplayers-toggle" id="mlt" aria-expanded="false" aria-controls="maplayers">Layers</button>
+        <div class="maplayers" id="maplayers">
+          <label><input type="checkbox" id="L-terr" checked> Relief <i>34-228 m</i></label>
+          <label><input type="checkbox" id="L-action" checked> Action area <i>989 ha</i></label>
+          <label><input type="checkbox" id="L-catch" checked> Catchment <i>330 ha</i></label>
+          <label><input type="checkbox" id="L-chan" checked> Drainage <i>5.3 km (partial)</i></label>
+          <label><input type="checkbox" id="L-stops" checked> Stops <i>3 recorded</i></label>
+        </div>
+        <div class="mapctl">
+          <button id="mz-in" title="Zoom in">+</button>
+          <button id="mz-out" title="Zoom out">−</button>
+          <button id="mz-fit" title="Reset view">⤢</button>
+          <button id="mz-loc" title="Show my position">◎</button>
+        </div>
+        <div class="mapscale"><div class="bar" id="scbar"></div><span id="sctxt">500 m</span></div>
+        <div class="mapread" id="mapread">Glenabo catchment</div>
+        <div class="mapinfo" id="mapinfo" hidden>
+          <button class="mapclose" id="mapclose" aria-label="Close">×</button>
+          <div id="mapinfobody"></div>
+        </div>
+      </div>
+      <p class="loc-note">Drag to pan with a mouse, or use two fingers on a touchscreen. Scroll or pinch to zoom.</p>
+    </div>
+
+    <div class="trailgrid">
+      <div>
+        <h2 class="as-h3">The stops</h2>
+        <div class="stoplist">
+      <a class="stopitem" href="../stops/stop-1.html"><span class="sn">01</span>
+        <span><span class="st">The stream at 110 metres</span><span class="sd">52.12752°N 8.29878°W</span></span><span class="se">110 m</span></a>
+      <a class="stopitem" href="../stops/stop-2.html"><span class="sn">02</span>
+        <span><span class="st">Closed canopy</span><span class="sd">52.12240°N 8.30604°W</span></span><span class="se">177 m</span></a>
+      <a class="stopitem" href="../stops/stop-3.html"><span class="sn">03</span>
+        <span><span class="st">The mossy stand</span><span class="sd">52.12344°N 8.30538°W</span></span><span class="se">174 m</span></a>
+      <div class="stopitem pending"><span class="sn">04</span><span><span class="st">To be surveyed</span></span><span class="se">-</span></div>
+      <div class="stopitem pending"><span class="sn">05</span><span><span class="st">To be surveyed</span></span><span class="se">-</span></div>
+      <div class="stopitem pending"><span class="sn">06</span><span><span class="st">To be surveyed</span></span><span class="se">-</span></div>
+      <div class="stopitem pending"><span class="sn">07</span><span><span class="st">To be surveyed</span></span><span class="se">-</span></div>
+      <div class="stopitem pending"><span class="sn">08</span><span><span class="st">To be surveyed</span></span><span class="se">-</span></div>
+      <div class="stopitem pending"><span class="sn">09</span><span><span class="st">To be surveyed</span></span><span class="se">-</span></div>
+      <div class="stopitem pending"><span class="sn">10</span><span><span class="st">To be surveyed</span></span><span class="se">-</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="note" style="margin-top:0"><p>Interpretation signs are being planned for each stop along the trail. Each sign will carry a code you can scan with your phone to read about the place you are standing in. Those codes are being set now so that the signs will keep working however the website changes in future.</p></div>
+        <dl class="figs light">
+          <div class="fig"><dt>Catchment</dt><dd>330<small>ha</small></dd></div>
+          <div class="fig"><dt>Action area</dt><dd>989<small>ha</small></dd></div>
+          <div class="fig"><dt>Relief</dt><dd>34-228<small>m</small></dd></div>
+        </dl>
+      </div>
+    </div>
+  </div>
+  <div style="height:100px"></div>
+</main>
+<footer>
+  <div class="wrap">
+    <img src="../assets/img/logo-white.webp" alt="Cáirde Corrin" width="400" height="144" loading="lazy" decoding="async" style="height:46px;width:auto">
+    <nav class="footnav" aria-label="Site"><a href="../">Home</a><a href="../trails/">Trails</a><a href="../species/">Species</a><a href="../folklore/">Folklore</a><a href="../new-spaces/">New spaces</a><a href="../water/">Water &amp; ecosystems</a><a href="../recordings/">Recordings</a><a href="../about/">About</a><a href="../links/">Links</a><a href="../credits/">Credits</a><a href="../privacy/">Privacy</a><a href="../terms/">Terms</a></nav>
+    <div class="pillars"><span>Protect nature</span><span>Build community</span><span>Sustain the future</span></div>
+    <p>Cáirde Corrin - Fermoy, Co. Cork - <a href="https://www.cairdecorrin.ie">cairdecorrin.ie</a></p>
+    <p style="margin-top:14px">© 2026 Cáirde Corrin. Photography, audio and film by Cáirde Corrin. Third-party content is credited and licensed separately - see <a href="../credits/">Credits</a>.</p>
+    <p style="margin-top:14px">Base mapping © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors (ODbL). <a href="../credits/">Sources and credits</a>.</p>
+  </div>
+</footer>
+
+<script src="../assets/js/map.js" defer></script>
+<script src="../assets/js/site.js" defer></script>
+</body>
+</html>
