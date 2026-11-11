@@ -18,12 +18,20 @@ Sources
     Licence     free to use and redistribute with attribution: "(c) DLR e.V.
                 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018 provided
                 under COPERNICUS by the European Union and ESA; all rights reserved".
+  FABDEM V1-2 (Neal and Hawker, University of Bristol): Copernicus GLO-30 with forest
+    and building heights removed, a modelled bare-earth surface. Same 1" grid and
+    EGM2008 heights as Copernicus. Licence CC BY-NC-SA 4.0, non-commercial only;
+    commercial use is licensed separately by Fathom. Distributed only as 10x10 degree
+    zips (the one for Ireland is 949 MB), so the single 1x1 degree tile is read out of
+    the zip with HTTP range requests.
+    Citation: Jeffrey Neal, Laurence Hawker (2023): FABDEM V1-2.
+    https://doi.org/10.5523/bris.s5hqmjcdj8yo2ibzi9b4ew3sn
   EGM2008 geoid undulation, 2.5 arcminute grid, us_nga_egm08_25.tif from cdn.proj.org
     (NGA, public domain). Ellipsoid height = EGM2008 height + N.
   OSGM15 for Ireland, uk_os_OSGM15_Malin.tif from cdn.proj.org (Ordnance Survey /
     OSi / LPS, open licence). ETRS89 ellipsoid height = Malin Head OD + N.
 """
-import json, math, os, re, sys, urllib.request
+import io, json, math, os, re, sys, urllib.request, zipfile
 
 import numpy as np
 from PIL import Image
@@ -35,6 +43,7 @@ GEOJSON = os.path.join(ROOT, 'site', 'assets', 'data', 'cairde-corrin.geojson')
 GPX = os.path.join(ROOT, 'source-data', '2026-08-29_glenabo_loop.gpx')
 
 COP = 'https://copernicus-dem-30m.s3.amazonaws.com/{n}/{n}.tif'
+FABDEM = 'https://data.bris.ac.uk/datasets/s5hqmjcdj8yo2ibzi9b4ew3sn/'
 GEOIDS = {'egm2008': 'https://cdn.proj.org/us_nga_egm08_25.tif',
           'osgm15': 'https://cdn.proj.org/uk_os_OSGM15_Malin.tif'}
 
@@ -73,10 +82,66 @@ def download(url, path):
     return path
 
 
+class _HttpFile(io.RawIOBase):
+    """A remote file that zipfile can seek in, read with HTTP Range requests."""
+
+    def __init__(self, url):
+        self.url, self.pos = url, 0
+        req = urllib.request.Request(url, method='HEAD')
+        self.size = int(urllib.request.urlopen(req, timeout=60).headers['Content-Length'])
+
+    def seekable(self):
+        return True
+
+    def readable(self):
+        return True
+
+    def tell(self):
+        return self.pos
+
+    def seek(self, off, whence=0):
+        self.pos = {0: off, 1: self.pos + off, 2: self.size + off}[whence]
+        return self.pos
+
+    def readinto(self, b):
+        if self.pos >= self.size:
+            return 0
+        end = min(self.pos + len(b), self.size) - 1
+        req = urllib.request.Request(self.url, headers={'Range': 'bytes=%d-%d' % (self.pos, end)})
+        data = urllib.request.urlopen(req, timeout=120).read()
+        b[:len(data)] = data
+        self.pos += len(data)
+        return len(data)
+
+
+def fabdem_tile(lat, lon):
+    """Extract one FABDEM 1x1 degree tile from its 10x10 degree zip, by range requests."""
+    la, lo = math.floor(lat), math.floor(lon)
+    tile = '%s%02d%s%03d' % ('N' if la >= 0 else 'S', abs(la), 'E' if lo >= 0 else 'W', abs(lo))
+    path = os.path.join(CACHE, tile + '_FABDEM_V1-2.tif')
+    if os.path.exists(path):
+        return path
+    l10, o10 = la // 10 * 10, lo // 10 * 10
+    corner = lambda a, o: '%s%02d%s%03d' % ('N' if a >= 0 else 'S', abs(a),
+                                            'E' if o >= 0 else 'W', abs(o))
+    url = FABDEM + '%s-%s_FABDEM_V1-2.zip' % (corner(l10, o10), corner(l10 + 10, o10 + 10))
+    print('reading', tile, 'from', url, file=sys.stderr)
+    with zipfile.ZipFile(io.BufferedReader(_HttpFile(url), 1 << 20)) as z:
+        member = next(n for n in z.namelist() if n.endswith(tile + '_FABDEM_V1-2.tif'))
+        os.makedirs(CACHE, exist_ok=True)
+        with z.open(member) as src, open(path + '.part', 'wb') as dst:
+            dst.write(src.read())  # zipfile checks the CRC on read
+    os.replace(path + '.part', path)
+    return path
+
+
 def fetch():
-    """Download whatever is missing. Returns {'dem': [paths], 'egm2008': p, 'osgm15': p}."""
-    names = sorted({tile_name(la, lo) for la, lo in area_points()})
-    out = {'dem': [download(COP.format(n=n), os.path.join(CACHE, n + '.tif')) for n in names]}
+    """Download whatever is missing.
+    Returns {'dem': [paths], 'fabdem': [paths], 'egm2008': p, 'osgm15': p}."""
+    corners = {(math.floor(la), math.floor(lo)) for la, lo in area_points()}
+    names = sorted({tile_name(la, lo) for la, lo in corners})
+    out = {'dem': [download(COP.format(n=n), os.path.join(CACHE, n + '.tif')) for n in names],
+           'fabdem': [fabdem_tile(la, lo) for la, lo in sorted(corners)]}
     for k, url in GEOIDS.items():
         out[k] = download(url, os.path.join(CACHE, url.rsplit('/', 1)[1]))
     return out

@@ -15,8 +15,8 @@ no dependencies at all.
 | `linkcheck.py` | Walks every page and reports dead internal links, missing assets and unreachable external URLs. `--reveal` also measures the scroll-reveal blocks and flags any taller than eight viewports. |
 | `commons_fetch.py` | Finds a licensed Wikimedia Commons photograph per binomial, records photographer, licence and file page, and writes the local copies. |
 | `photos_exif.py` | Reads GPS, elevation and timestamp out of the photograph archive and reports which frames fall inside the catchment. |
-| `fetch_dem.py` | Downloads the Copernicus GLO-30 elevation tiles covering the catchment and the EGM2008 and OSGM15 geoid grids into `~/.cache/cairde-corrin-dem`. Raster data never enters the repository. Sources, resolution, datums and licence are in its docstring. |
-| `dem_report.py` | Compares the published stop elevations, the GPX in `source-data/` and the catchment range against the DEM and geoid models. Read-only. `python3 tools/dem_report.py [photo folder]` |
+| `fetch_dem.py` | Downloads the Copernicus GLO-30 surface model and the FABDEM V1-2 bare-earth model covering the catchment, and the EGM2008 and OSGM15 geoid grids, into `~/.cache/cairde-corrin-dem`. FABDEM is read out of its 949 MB zip with range requests, one tile only. Raster data never enters the repository. Sources, resolution, datums and licences are in its docstring. |
+| `dem_report.py` | Compares the published stop elevations, the GPX in `source-data/` and the catchment range against both models in Malin Head OD, measures canopy inflation, reproduces the AWS Terrain Tiles range the original catchment map used, and reads the nearest OPW gauge. Read-only. `python3 tools/dem_report.py [photo folder]` |
 
 ## Why the reveal height matters
 
