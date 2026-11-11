@@ -19,7 +19,9 @@
 <link rel="preload" href="{{ r }}assets/fonts/ebgaramond-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{{ r }}assets/css/site.css">
 <meta property="og:site_name" content="Cáirde Corrin"><meta property="og:locale" content="en_IE">
-<meta property="og:image" content="{{ ogImage }}"><meta property="og:image:width" content="{{ hero.width if hero and hero.width else 1200 }}"><meta property="og:image:height" content="{{ hero.height if hero and hero.height else 630 }}">
+<meta property="og:image" content="{{ ogImage }}">
+{%- if not (hero and hero.src) %}<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+{%- elif hero.width and hero.height %}<meta property="og:image:width" content="{{ hero.width }}"><meta property="og:image:height" content="{{ hero.height }}">{% endif %}
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{{ fullTitle }}">
 <meta name="twitter:description" content="{{ description }}"><meta name="twitter:image" content="{{ ogImage }}">
 <script type="application/ld+json">

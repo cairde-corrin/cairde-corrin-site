@@ -1,0 +1,213 @@
+# Decap CMS settings for the News section. Served at /admin/config.yml.
+#
+# The CMS saves straight to the main branch, not to build. That is intended for
+# news posts and their photos only. Code, layouts and every other page still go
+# through build and are merged by hand. See docs/CONTRIBUTING.md.
+
+backend:
+  name: git-gateway
+  branch: main
+  # Decap checks a Netlify status page on another host before every login.
+  # This points the check at a file on this site instead, so the admin area
+  # talks only to this site and to Netlify. It always reports "operational".
+  status_endpoint: /admin/status.json
+
+# Posts are saved as drafts first and go live only when someone presses Publish.
+publish_mode: editorial_workflow
+
+site_url: https://cairde-corrin.netlify.app
+display_url: https://cairde-corrin.netlify.app
+logo_url: /assets/img/logo.webp
+
+media_folder: site/assets/uploads
+public_folder: /assets/uploads
+
+slug:
+  encoding: ascii
+  clean_accents: true
+  sanitize_replacement: "-"
+
+collections:
+  - name: news
+    label: News
+    label_singular: news post
+    description: >-
+      Posts for the News page on the website. Write a new post with the button
+      above. Nothing you write appears on the website until it is published.
+    folder: site/_content/news
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    sortable_fields: [date, title]
+    fields:
+      - label: Headline
+        name: title
+        widget: string
+        hint: >-
+          The title of the post, as it will appear at the top of the page and in
+          the list of news. Keep it short. The web address of the post is made
+          from this headline when you first save it, and does not change after.
+
+      - label: Date
+        name: date
+        widget: datetime
+        format: YYYY-MM-DD
+        date_format: D MMMM YYYY
+        time_format: false
+        picker_utc: true
+        hint: >-
+          The date shown on the post. Newest posts appear first on the News page.
+
+      - label: Written by
+        name: author
+        widget: string
+        default: Cáirde Corrin
+        hint: >-
+          Leave this as Cáirde Corrin to post on behalf of the group, or put the
+          name of the person who wrote it.
+
+      - label: Short summary
+        name: summary
+        widget: text
+        hint: >-
+          One or two sentences about the post. This is what people see in the
+          list of news, in search results, and when the post is shared on social
+          media or in a message.
+
+      - label: The post
+        name: body
+        widget: markdown
+        buttons: [bold, italic, link, heading-two, heading-three, bulleted-list, numbered-list, quote]
+        editor_components: []
+        hint: >-
+          Write the post here. Use the buttons above the box for bold text,
+          links, subheadings and lists. Photos go in the sections below, not here.
+
+      - label: Main photo
+        name: hero
+        widget: object
+        required: false
+        collapsed: true
+        hint: >-
+          Optional. One large photo shown under the summary. Leave this closed if
+          the post has no main photo.
+        fields:
+          - label: Photo
+            name: src
+            widget: image
+            required: false
+            choose_url: false
+            hint: >-
+              Choose or upload a photo. Please use a photo you took yourself, or
+              one you have permission to use.
+          - label: Describe the photo for people who cannot see it
+            name: alt
+            widget: string
+            required: false
+            hint: >-
+              One sentence saying what is in the photo, for example "Moss-covered
+              branches of broadleaf trees coming into leaf". Screen readers read
+              this aloud to blind visitors. Do not start with "A photo of".
+          - label: Caption
+            name: caption
+            widget: string
+            required: false
+            hint: Optional. A line of text shown under the photo.
+          - label: Width in pixels
+            name: width
+            widget: number
+            value_type: int
+            required: false
+            hint: >-
+              Optional. Leave this empty unless you know it. On an iPhone, open
+              the photo in Photos and swipe up: the first number in, for example,
+              4032 × 3024 is the width.
+          - label: Height in pixels
+            name: height
+            widget: number
+            value_type: int
+            required: false
+            hint: Optional. The second number, for example 3024. Leave empty if unsure.
+          - label: Other sizes of the same photo
+            name: srcset
+            widget: list
+            required: false
+            collapsed: true
+            hint: >-
+              Leave this empty. It is filled in by whoever looks after the website
+              when the same photo exists at several sizes.
+            field: { label: Size, name: size, widget: string }
+
+      - label: More photos
+        name: gallery
+        widget: list
+        required: false
+        collapsed: true
+        label_singular: photo
+        summary: "{{fields.alt}}"
+        hint: >-
+          Optional. Extra photos shown in a grid at the end of the post. Press
+          "Add photo" for each one.
+        fields:
+          - label: Photo
+            name: src
+            widget: image
+            choose_url: false
+            hint: >-
+              Choose or upload a photo. Please use a photo you took yourself, or
+              one you have permission to use.
+          - label: Describe the photo for people who cannot see it
+            name: alt
+            widget: string
+            hint: >-
+              One sentence saying what is in the photo. Screen readers read this
+              aloud to blind visitors. Do not start with "A photo of".
+          - label: Caption
+            name: caption
+            widget: string
+            required: false
+            hint: Optional. A line of text shown under the photo.
+          - label: Width in pixels
+            name: width
+            widget: number
+            value_type: int
+            required: false
+            hint: Optional. Leave empty unless you know it.
+          - label: Height in pixels
+            name: height
+            widget: number
+            value_type: int
+            required: false
+            hint: Optional. Leave empty unless you know it.
+
+      - label: YouTube video
+        name: youtube
+        widget: string
+        required: false
+        pattern: ['^[A-Za-z0-9_-]{11}$', 'This should be the 11 letters and numbers at the end of the YouTube address, after "watch?v=".']
+        hint: >-
+          Optional. If there is a YouTube video to go with the post, paste the
+          part of its address after "watch?v=", for example dQw4w9WgXcQ. The
+          video is not shown on the page yet; it is kept for later.
+
+      - label: Date last changed
+        name: updated
+        widget: datetime
+        format: YYYY-MM-DD
+        date_format: D MMMM YYYY
+        time_format: false
+        picker_utc: true
+        required: false
+        hint: >-
+          Optional. Only fill this in if you make an important change to a post
+          after it has been published.
+
+      - label: Practice post
+        name: sample
+        widget: boolean
+        required: false
+        default: false
+        hint: >-
+          Leave this off. When it is on, search engines are told to ignore the
+          post and it is left out of the sitemap. Only for test posts.
