@@ -6,6 +6,8 @@ pagination:
   data: collections.news
   size: 10
   alias: posts
+  # Without this, an empty collection writes no /news/ page at all and every nav link 404s
+  generatePageOnEmptyData: true
 permalink: "news/{% if pagination.pageNumber > 0 %}page/{{ pagination.pageNumber + 1 }}/{% endif %}index.html"
 ---
 {%- set r = page.url | root -%}
@@ -13,7 +15,8 @@ permalink: "news/{% if pagination.pageNumber > 0 %}page/{{ pagination.pageNumber
     <h1 class="rv page-title">News.</h1>
     <p class="lede rv">Updates from Cáirde Corrin, newest first.</p>
 {%- if not posts.length %}
-    <p class="rv">Nothing has been posted yet.</p>
+    <p class="rv">Nothing posted yet. The first update will appear here as soon as it is published.</p>
+    <a class="cta rv" href="{{ r }}trails/">Explore the trail</a>
 {%- else %}
     <div class="cards">
 {%- for post in posts %}
