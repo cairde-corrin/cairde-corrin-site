@@ -29,7 +29,9 @@
   --measure:36rem; --shadow:0 18px 48px -24px rgba(8,48,79,.5);
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+/* scroll-padding: anchors and keyboard focus stop below the fixed header, not under it */
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+#map:focus-visible{outline-offset:-3px}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
   font-size:17px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 /* height:auto is required now that every img carries width/height attributes;

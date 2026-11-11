@@ -13,6 +13,7 @@ const SOURCES = ['!**/*.njk', '!**/*.md', '!**/*.11tydata.js', '!_includes', '!_
 const images = require('./site/_includes/images.js');
 const social = require('./site/_includes/social.js');
 const { nav } = require('./site/_includes/nav.js');
+const ldPages = require('./site/_includes/ld-pages.js');
 // Relative prefix back to the site root: /news/x/ -> ../../, /stops/stop-1.html -> ../
 const root = (url) => '../'.repeat(url.replace(/[^/]*$/, '').split('/').filter(Boolean).length);
 
@@ -33,6 +34,12 @@ module.exports = function (eleventyConfig) {
     const out = this.page.outputPath;
     return typeof out === 'string' && out.endsWith('.html')
       ? images.rewriteHtml(content, root(this.page.url), this.page.inputPath) : content;
+  });
+  // A WebPage node for every page, and the species and folklore lists read from the
+  // pages' own markup (_includes/ld-pages.js).
+  eleventyConfig.addTransform('ld', function (content) {
+    const out = this.page.outputPath;
+    return typeof out === 'string' && out.endsWith('.html') ? ldPages.addLd(content, this.page.url) : content;
   });
 
   eleventyConfig.addCollection('news', (api) =>

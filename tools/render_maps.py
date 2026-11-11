@@ -28,7 +28,13 @@ CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 OVERPASS = 'https://overpass-api.de/api/interpreter'
 OSM_BBOX = (52.085, -8.38, 52.16, -8.22)  # south, west, north, east
 R = 6378137.0
-EDITION = '202611'  # bump on every redraw, then update site/index.njk
+TUNE = os.environ.get('MAPS_TUNE')
+EDITION = '202611b'  # bump on every redraw or re-encode, then update the pages that use it
+# 202611b re-encoded the maps only. The social cards came out byte-identical, so the pages
+# still use og-*-202611.jpg; the next redraw writes both under its new edition.
+# 72 rather than 82: the redrawn maps carry more detail and were about 20% heavier; at 72
+# the labels read the same at 2x zoom and the files are 22% smaller (MAPS_TUNE to re-check).
+WEBP_QUALITY = 72
 FRAME = (74, 213, 1652, 1233)  # x, y, width, height of the map frame in an 1800 px canvas
 SANS = '"Helvetica Neue", Helvetica, Arial, sans-serif'
 
@@ -297,15 +303,20 @@ def shoot(html_text, relief_rgb, canvas_h, name):
                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     im = Image.open(png).convert('RGB')
     assert im.size == (1800, canvas_h), im.size
-    im.save(os.path.join(IMG, '%s-%s-1800.webp' % (name, EDITION)), 'WEBP', quality=82, method=6)
+    if TUNE:  # MAPS_TUNE=dir: keep the lossless render for choosing WEBP_QUALITY, write nothing to the site
+        im.save(os.path.join(TUNE, name + '.png'))
+        return im
+    im.save(os.path.join(IMG, '%s-%s-1800.webp' % (name, EDITION)), 'WEBP', quality=WEBP_QUALITY, method=6)
     small = im.resize((1000, round(canvas_h * 1000 / 1800)), Image.LANCZOS)
-    small.save(os.path.join(IMG, '%s-%s-1000.webp' % (name, EDITION)), 'WEBP', quality=82, method=6)
+    small.save(os.path.join(IMG, '%s-%s-1000.webp' % (name, EDITION)), 'WEBP', quality=WEBP_QUALITY, method=6)
     print('wrote %s-%s-1800.webp %s and -1000.webp %s' % (name, EDITION, im.size, small.size))
     return im
 
 
 def og(full, top, name):
     """A 1200 x 630 social card cut from the map frame, starting `top` px down the canvas."""
+    if TUNE:
+        return
     x, w = FRAME[0], FRAME[2]
     card = full.crop((x, top, x + w, top + round(w * 630 / 1200))).resize((1200, 630), Image.LANCZOS)
     card.save(os.path.join(IMG, '%s-%s.jpg' % (name, EDITION)), 'JPEG', quality=84, optimize=True,
