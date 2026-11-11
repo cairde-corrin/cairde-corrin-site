@@ -1,90 +1,103 @@
 # Open items
 
-What is still untested, unfinished or waiting on someone. Every phase of work adds to
-this file and removes what it settles, so it stays the one place to look.
+Everything about the website that is still outstanding, in one place, grouped by what it
+needs: a decision by the group, some code, or a person to do or confirm something. When
+an item is settled, remove it here in the same change.
 
-## Not yet tested
+Last reviewed 11 November 2026.
 
-- **CMS end to end.** Invite, accept, write a post with a photo in the BODY, save as
-  draft, confirm it is not live, publish, verify on the site, delete.
-- **HEIC on a real iPhone.** Choose File from Files versus Photo Library. The current
-  behaviour is inferred from WebKit source, not observed.
-- **A completed signup with a real token.** The forwarder on the home page was tested
-  with made-up tokens only.
-- **The video player with a real group video.** The click-to-load player was tested
-  with a public test video, not one the group owns. Check the thumbnail and playback on
-  the first real post with a video.
-- **The social block with real posts.** Tested with made-up Instagram and Facebook
-  addresses. Check the cards and links once the group adds real ones.
-- **The navigation on a real phone, by finger.** Tested in Phase 8b in WebKit 27.2
-  (Safari's engine, by Playwright, with emulated touch), Chrome 157, real Firefox 154,
-  and real Mobile Safari 26.1 in the iOS Simulator (an iPhone 17, driven by script, so
-  rendering and behaviour but not real touches). Real desktop Safari was not driven:
-  that needs Safari's "Allow remote automation" setting, and WebKit passed every check.
-- **A real screen reader.** Accessible names were read from Chrome's accessibility tree
-  and the keyboard walked in three engines, but no one has listened to the site with
-  VoiceOver, TalkBack or NVDA.
+## Needs a decision
 
-## Known gaps, code
+1. **The repository is public, and would hold the location of every uploaded photo.**
+   The website only ever shows re-encoded copies with the location removed, but the
+   originals are stored in the GitHub repository exactly as uploaded, GPS and all, and
+   anyone can read that repository. No photo has been uploaded yet, so nothing has been
+   exposed. Decide before the first upload: make the repository private (the site works
+   the same; Git Gateway may need reconnecting, `MAINTENANCE.md`), or keep it public and
+   build the browser-side shrink below so that locations never reach it. Making it private
+   is the quick, complete answer.
+2. **What to do if Netlify's free allowance runs out.** On the credit-based free plan,
+   each editor publish costs 15 of 300 monthly credits and visitors' bandwidth costs more,
+   so a busy month could pause the site until the next (`MAINTENANCE.md`). Options if it
+   happens: a paid plan, Netlify's open-source programme (larger allowance, its own
+   conditions), or serving less (the home page film is the largest item). First check
+   which plan the account is on.
+3. **When to move the editor off Git Gateway.** Netlify has deprecated it; it works, but
+   will not be fixed if it breaks. `CMS-MIGRATION.md` says what would trigger the move
+   and what it costs editors (each would need a GitHub account).
+4. **The fourteen "ecology films" in `archive/`.** Screen recordings of a third-party
+   plant platform, not field footage, 131 MB. Keep, or let go.
+5. **Firefox downloads the 8 MB home page film and cannot show it** (it shows a still
+   instead). Accepted so far as the price of the film working everywhere else; worth
+   revisiting if Firefox use matters.
+6. **Netlify's promotional comment.** Netlify adds an invisible "This site is hosted on
+   Netlify..." HTML comment to every production page. It is not a documented setting or
+   plan feature, Netlify has not answered the two forum threads asking about it, and it
+   is not the "Powered by Netlify" badge (which has an off switch and which this site does
+   not carry). It makes no request and sets nothing. Decided: do not pay to remove it.
+   Check whether it is still there once the domain is connected.
 
-- **Browser-side image shrink not built.** Originals still enter the repository at 2 to
-  13 MB each with GPS intact, and stay in its history. This now covers gallery photos
-  as well as news photos.
-- **Git Gateway is deprecated.** The migration path is in `docs/CMS-MIGRATION.md`.
-- **The Decap button hiding depends on internal labels** and needs re-checking after any
-  Decap update (see DEPLOY.md, "Updating Decap or the widget").
-- **Netlify custom email templates are Pro-only.** The templates in
-  `site/admin/emails/` are unused; a forwarder on the home page handles the default
-  emails instead.
-- **Netlify injects a promotional HTML comment on production.** Every production page
-  served from `cairde-corrin.netlify.app` starts its `<head>` with "This site is hosted
-  on Netlify. Anyone can build and deploy a site like this one for free:
-  https://netlify.new/?...utm_source=ai-legible..." and "Netlify hosting facts for this
-  site". Branch previews do not get it, and it does not depend on who is asking (a
-  browser, a search engine and an AI crawler all received it, 11 November 2026). It
-  makes no request, sets nothing and is invisible, so it does not affect visitors or
-  the privacy page. **Setting or plan feature: neither, as far as anything published
-  shows.** Netlify documents no setting for it, no plan that removes it and no changelog
-  entry; two support-forum threads (August and September 2026) asking exactly this have
-  no answer from Netlify. It is not the "Powered by Netlify" badge, which Netlify does
-  document, with an off switch (Project configuration -> General), and which this site
-  does not carry. One forum user guessed it is not added on custom domains; check that
-  when the domain is connected (`docs/DOMAIN-SETUP.md`, last check). Not worth paying to
-  remove; if it matters, ask Netlify support.
-- **New video stills have to be committed.** The build fetches a missing still once and
-  writes it into `site/assets/img/video/`; until someone commits it, Netlify fetches it
-  again on every build (see CONTRIBUTING, "Videos"). A failed fetch no longer stops a
-  build.
-- **Decap's login button fails contrast.** Lighthouse measures its text at 3.4:1
-  (#798291 on #eff0f4) on `/admin/`. It is Decap's own interface, not the site's; it
-  could be overridden in `site/admin/index.html`, but only through Decap's generated
-  class names.
-- **Text over the home page film is not machine-checked for contrast.** Lighthouse
-  cannot measure text over video, and the frames vary.
-- **The species list uses schema.org's Taxon type,** which schema.org still marks as
-  pending (it comes from Bioschemas). It validates, but search engines may ignore it
-  until it is final.
-- **Netlify Pretty URLs creates two working URLs per page.** Links to `.html` pages are
-  rewritten to extensionless addresses as they are served, so `/stops/stop-1` and
-  `/stops/stop-1.html` both work. The canonical link names one of them.
+## Needs code
 
-## Needs people, not code
+- **Shrink and strip photos in the browser before upload,** if the repository stays
+  public, and in any case to stop the repository growing by 2 to 13 MB per photo.
+- **Decap's login button fails contrast** (3.4:1, its own styling). It could be
+  overridden in `site/admin/index.html`, but only through Decap's generated class names,
+  which an update can change.
+- **Netlify's Pretty URLs give each stop page two working addresses**
+  (`/stops/stop-1` and `/stops/stop-1.html`). Turn Pretty URLs off in Netlify's post
+  processing settings, or accept it: the canonical link already names one address.
+- **Contrast of the text over the home page film** has never been measured: automatic
+  checks cannot read text over video. Check it across the film's frames.
+- **The species list uses schema.org's `Taxon` type**, which schema.org still marks as
+  pending. It validates; search engines may ignore it until it is final. Nothing to do
+  but notice when it is.
 
-- **Connect the domain.** `cairdecorrin.ie` resolves, but to Letshost: plain `http`
-  forwards to `cairde-corrin.netlify.app`, and every `https://www.cairdecorrin.ie` address,
-  which all canonicals, `og:image` and the sitemap use, fails on an expired Letshost
-  certificate. Until it is connected the site is effectively unindexable and shared
-  links show no picture. `docs/DOMAIN-SETUP.md` is the complete procedure; it needs the
-  Letshost and Netlify logins, and must leave the domain's email records alone.
-- Stops 4 to 10 do not exist.
-- About page: structure and names.
+## Needs another person
+
+**Content and confirmation, from the group**
+
+- Stops 4 to 10: positions, photographs, bearings and text. The pages and sign
+  addresses already exist.
+- Audio for stops 2 and 3. None of the nineteen recordings matches those stops in time
+  or place, so none has been used.
 - Twenty audio transcripts.
+- GPS traces of the routes beyond the Glenabo loop.
+- The About page: the committee's structure, and names, once each person agrees to be
+  named.
+- The local authority on the About page. "The local authority" is used until the group
+  confirms which one (Cork County Council is the likely answer, but it is an inference).
+- The Corrin Moor and Corrin Wetlands pages have no content yet.
 - Fourteen photographs to identify.
-- Pl@ntNet contributor name.
-- Veronica Whyte consent.
-- Photography credit: Eoin O Keefe is a working attribution, unconfirmed.
-- Species names to confirm.
-- Corrin Moor and Corrin Wetlands pages have no content.
-- **Which YouTube videos the group owns.** The player is only for the group's own
-  videos; someone needs to say which channel that is.
-- **The group's Instagram and Facebook posts** for the home page block.
+- The species in the ten home page carousel photographs; their descriptions name no
+  species until then.
+- Species names to confirm, and Tormentil, which is carried as a proposed determination.
+- The Pl@ntNet contributor's name, for the credits.
+- The photography credit: Eoin O Keefe is a working attribution, unconfirmed.
+- Veronica Whyte's consent.
+- Which YouTube channel is the group's, since the video player is for its own videos
+  only; and the group's Instagram and Facebook posts for the home page.
+- A field check of the catchment divide in the south-east, around 52.116°N 8.295°W, where
+  the modelled boundary is least certain.
+
+**Accounts and set-up**
+
+- Connect the domain: `DOMAIN-SETUP.md`. Needs the Letshost and Netlify logins. Until
+  then every `https://www.cairdecorrin.ie` address fails, so the site cannot be indexed
+  and shared links show no picture.
+- The handover: `HANDOVER.md`. Several parts currently sit with the developer's personal
+  accounts.
+
+**Tests that need a real person or a real device**
+
+- The editor end to end, by a committee member: accept an invitation, write a post with a
+  photo in the text, save it, check it is not live, publish, check it on the site, delete
+  it. The invitation itself has only been tested with made-up codes.
+- An iPhone photo chosen through **Choose File** rather than Photo Library. The behaviour
+  described in `EDITOR-GUIDE.md` comes from WebKit's source code, not from a real phone.
+- The navigation and the map on a real phone, by finger, outdoors. So far tested in
+  Safari's engine, Chrome, Firefox and the iPhone simulator, driven by script.
+- A screen reader (VoiceOver, TalkBack or NVDA). Labels were checked in the browser's
+  accessibility tree, but nobody has listened to the site.
+- The first real video post and the first real social posts, to see the still and the
+  cards with the group's own material.

@@ -1,12 +1,13 @@
 # Contributing to cairdecorrin.ie
 
-Notes for anyone editing this site. Read the hard rules before changing anything;
-the rest is reference.
+For anyone changing the site itself: its pages, figures, media or code. Committee
+members posting news need `EDITOR-GUIDE.md` instead. Read the hard rules before changing
+anything; the rest is reference.
 
 ## Repository layout
 
     site/         everything that deploys, and nothing else. Netlify publishes this.
-    docs/         this file, the deployment guide and the project summary
+    docs/         every document; docs/README.md is the index
     source-data/  inputs that the site is made from. Tracked, never published.
     archive/      masters and source material. Not deployed, not tracked.
     tools/        helper scripts. Not part of the build; nothing here has to run.
@@ -19,10 +20,11 @@ derived from it, write the processed result into `site/` and commit both.
 ## What this is
 
 A static website for a voluntary community group in Fermoy, Co. Cork, working on
-the Glenabo and Corrin woodlands. Vanilla HTML, CSS and JavaScript, no framework.
-The build copies every hand-written page in `site/` unchanged and renders only the
-News section and the sitemap. News posts can also be written in the news editor at
-`/admin/`, which commits them to `main`.
+the Glenabo and Corrin woodlands. Hand-written HTML, CSS and JavaScript, no framework.
+The pages are Nunjucks templates that Eleventy renders, adding the shared header and
+footer and the structured data; every other file is copied unchanged. News, gallery
+photos and the home page's social posts can also be written in the editor at `/admin/`,
+which commits them to `main`.
 
 ## Hard rules
 
@@ -33,11 +35,11 @@ News section and the sitemap. News posts can also be written in the news editor 
   Tailwind or React without a decision to do so. After any change to the build,
   `npm run build && python3 tools/compare_build.py` must report no differences in the
   copied files.
-- **The byte-for-byte guarantee no longer covers the pages.** Until Phase 8 the 23
+- **The byte-for-byte guarantee covers the copied files, not the pages.** The 23
   hand-written pages (trails, the ten stops, species, folklore, recordings, water, new
-  spaces and its two proposals, about, links, credits, privacy, terms) were copied exactly
-  as written, so `compare_build.py` proved the build could not alter them; the home page
-  had already become a template in Phase 7. They are now templates too, so that the header and footer come from one place
+  spaces and its two proposals, about, links, credits, privacy, terms) used to be copied
+  exactly as written, so `compare_build.py` proved the build could not alter them. Like
+  the home page, they are now templates, so that the header and footer come from one place
   (`_includes/nav.js`). Each page is still written out as it is in the repository apart
   from what the build adds: the header and footer, a second structured-data block
   (`_includes/ld-pages.js`) and the checks in `_includes/images.js`. But
@@ -133,6 +135,19 @@ Times are Irish summer time (UTC+1), as the cameras recorded them.
 `site/assets/img/`. Name them `<subject>-<width>.webp`. Always give `width`, `height`,
 `loading="lazy"` and real alt text describing what is in the frame.
 
+    # batch resize a folder of photographs
+    python3 -c "
+    from PIL import Image, ImageOps; import glob, os
+    for p in glob.glob('incoming/*.jpg'):
+        im=ImageOps.exif_transpose(Image.open(p)); n=os.path.splitext(os.path.basename(p))[0]
+        for w in (1800,1100,700):
+            r=im.copy(); r.thumbnail((w,w*3),Image.LANCZOS)
+            r.save(f'site/assets/img/{n}-{w}.webp','WEBP',quality=60,method=6)
+    "
+
+    # read GPS and elevation out of photograph EXIF. This is how stops 1-3 were placed.
+    python3 tools/photos_exif.py /path/to/photos
+
 Give an edited photograph a **new file name**. Images are cached for a year, so
 overwriting one shows the old picture to anyone who has visited since.
 The same goes for the two home page maps: `tools/render_maps.py` writes them under an
@@ -173,22 +188,11 @@ clip and falls back to the poster if it cannot, so the poster must always be cur
 is frame 1 of the clip, at `site/assets/img/hero-poster-{700,1100,1920}.{webp,avif}`.
 AVIF is written by Pillow at quality 45, roughly equivalent to avifenc q58.
 
-## Useful commands
-
-    npm run build                        # writes _site/
-    python3 tools/serve.py _site 8080    # preview at http://localhost:8080
-    python3 tools/linkcheck.py --external
-    python3 tools/linkcheck.py --reveal  # scroll-reveal block heights
-
-Use `tools/serve.py` rather than `python3 -m http.server`. The built-in server does not
-answer Range requests, so the hero cannot seek and appears broken locally while working
-in production. `serve.py` also reads the `_headers` it serves, so caching behaves as it
-will live.
-
 ## Adding a news post
 
-Most posts should be written in the news editor at `/admin/` (see "The news editor" in
-`docs/DEPLOY.md`). It writes exactly the file described here and commits it to `main`.
+Most posts should be written in the editor at `/admin/` (`EDITOR-GUIDE.md`; how it is
+wired up is in `DEPLOY.md`). It writes exactly the file described here and commits it to
+`main`.
 Writing the file by hand on `build` works too, and is the route for anything the editor
 cannot do, such as the `-700` / `-1100` photo variants.
 
@@ -241,11 +245,12 @@ opens the Files app, gives the original HEIC. The editor page refuses a HEIC bef
 is uploaded and tells the editor to pick it from Photo Library instead. This was read
 from WebKit's code, not tried on an iPhone.
 
-**The remaining half.** The originals still enter the repository at full size, 2 to
-13 MB each from a phone, GPS and all, so the repository grows with every photo and
-keeps every location in its history. The fix is to shrink and strip photos in the
-browser before they are uploaded; that is not built yet. Until it is, remember that the
-repository holds those locations if it is ever made public.
+**The originals are still kept.** They enter the repository at full size, 2 to 13 MB
+each from a phone, GPS and all, so the repository grows with every photo and keeps every
+location in its history. **The repository is public**, so those locations would be
+readable there even though the website never shows them. No photo has been uploaded yet;
+whether to make the repository private, or to shrink and strip photos in the browser
+before upload (not built), is the first decision in `OPEN-ITEMS.md`.
 
 Each photo field in the news editor refuses files over 20 MB, as a backstop against
 videos and very large files; ordinary phone photos (2.4 to 12.5 MB on the phone used
@@ -275,30 +280,18 @@ loads. Pressing play makes `site.js` swap in a `youtube-nocookie.com` player;
 The stills are kept in the repository, in `site/assets/img/video/` as
 `<id>-<width>x<height>.webp`, so a normal build never contacts YouTube. When a post names
 a video whose still is not there yet, the build (`site/_includes/youtube.js`) fetches it
-once, writes it into that folder and says so in the build log. **Commit it:** after a
-post with a new video is published through the editor, run `git switch build && git
-merge main && npm run build` and commit the new files in `site/assets/img/video/`. Until
-then Netlify fetches the still again on every build. If YouTube cannot be reached, or the
-address is wrong or the video private, the build does not stop: the post shows the play
-button on a plain panel, and the build log names the video. Fix the address or build
-again later, then commit the still.
+once, writes it into that folder and says so in the build log. A video post therefore
+works as soon as it is published, with nothing for anyone to do. Until the still is
+committed, Netlify fetches it again on each build; committing it (`git switch build &&
+git merge main && npm run build`, then commit `site/assets/img/video/`) is optional
+tidying that takes YouTube out of the build altogether. If YouTube cannot be reached, or
+the address is wrong or the video private, the build does not stop: the post shows the
+play button on a plain panel, the build log names the video, and the still appears by
+itself on a later build.
 
 With no posts, `/news/` still exists and says so ("Nothing posted yet"), because the
 listing sets `generatePageOnEmptyData`. Without that, an empty collection writes no
 `/news/` page at all and the News link on every page 404s.
-
-    # batch resize a folder of photographs
-    python3 -c "
-    from PIL import Image, ImageOps; import glob, os
-    for p in glob.glob('incoming/*.jpg'):
-        im=ImageOps.exif_transpose(Image.open(p)); n=os.path.splitext(os.path.basename(p))[0]
-        for w in (1800,1100,700):
-            r=im.copy(); r.thumbnail((w,w*3),Image.LANCZOS)
-            r.save(f'site/assets/img/{n}-{w}.webp','WEBP',quality=60,method=6)
-    "
-
-    # read GPS and elevation out of photograph EXIF. This is how stops 1-3 were placed.
-    python3 tools/photos_exif.py /path/to/photos
 
 ## The gallery and the home page's social posts
 
@@ -348,8 +341,7 @@ Trails and News.
 row shows from 680 px up and folds behind **Menu** at 679 px and below. If you change the
 entries, their wording or the nav type, re-measure (the header's padding, plus the
 `.brand` and `.navlist` widths at a wide window) and move the `max-width` in `site.css` to
-match. The old nine-link row needed 966 px, which is why it used to need squeezing
-between 901 and 1000 px; that rule is gone.
+match.
 
 **Nothing on the site is set below 11 px**, legends, captions, map labels and nav
 included. Keep it that way. The elevation profile on the trails page is the one awkward
@@ -372,20 +364,17 @@ the labels never show under 11 px; check them if you change the profile.
 
 ## Before you push
 
-    python3 tools/linkcheck.py --external
+Build, then run the checks listed in `DEPLOY.md` ("Checks before you deploy"), and also:
+
     python3 tools/linkcheck.py --reveal
-    python3 tools/ldcheck.py                 # structured data, against schema.org
-    node tools/selftest.js
 
-The second flags any scroll-reveal block taller than eight viewports. Those fade in as
-one slab, and the observer that reveals them measures a fraction of the element's own
-area, so a tall enough block can stop revealing altogether if the threshold is ever
-raised above zero.
+That flags any scroll-reveal block taller than eight viewports. Those fade in as one
+slab, and the observer that reveals them measures a fraction of the element's own area,
+so a tall enough block can stop revealing altogether if the threshold is ever raised
+above zero.
 
-Then open the home page in Chrome or Safari and scroll: the hero should scrub. In
-Firefox it should show a still and never move. Both are correct; Firefox accepts every
-seek and paints nothing, which is why the capability is measured at runtime rather than
-inferred from the browser name.
+After any change to a layout, an include or `.eleventy.js`, also diff the built pages
+against the previous build and read every difference (see the hard rules).
 
 ## Commits and branches
 
@@ -407,36 +396,37 @@ The one exception is the news editor at `/admin/`. It commits news posts, galler
 photos and the home page's social posts straight to `main`, bypassing `build`, and that is intended: it is for content,
 never for code. Do not use it, or GitHub's web editor, to change anything else. Because
 `main` moves on its own, run `git switch build && git merge main` before starting work
-and before merging a phase, so the merge does not undo a post.
+and before releasing, so the merge does not undo a post.
 
-Work proceeds in phases. A phase is merged to `main` only after it has been checked
-on its preview URL.
+Work is done on `build` and released to `main` only after it has been checked on the
+branch preview.
 
-**Merging a verified phase.**
+**Releasing a checked piece of work.**
 
-1. Commit the phase on `build` and push: `git push origin build`.
+1. Commit it on `build` and push: `git push origin build`.
 2. Open a pull request from `build` into `main` on GitHub. Netlify posts a deploy
    preview URL on it.
 3. Check the preview: run through "Checks after you deploy" in `docs/DEPLOY.md`
    against the preview URL rather than the live one.
-4. Only when it passes, merge it as one merge commit, so the whole phase can be
+4. Only when it passes, merge it as one merge commit, so the whole release can be
    undone in one step:
 
         git switch main
         git pull
-        git merge --no-ff build -m "Phase N: <what the phase did>"
+        git merge --no-ff build -m "<what the release does>"
         git push origin main
         git switch build
 
    Merging the pull request on GitHub with "Create a merge commit" does the same.
    Do not squash or rebase-merge.
 
-**Rolling back a phase.**
+**Undoing a release.**
 
-1. To get the live site back immediately, open Netlify, go to **Deploys**, pick the
-   deploy before the merge and click **Publish deploy**. This changes nothing in git.
-2. Then undo it in git, so the next push does not bring the phase back. Find the
-   phase's merge commit with `git log --merges --oneline main`, and:
+1. To get the live site back immediately, publish the previous deploy in Netlify
+   (`MAINTENANCE.md`, "Putting the site back after a bad deploy"). This changes nothing
+   in git.
+2. Then undo it in git, so the next push does not bring it back. Find the release's
+   merge commit with `git log --merges --oneline main`, and:
 
         git switch main
         git revert -m 1 <merge-commit>
@@ -444,7 +434,7 @@ on its preview URL.
 
 3. Bring `build` level with `main`: `git switch build && git merge main`.
 
-To bring a reverted phase back later, revert the revert on `build`
+To bring a reverted release back later, revert the revert on `build`
 (`git revert <revert-commit>`) before merging again. Otherwise Git treats those
 changes as already merged and leaves them out.
 

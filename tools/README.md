@@ -1,8 +1,7 @@
 # tools
 
 Helpers for maintaining and checking the site. **None of these is part of the
-build.** The build copies `site/` unchanged; nothing here has to run for the
-site to work, and nothing here is deployed. They exist so that anyone can repeat the
+build**: nothing here has to run for the site to work, and nothing here is deployed. They exist so that anyone can repeat the
 checks rather than take the published numbers on trust.
 
 Everything is Python 3 with Pillow (plus numpy for the elevation and map tools), or Node
@@ -10,7 +9,7 @@ with no dependencies at all. `render_maps.py` also drives the installed Google C
 
 | file | what it does |
 |---|---|
-| `serve.py` | Local server that mimics Netlify: gzip for text types, `Cache-Control` from the served folder's `_headers`, and **HTTP Range** so media can seek. `python3 tools/serve.py site 8080` |
+| `serve.py` | Local server that mimics Netlify: gzip for text types, `Cache-Control` from the served folder's `_headers`, and **HTTP Range** so media can seek. `python3 tools/serve.py _site 8080` |
 | `cdp.mjs` | Zero-dependency Chrome DevTools Protocol driver. Used to measure video scrubbing, check contrast, screenshot breakpoints and catch console errors. |
 | `linkcheck.py` | Walks every page and reports dead internal links, missing assets and unreachable external URLs. `--reveal` also measures the scroll-reveal blocks and flags any taller than eight viewports. |
 | `commons_fetch.py` | Finds a licensed Wikimedia Commons photograph per binomial, records photographer, licence and file page, and writes the local copies. |
@@ -20,7 +19,7 @@ with no dependencies at all. `render_maps.py` also drives the installed Google C
 | `catchment.py` | Delineates the Glenabo catchment by flow routing (Priority-Flood fill, D8, accumulation) on Copernicus and on FABDEM, tests sensitivity to the pour point, and compares the result with the published geometry. `python3 tools/catchment.py --write` regenerates the catchment in `site/assets/data/cairde-corrin.geojson` from the Copernicus routing only, with its area, elevation range, flow path, outlet and stop figures; FABDEM is a cross-check and nothing derived from it is written. An optional `outdir` gets the routed boundaries and a comparison image. |
 | `render_maps.py` | Renders the two static maps on the home page, `map-catchment` and `map-action`, from the shipped data file, Copernicus relief and OpenStreetMap, by laying each out as a page and photographing it in headless Chrome at the size the site reserves. Figures in the maps are read from the data file. `python3 tools/render_maps.py` |
 | `trail.py` | Publishes the walked Glenabo loop from the raw track in `source-data/`: removes the stretches walked twice, simplifies only below half a pixel at the map's maximum zoom, drops timestamps, and writes the map layer into the GeoJSON, `glenabo-loop.gpx`, and the profile section of the trails page. `python3 tools/trail.py` |
-| `compare_build.py` | Proves the build changed no hand-written file: compares every git-tracked file in `site/` (template sources excepted) with `_site/` by SHA-256 and byte by byte, fails on any difference, missing file or leaked template source, lists the generated pages, and prints the `_redirects` and `_headers` hashes side by side. `npm run build && python3 tools/compare_build.py` |
+| `compare_build.py` | Proves the build changed no copied file: compares every git-tracked file in `site/` (template sources excepted) with `_site/` by SHA-256 and byte by byte, fails on any difference, missing file or leaked template source, lists the generated pages, and prints the `_redirects` and `_headers` hashes side by side. `npm run build && python3 tools/compare_build.py` |
 | `vendor_cms.sh` | Rebuilds `site/admin/vendor/` from npm at the pinned Decap CMS and Netlify Identity widget versions, after checking each tarball's SHA-256. The news editor then loads nothing from a CDN. `tools/vendor_cms.sh` |
 | `selftest.js` | Checks the build code that parses what an editor types or what a page contains: YouTube addresses, social post addresses, and the check that stops any generated page loading something from another website. No network, no build needed. `node tools/selftest.js` |
 | `ldcheck.py` | Validates the structured data on every built page against the schema.org vocabulary: every type and property exists, each property is allowed on its type, nested types are accepted, and every `@id` reference is defined somewhere on the site. Downloads the vocabulary once into `.cache/`. `npm run build && python3 tools/ldcheck.py` |

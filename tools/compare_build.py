@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check that the build output is byte-identical to site/.
+"""Check that every file the build copies is byte-identical to its source in site/.
 
     npm run build && python3 tools/compare_build.py
 
@@ -8,7 +8,7 @@ fresh checkout (and Netlify) builds from, minus the template sources (.njk, .md,
 *.11tydata.js, _includes/, _content/) and the uploaded news photos (assets/uploads/),
 which must never be published. Every copied
 file is compared twice: by SHA-256 and by a full byte-by-byte read. Files the
-templates generate (News pages, sitemap.xml) are listed, not compared. Exits
+templates generate (every page and sitemap.xml) are listed, not compared. Exits
 non-zero on any difference, any missing file, or any leaked template source.
 """
 import filecmp, hashlib, os, subprocess, sys
