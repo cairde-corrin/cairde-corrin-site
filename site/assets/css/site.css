@@ -1,0 +1,560 @@
+/* Self-hosted, subset to the characters this site uses plus a margin for ordinary
+   edits. Serving these from Google's CDN put visitor IP addresses in front of a third
+   party, which an EU community group working with a semi-state body should not carry,
+   and it put a render-blocking third-party connection on the critical path. */
+@font-face{font-family:"EB Garamond";font-style:normal;font-weight:400;font-display:swap;
+  src:url(../fonts/ebgaramond-400.woff2) format("woff2")}
+@font-face{font-family:"EB Garamond";font-style:italic;font-weight:400;font-display:swap;
+  src:url(../fonts/ebgaramond-italic.woff2) format("woff2")}
+@font-face{font-family:"Inter";font-style:normal;font-weight:400 500;font-display:swap;
+  src:url(../fonts/inter-400-500.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:400;font-display:swap;
+  src:url(../fonts/plexmono-400.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:500;font-display:swap;
+  src:url(../fonts/plexmono-500.woff2) format("woff2")}
+:root{
+  --forest:#24451A; --green:#487629; --green-lt:#6E9B4A; --green-pale:#A8C98A;
+  --blue:#009ADE; --blue-lt:#7FD4FF; --blue-dk:#00719F; --navy:#08304F; --navy-dk:#041E33;
+  --ink:#152616; --ink-soft:#4E5F47; --paper:#F6F8F2; --paper-deep:#E9F0E1;
+  --grad-band:linear-gradient(155deg,#08304F 0%,#0B3D34 55%,#24451A 100%);
+  /* Ends at --blue-dk, not --blue: white on #009ADE is 3.15:1 and fails AA, which
+     affected every CTA, stop number, strand badge and the current-page nav pill.
+     #00719F gives 5.44:1. --blue stays for fills, rules and large display type. */
+  --grad-accent:linear-gradient(90deg,#487629 0%,#00719F 100%);
+  --glass:rgba(255,255,255,.10); --glass-line:rgba(255,255,255,.22);
+  --glass-lt:rgba(255,255,255,.62); --glass-lt-line:rgba(36,69,26,.14);
+  --display:"EB Garamond",Georgia,serif; --body:"Inter",system-ui,sans-serif;
+  --data:"IBM Plex Mono",ui-monospace,monospace;
+  --r:16px; --r-lg:24px; --r-pill:999px;
+  --measure:36rem; --shadow:0 18px 48px -24px rgba(8,48,79,.5);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
+  font-size:17px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+/* height:auto is required now that every img carries width/height attributes;
+   without it the attribute height wins and the image stretches. */
+img{display:block;max-width:100%;height:auto}
+picture{display:block}
+.stophero picture{width:100%;height:100%}
+a{color:var(--green)}
+/* No single blue clears 3:1 on both grounds: --blue is 2.94 on paper, --blue-dk is
+   2.50 on the navy band. So the ring takes the colour that suits its ground. */
+:focus-visible{outline:2px solid var(--blue-dk);outline-offset:3px;border-radius:4px}
+.on-dark :focus-visible,.band :focus-visible,footer :focus-visible,
+.nav.over :focus-visible{outline-color:var(--blue)}
+.skip{position:absolute;left:-9999px;top:0;z-index:200;font-family:var(--data);font-size:12px;
+  letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:#fff;
+  background:var(--forest);padding:14px 22px;border-radius:0 0 var(--r) 0}
+.skip:focus{left:0}
+h1.page-title{font-size:clamp(2rem,4vw,3.3rem);line-height:1.08;margin-bottom:22px}
+/* Correct heading levels, unchanged type scale: pages went h1 straight to h3. */
+h2.as-h3,h3.as-h3{font-size:1.42rem;line-height:1.3;margin-bottom:8px}
+h2.as-h4,h3.as-h4{font-size:1.08rem;line-height:1.35;margin-bottom:6px}
+h1,h2,h3,h4{font-family:var(--display);font-weight:400;letter-spacing:-.012em;margin:0}
+h1{font-size:clamp(3rem,8.4vw,6.6rem);line-height:.96}
+h2{font-size:clamp(2rem,4vw,3.3rem);line-height:1.08;margin-bottom:22px}
+h3{font-size:1.42rem;margin-bottom:8px}
+h4{font-size:1.08rem;margin-bottom:6px}
+p{max-width:var(--measure)}
+em.hy{font-style:italic;font-family:var(--display)}
+.wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+/* Pages whose content is all at reading width. Without this the column sits
+   against the left of a wide screen with half the viewport empty beside it.
+   The measure does not change; the column that holds it is simply centred. */
+.page-head.reading .wrap{max-width:824px}
+.eyebrow{font-family:var(--data);font-size:11px;letter-spacing:.17em;text-transform:uppercase;
+  color:var(--ink-soft);margin:0 0 20px;display:flex;align-items:center;gap:11px}
+.eyebrow::before{content:"";width:26px;height:2px;border-radius:2px;background:var(--grad-accent)}
+.lede{font-family:var(--display);font-size:clamp(1.18rem,2.1vw,1.55rem);line-height:1.48;
+  color:var(--ink-soft);max-width:34rem}
+.on-dark{color:#EEF5EA}
+.on-dark .eyebrow{color:rgba(238,245,234,.72)}
+.on-dark p{color:rgba(238,245,234,.88)}
+.on-dark .lede{color:rgba(238,245,234,.82)}
+.nav{position:fixed;inset:0 0 auto;z-index:80;display:flex;align-items:center;gap:6px;
+  padding:max(14px,env(safe-area-inset-top)) max(26px,env(safe-area-inset-right))
+          14px max(26px,env(safe-area-inset-left));
+  background:rgba(246,248,242,.82);backdrop-filter:blur(16px) saturate(150%);
+  -webkit-backdrop-filter:blur(16px) saturate(150%);
+  border-bottom:1px solid rgba(36,69,26,.1);transition:background .35s,border-color .35s}
+.nav.over{background:transparent;border-color:transparent}
+.brand{margin-right:auto;display:block}
+.logo-c,.logo-w{height:38px;width:auto}
+.logo-w{display:none}
+.nav.over .logo-c{display:none}
+.nav.over .logo-w{display:block}
+.navlinks{display:flex;gap:2px}
+.nav a.n{font-family:var(--data);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  text-decoration:none;color:var(--ink-soft);padding:9px 13px;border-radius:var(--r-pill);transition:.2s}
+.nav a.n:hover{color:var(--forest);background:rgba(36,69,26,.07)}
+.nav a.n[aria-current]{color:#fff;background:var(--grad-accent)}
+.nav.over a.n{color:rgba(238,245,234,.82)}
+.nav.over a.n:hover{color:#fff;background:rgba(255,255,255,.14)}
+.navtoggle{display:none;background:none;border:1px solid rgba(36,69,26,.24);color:inherit;
+  border-radius:var(--r-pill);font-family:var(--data);font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;padding:9px 18px;min-height:44px;min-width:44px;cursor:pointer}
+.nav.over .navtoggle{border-color:rgba(255,255,255,.4);color:#EEF5EA}
+.glass{background:var(--glass);border:1px solid var(--glass-line);border-radius:var(--r-lg);
+  backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);
+  padding:34px 32px;box-shadow:var(--shadow)}
+.glass-lt{background:var(--glass-lt);border:1px solid var(--glass-lt-line);border-radius:var(--r-lg);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:30px 28px;box-shadow:var(--shadow)}
+.plain{padding:clamp(72px,10vh,128px) 0}
+.plain.tint{background:var(--paper-deep)}
+.band{background:var(--grad-band);color:#EEF5EA;padding:clamp(80px,12vh,144px) 0;position:relative;overflow:hidden}
+.band::after{content:"";position:absolute;inset:auto -10% -40% 40%;height:70%;
+  background:radial-gradient(closest-side,rgba(0,154,222,.28),transparent);pointer-events:none}
+.band h2,.band h3,.band h4{color:#F3F9EF}
+.band p{color:rgba(238,245,234,.84)}
+.band .eyebrow{color:rgba(238,245,234,.66)}
+.page-head{padding:150px 0 0}
+/* ---- Scroll-driven film -------------------------------------------------------
+   Default is the static state: a poster with the three panels stacked, which is what
+   no-JS, narrow, metered, reduced-motion and Firefox all get. site.js adds .scrub
+   only after a runtime probe shows the engine can seek at speed. */
+.filmstrip{position:relative;background:var(--navy-dk)}
+.filmstrip-stage{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden}
+.filmstrip .film-poster,.filmstrip video{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+/* object-fit belongs on the img, not the picture wrapper */
+.filmstrip .film-poster img,.filmstrip video{object-fit:cover;width:100%;height:100%}
+/* Mobile hero. Same stage, same sticky behaviour, same panels: only the layer
+   showing the picture differs. Hidden until the lead frames have arrived, so the
+   poster carries the view until then. */
+.film-frames{position:absolute;inset:0;z-index:0;opacity:0;transition:opacity .6s}
+.film-frames img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.filmstrip.frames .film-frames{opacity:1}
+.filmstrip.frames .film-poster{opacity:0;transition:opacity .6s}
+.filmstrip.frames video{display:none}
+.filmstrip video{opacity:0;transition:opacity .6s}
+.filmstrip.scrub video{opacity:1}
+.filmstrip.scrub .film-poster{opacity:0;transition:opacity .6s}
+/* A soft vertical scrim, not a blurred panel. Glass does not belong over footage. */
+.film-scrim{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(4,30,51,.78) 0%,rgba(4,30,51,.34) 30%,
+             rgba(4,30,51,.30) 58%,rgba(4,30,51,.88) 100%)}
+/* The film met the band below it on a hard line. This dissolves the last fifth of
+   the stage into the exact colour that band starts with, #08304F, its 0% stop.
+   z-index 1 puts it over the footage and under the panels, so the third panel
+   stays legible. Explicit rgba rather than `transparent`, which is transparent
+   BLACK and would drag the ramp through a muddy grey on the way down. */
+.film-fade{position:absolute;left:0;right:0;bottom:0;height:20%;z-index:1;pointer-events:none;
+  /* Colour is horizontal, alpha is vertical. The band below is a 155deg gradient, so
+     its top edge is not one colour: it runs from #08304F at the left towards a
+     greener tone at the right. A flat fade matched the left and left a line at the
+     right. The mask does the fading, so the bottom row of this overlay carries the
+     band's top-edge ramp exactly. */
+  background:linear-gradient(90deg,#08304F 0%,#093446 62%,#0A3742 100%);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.55) 62%,#000 100%);
+          mask-image:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.55) 62%,#000 100%)}
+/* On a narrow screen the band's gradient has less width to travel, so its top edge
+   stays bluer. Same ramp, shorter reach. */
+@media (max-width:640px){
+  .film-fade{background:linear-gradient(90deg,#08304F 0%,#08324C 62%,#09334A 100%)}
+}
+
+.film-panels{position:relative;z-index:2;width:100%;max-width:1200px;margin:0 auto;
+  padding:clamp(120px,18vh,190px) 32px clamp(80px,12vh,130px);
+  display:flex;flex-direction:column;gap:clamp(56px,9vh,104px)}
+.film-panel{max-width:44rem}
+.film-strap{font-family:var(--data);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--blue-lt);margin:0 0 26px}
+.filmstrip h1{color:#F6FAF2;text-shadow:0 2px 34px rgba(4,30,51,.5)}
+.filmstrip h1 em{font-style:italic}
+.film-sub{font-family:var(--display);font-style:italic;font-size:clamp(1.14rem,2.2vw,1.6rem);
+  line-height:1.44;color:rgba(246,250,242,.94);max-width:31rem;margin:24px 0 0;
+  text-shadow:0 2px 24px rgba(4,30,51,.6)}
+.film-line{font-family:var(--display);font-size:clamp(1.7rem,3.6vw,2.9rem);line-height:1.18;
+  letter-spacing:-.012em;color:#F6FAF2;max-width:20ch;margin:0;
+  text-shadow:0 2px 30px rgba(4,30,51,.6)}
+.film-panel:last-child .film-line{max-width:26ch}
+
+/* pinned state */
+.filmstrip.scrub{height:400vh}
+.filmstrip.scrub .filmstrip-stage{position:sticky;top:0;height:100svh;min-height:0;display:block}
+.filmstrip.scrub .film-panels{position:absolute;inset:0;display:grid;place-items:center;
+  padding:0 clamp(22px,6vw,72px);gap:0;max-width:none}
+.filmstrip.scrub .film-panel{grid-area:1/1;width:min(44rem,100%);opacity:0;will-change:opacity,transform}
+
+/* ---- footer navigation and card links -------------------------------------------- */
+.footnav{display:flex;flex-wrap:wrap;gap:6px 18px;margin:20px 0 4px}
+.footnav a{font-family:var(--data);font-size:11px;letter-spacing:.11em;text-transform:uppercase;
+  text-decoration:none;color:rgba(238,245,234,.86);padding:6px 0}
+.footnav a:hover{color:#fff;text-decoration:underline}
+.card-link{font-family:var(--data);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+  text-decoration:none;color:var(--blue-dk)}
+.card-link:hover{text-decoration:underline}
+.watershots{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:clamp(14px,2vw,22px);margin:26px 0 8px}
+.watershots figure{margin:0}
+.watershots picture{display:block;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);
+  background:var(--paper-deep)}
+.watershots img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.watershots figcaption{margin-top:10px;font-family:var(--data);font-size:10.5px;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft)}
+
+/* ---- recordings ----------------------------------------------------------------- */
+.reclist{list-style:none;margin:22px 0 52px;padding:0;display:grid;gap:14px;max-width:44rem}
+.rec{background:var(--glass-lt);border:1px solid var(--glass-lt-line);border-radius:var(--r);
+  padding:18px 20px}
+.rec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.rec-n{font-family:var(--data);font-size:11px;color:#fff;background:var(--grad-accent);
+  border-radius:var(--r-pill);padding:4px 10px}
+.rec-time{font-family:var(--data);font-size:11.5px;letter-spacing:.06em;color:var(--ink)}
+.rec-dur{font-family:var(--data);font-size:11px;color:var(--ink-soft);margin-left:auto}
+.rec-flag{font-family:var(--data);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--blue-dk);border:1px solid rgba(0,113,159,.35);border-radius:var(--r-pill);padding:3px 9px}
+.rec audio{width:100%;margin-bottom:10px}
+.rec video{width:100%;max-height:420px;border-radius:var(--r);background:#0d1a12;display:block}
+.rec-film .rec-dur{margin-left:auto}
+.audio-meta{font-size:14.5px;color:var(--ink-soft);margin:0 0 12px}
+.audio audio{width:100%}
+
+.folknote{margin-top:38px}
+.folknote h2{margin-bottom:8px}
+.folknote p{margin:0 0 10px}
+
+/* ---- folklore ------------------------------------------------------------------ */
+.story{border-top:1px solid var(--glass-lt-line);padding:34px 0 8px;max-width:44rem}
+.story:first-of-type{border-top:0}
+.credits{margin:40px 0 0;max-width:46rem}
+.credits dt{font-family:var(--data);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-soft);margin-top:34px;padding-top:18px;border-top:1px solid var(--glass-lt-line)}
+.credits dd{margin:10px 0 0;font-size:16px;line-height:1.62;color:var(--ink)}
+.cred-list{display:grid;gap:6px}
+.cred-list span{font-family:var(--data);font-size:11.5px;line-height:1.6;color:var(--ink-soft)}
+.devlabel{font-family:var(--data);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:28px}
+.story h2[id]{scroll-margin-top:118px}
+.story-src{font-family:var(--data);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-soft);margin:0 0 14px}
+.story-place{font-family:var(--data);font-size:11.5px;line-height:1.7;color:var(--blue-dk);
+  margin:14px 0 0}
+.story-link{font-family:var(--data);font-size:11px;letter-spacing:.11em;text-transform:uppercase;
+  text-decoration:none;color:var(--blue-dk)}
+.story-link:hover{text-decoration:underline}
+
+/* ---- species list ---------------------------------------------------------------
+   No images: the only pictures available are screenshots of another site's pages. */
+.splist{list-style:none;margin:40px 0 0;padding:0;display:grid;gap:2px}
+.sp{background:var(--glass-lt);border:1px solid var(--glass-lt-line);border-radius:var(--r);
+  padding:20px 24px;display:grid;grid-template-columns:150px 1fr auto;gap:6px 24px;
+  align-items:baseline;grid-auto-rows:min-content}
+.sp-fig{grid-column:1;grid-row:1/span 4;margin:0;align-self:start}
+.sp-nofig{grid-template-columns:1fr auto}
+.sp-nofig .sp-name,.sp-nofig .sp-sci{grid-column:1}
+.sp-nofig .sp-recs{grid-column:2}
+.sp-fig picture{display:block;border-radius:10px;overflow:hidden}
+.sp-fig img{display:block;width:100%;height:auto;border-radius:10px}
+.sp-fig figcaption{font-family:var(--data);font-size:10.5px;line-height:1.55;color:var(--ink-soft);
+  margin-top:7px;letter-spacing:.02em}
+.sp-fig figcaption a{color:var(--ink-soft);text-underline-offset:2px}
+.sp-name{font-family:var(--display);font-size:1.3rem;margin:0;grid-column:2}
+.sp-sci{grid-column:2;font-family:var(--display);font-size:1.02rem;color:var(--ink-soft)}
+.sp-sci em{font-style:italic}
+.sp-none{font-size:.95rem}
+.sp-flag{font-family:var(--data);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-dk);border:1px solid rgba(0,113,159,.35);
+  border-radius:var(--r-pill);padding:3px 9px;margin-left:8px;white-space:nowrap}
+.sp-recs{list-style:none;margin:0;padding:0;grid-column:3;grid-row:1/span 4;align-self:start;text-align:right;
+  display:grid;gap:4px}
+.sp-recs li{display:block;font-family:var(--data);font-size:10.5px;letter-spacing:.06em}
+.sp-trail{display:block;color:var(--ink);text-transform:uppercase;letter-spacing:.11em}
+.sp-date{display:block;color:var(--ink-soft);margin-top:2px}
+.sp-desc{grid-column:2;font-size:15px;line-height:1.65;color:var(--ink-soft);margin:8px 0 0;max-width:60ch}
+.sp-cite{grid-column:2;font-family:var(--data);font-size:10.5px;letter-spacing:.06em;margin:8px 0 0}
+.sp-cite a{color:var(--ink-soft);text-underline-offset:2px}
+.photonote{margin:44px 0 0;border-top:1px solid var(--glass-lt-line);padding-top:22px;max-width:var(--measure)}
+.photonote summary{font-family:var(--data);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink);cursor:pointer;padding:6px 0}
+.photonote p{font-size:14.5px;line-height:1.7;color:var(--ink-soft);margin:12px 0 0}
+.credit{margin-top:26px;font-family:var(--data);font-size:11.5px;line-height:1.7;
+  color:var(--ink-soft);max-width:44rem}
+@media (max-width:640px){
+  .sp{grid-template-columns:1fr}
+  .sp-recs{grid-column:1;grid-row:auto;text-align:left;margin-top:10px}
+}
+
+/* ---- photograph carousel -------------------------------------------------------
+   CSS scroll-snap, no library, no autoplay. The track is a focusable region so a
+   keyboard can scroll it directly; the buttons are a convenience on top. */
+.gallery{padding-bottom:clamp(80px,11vh,140px)}
+.carousel{margin-top:34px;position:relative;--card:clamp(240px,74vw,400px);
+  --gutter:max(32px,calc((100vw - 1200px)/2 + 32px))}
+
+/* The arrows sit over the pictures, centred on the picture rather than on the
+   whole card: the caption underneath would drag the midpoint down. Picture is
+   3:4, so its centre is two thirds of the card width from the top. */
+.car-head{position:absolute;inset:0;margin:0;z-index:3;pointer-events:none}
+.car-btn{position:absolute;top:calc(var(--card) * 2 / 3);transform:translateY(-50%);
+  pointer-events:auto;width:52px;height:52px;border-radius:50%;padding:0;cursor:pointer;
+  display:grid;place-items:center;font-family:var(--data);font-size:18px;line-height:1;
+  color:var(--forest);border:1px solid rgba(255,255,255,.55);
+  background:rgba(255,255,255,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  box-shadow:0 2px 14px rgba(8,48,79,.18);
+  transition:background .2s,color .2s,border-color .2s,opacity .2s}
+#car-prev{left:max(14px,calc((100vw - 1200px)/2 + 6px))}
+#car-next{right:max(14px,calc((100vw - 1200px)/2 + 6px))}
+.car-btn:hover:not(:disabled){background:#fff;border-color:var(--blue-dk);color:var(--blue-dk)}
+.car-btn:focus-visible{outline:2px solid var(--blue-dk);outline-offset:3px}
+.car-btn:disabled{opacity:0;pointer-events:none}
+
+/* Partly visible cards at either end read as intentional rather than clipped. */
+.carousel::before,.carousel::after{content:"";position:absolute;top:0;z-index:2;
+  height:calc(var(--card) * 4 / 3);width:clamp(24px,5vw,64px);pointer-events:none}
+.carousel::before{left:0;background:linear-gradient(90deg,var(--paper),rgba(246,248,242,0))}
+.carousel::after{right:0;background:linear-gradient(270deg,var(--paper),rgba(246,248,242,0))}
+
+.car-scroll{overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;
+  scrollbar-width:thin;
+  /* scroll-padding, not just padding: without it the first snap jumps past the inset */
+  scroll-padding-left:var(--gutter)}
+.car-scroll:focus-visible{outline:2px solid var(--blue-dk);outline-offset:-2px}
+.car-track{list-style:none;margin:0;padding:0 var(--gutter) 8px;
+  display:flex;gap:clamp(14px,2vw,24px)}
+.car-item{flex:0 0 auto;width:var(--card);scroll-snap-align:start}
+.car-item figure{margin:0}
+.car-item picture{display:block;border-radius:var(--r-lg);overflow:hidden;
+  box-shadow:var(--shadow);background:var(--paper-deep)}
+.car-item img{width:100%;aspect-ratio:3/4;object-fit:cover}
+.car-meta{display:block;margin-top:12px;font-family:var(--data);font-size:11px;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft)}
+@media (max-width:900px){
+  .carousel{--gutter:22px}
+}
+@media (prefers-reduced-motion:reduce){
+  .car-scroll{scroll-behavior:auto}
+}
+
+/* ---- the 177 m / 174 m comparison ---------------------------------------------- */
+.compare{padding-bottom:clamp(80px,11vh,140px)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2.4vw,30px);margin-top:44px}
+.pair-item{margin:0}
+.pair-item picture{border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow);
+  background:var(--paper-deep)}
+.pair-item img{width:100%;aspect-ratio:3/4;object-fit:cover}
+.pair-item figcaption{margin-top:16px}
+.pair-meta{display:block;font-family:var(--data);font-size:11px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--ink-soft)}
+.pair-line{display:block;margin-top:8px;font-family:var(--display);
+  font-size:clamp(1.06rem,1.7vw,1.28rem);line-height:1.4;color:var(--ink)}
+@media (max-width:840px){
+  .pair{grid-template-columns:1fr;gap:34px}
+}
+
+.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:14px;margin:44px 0 0}
+.fig{background:var(--glass);border:1px solid var(--glass-line);border-radius:var(--r);
+  padding:22px 20px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.fig dt{font-family:var(--data);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(238,245,234,.62);margin:0 0 12px}
+.fig dd{margin:0;font-family:var(--display);font-size:2.1rem;line-height:1;font-variant-numeric:tabular-nums;
+  background:linear-gradient(90deg,#EEF5EA,#7FD4FF);-webkit-background-clip:text;
+  background-clip:text;color:transparent}
+.fig dd small{font-size:.86rem;margin-left:4px;-webkit-text-fill-color:rgba(238,245,234,.78);color:rgba(238,245,234,.78)}
+.figs.light .fig{background:var(--glass-lt);border-color:var(--glass-lt-line)}
+.figs.light dt{color:var(--ink-soft)}
+.figs.light dd{background:var(--grad-accent);-webkit-background-clip:text;background-clip:text}
+.figs.light dd small{-webkit-text-fill-color:var(--ink-soft);color:var(--ink-soft)}
+figure{margin:0}
+.mapfig{margin-top:52px;border:1px solid var(--glass-lt-line);border-radius:var(--r-lg);
+  overflow:hidden;background:#fff;box-shadow:var(--shadow)}
+.band .mapfig{border-color:var(--glass-line)}
+.mapfig img{width:100%}
+.mapfig figcaption{font-family:var(--data);font-size:11px;line-height:1.65;color:var(--ink-soft);
+  padding:15px 19px;border-top:1px solid var(--glass-lt-line);max-width:none;background:#fff}
+/* This composites over the figure's white ground, not over the band, so .5 left
+   near-white text on a pale blue-grey at 2.70:1. */
+.band .mapfig figcaption{color:rgba(238,245,234,.88);background:rgba(8,48,79,.94);border-top-color:var(--glass-line)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:16px;margin-top:44px}
+.card{background:var(--glass-lt);border:1px solid var(--glass-lt-line);border-radius:var(--r-lg);
+  padding:28px 26px;backdrop-filter:blur(12px);transition:transform .35s cubic-bezier(.2,.7,.3,1),box-shadow .35s}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.card .k{font-family:var(--data);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  margin:0 0 14px;color:var(--green);display:inline-block;padding:5px 11px;border-radius:var(--r-pill);
+  background:rgba(72,118,41,.1)}
+.card p{font-size:15.5px;color:var(--ink-soft);margin:6px 0 0}
+.card-fig{margin:0 0 16px}
+.card-fig picture{display:block;border-radius:10px;overflow:hidden}
+.card-fig img{display:block;width:100%;height:auto;border-radius:10px}
+.card-fig figcaption{font-family:var(--data);font-size:10.5px;line-height:1.55;
+  color:var(--ink-soft);margin-top:7px}
+.card-fig figcaption a{color:var(--ink-soft);text-underline-offset:2px}
+.band .card{background:var(--glass);border-color:var(--glass-line)}
+.band .card p{color:rgba(238,245,234,.8)}
+.band .card .k{color:var(--blue-lt);background:rgba(0,154,222,.16)}
+.strands{margin-top:42px;display:grid;gap:14px}
+.strand{display:grid;grid-template-columns:86px 1fr;gap:24px;align-items:start;
+  background:var(--glass-lt);border:1px solid var(--glass-lt-line);border-radius:var(--r-lg);padding:26px 28px}
+.strand-n{font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:#fff;background:var(--grad-accent);border-radius:var(--r-pill);padding:6px 0;text-align:center}
+.strand p{margin:6px 0 0;color:var(--ink-soft);font-size:16px}
+.strand a{font-family:var(--data);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+  display:inline-block;margin-top:12px;text-decoration:none;color:var(--blue-dk)}
+.strand a:hover{text-decoration:underline}
+.cta{display:inline-flex;align-items:center;gap:10px;font-family:var(--data);font-size:11.5px;
+  letter-spacing:.13em;text-transform:uppercase;text-decoration:none;color:#fff;
+  background:var(--grad-accent);padding:15px 30px;border-radius:var(--r-pill);margin-top:34px;
+  box-shadow:0 12px 30px -12px rgba(0,154,222,.6);transition:transform .25s,box-shadow .25s}
+.cta:hover{transform:translateY(-2px);box-shadow:0 18px 38px -14px rgba(0,154,222,.7)}
+.cta.ghost{background:transparent;color:var(--forest);border:1px solid rgba(36,69,26,.28);box-shadow:none}
+.on-dark .cta.ghost,.band .cta.ghost{color:#EEF5EA;border-color:rgba(255,255,255,.34)}
+.note{border-left:3px solid var(--blue);padding:6px 0 6px 20px;margin:32px 0;max-width:var(--measure)}
+.note p{font-size:15px;color:var(--ink-soft);margin:0}
+.stoplist{display:grid;gap:10px;margin-top:34px}
+.stopitem{display:grid;grid-template-columns:54px 1fr auto;gap:18px;align-items:center;
+  padding:18px 22px;border-radius:var(--r);text-decoration:none;color:inherit;
+  background:var(--glass-lt);border:1px solid var(--glass-lt-line);transition:.25s}
+.stopitem:hover{transform:translateX(4px);border-color:var(--blue)}
+.stopitem .sn{font-family:var(--data);font-size:11px;color:#fff;background:var(--grad-accent);
+  border-radius:var(--r-pill);text-align:center;padding:5px 0}
+.stopitem .st{font-family:var(--display);font-size:1.16rem}
+.stopitem .sd{font-family:var(--data);font-size:10.5px;color:var(--ink-soft);display:block;margin-top:2px}
+.stopitem .se{font-family:var(--data);font-size:10.5px;color:var(--ink-soft)}
+/* Group opacity was the problem, not its value: it fades text and ground together,
+   which caps the white-on-green badge below 4.5:1 at any setting. Muted colours and
+   a dashed edge carry "pending" instead, and every part clears AA. */
+.stopitem.pending{pointer-events:none;background:rgba(255,255,255,.4);border-style:dashed}
+.stopitem.pending .st{color:var(--ink-soft)}
+.stopitem.pending .sn{background:rgba(36,69,26,.78)}
+.stophero{position:relative;height:min(60vh,540px);overflow:hidden;border-radius:var(--r-lg);
+  margin-top:26px;box-shadow:var(--shadow)}
+.stophero img{width:100%;height:100%;object-fit:cover}
+.stopmeta{display:flex;flex-wrap:wrap;gap:14px;margin:28px 0 34px}
+.stopmeta div{font-family:var(--data);font-size:11px;color:var(--ink);background:var(--glass-lt);
+  border:1px solid var(--glass-lt-line);border-radius:var(--r);padding:12px 16px}
+.stopmeta span{display:block;font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-soft);margin-bottom:5px}
+.audio{border:1px solid var(--glass-lt-line);background:var(--glass-lt);border-radius:var(--r-lg);
+  padding:22px 24px;margin:34px 0;max-width:var(--measure)}
+.audio audio{width:100%;margin-top:12px}
+.audio p{font-size:14.5px;color:var(--ink-soft);margin:0}
+.transcript{max-width:var(--measure);margin-top:26px}
+.transcript summary{font-family:var(--data);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  cursor:pointer;color:var(--forest);padding:14px 20px;border-radius:var(--r-pill);
+  background:rgba(72,118,41,.09);display:inline-block;list-style:none;min-height:44px}
+.transcript summary::-webkit-details-marker{display:none}
+.stopnav{display:flex;justify-content:space-between;gap:20px;margin-top:58px;padding-top:24px;
+  border-top:1px solid var(--glass-lt-line)}
+.stopnav a{font-family:var(--data);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+  text-decoration:none;color:var(--ink-soft);padding:10px 16px;border-radius:var(--r-pill);transition:.2s}
+.stopnav a:hover{color:#fff;background:var(--grad-accent)}
+.linklist{margin-top:38px;max-width:46rem;display:grid;gap:8px}
+.linklist a{display:flex;justify-content:space-between;gap:20px;align-items:center;padding:16px 22px;
+  text-decoration:none;color:var(--ink);background:var(--glass-lt);border:1px solid var(--glass-lt-line);
+  border-radius:var(--r);transition:.25s}
+.linklist a:hover{transform:translateX(4px);border-color:var(--blue)}
+.linklist .u{font-family:var(--data);font-size:10.5px;color:var(--ink-soft)}
+.maprig{margin-top:44px}
+/* pan-y, not none: one finger must still scroll the page past the map. Two-finger
+   pan and pinch are handled in map.js. */
+.mapshell{position:relative;border:1px solid var(--glass-lt-line);border-radius:var(--r-lg);
+  background:#E9EFE3;height:clamp(460px,74vh,780px);overflow:hidden;touch-action:pan-y;box-shadow:var(--shadow)}
+.maphint{position:absolute;left:50%;bottom:64px;transform:translateX(-50%);z-index:4;
+  font-family:var(--data);font-size:11px;letter-spacing:.04em;color:#EEF5EA;white-space:nowrap;
+  background:rgba(8,48,79,.86);padding:10px 16px;border-radius:var(--r-pill);
+  pointer-events:none;opacity:1;transition:opacity .5s}
+.maphint.out{opacity:0}
+.mapshell svg{width:100%;height:100%;display:block;cursor:grab}
+.mapshell svg.drag{cursor:grabbing}
+.maplayers{position:absolute;top:14px;left:14px;background:rgba(255,255,255,.72);
+  border:1px solid var(--glass-lt-line);border-radius:var(--r);padding:12px 14px;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.maplayers label{display:flex;align-items:center;gap:9px;font-family:var(--data);font-size:10.5px;
+  color:var(--ink);padding:4px 0;min-height:44px;cursor:pointer;white-space:nowrap}
+.maplayers i{font-style:normal;color:var(--ink-soft);margin-left:auto;padding-left:16px}
+.maplayers input{accent-color:var(--blue);width:14px;height:14px;margin:0}
+.mapctl{position:absolute;top:14px;right:14px;display:flex;flex-direction:column;gap:6px}
+.mapctl button{width:44px;height:44px;border:1px solid var(--glass-lt-line);border-radius:12px;
+  background:rgba(255,255,255,.8);color:var(--forest);font-family:var(--data);font-size:16px;
+  cursor:pointer;padding:0;backdrop-filter:blur(10px);transition:.2s}
+.mapctl button:hover{background:#fff;color:var(--blue)}
+.mapscale{position:absolute;left:14px;bottom:14px;display:flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.76);padding:7px 12px;border-radius:var(--r-pill);
+  border:1px solid var(--glass-lt-line);backdrop-filter:blur(10px)}
+.mapscale .bar{height:7px;border:1.5px solid var(--forest);border-top:0;width:90px;border-radius:0 0 3px 3px}
+.mapscale span{font-family:var(--data);font-size:10px;color:var(--ink)}
+.mapread{position:absolute;right:14px;bottom:14px;font-family:var(--data);font-size:10px;
+  color:var(--ink-soft);background:rgba(255,255,255,.76);padding:7px 12px;border-radius:var(--r-pill);
+  border:1px solid var(--glass-lt-line);backdrop-filter:blur(10px)}
+.mapinfo{position:absolute;left:14px;bottom:60px;width:min(330px,calc(100% - 28px));
+  background:rgba(255,255,255,.9);border:1px solid var(--glass-lt-line);border-radius:var(--r-lg);
+  overflow:hidden;backdrop-filter:blur(16px);box-shadow:var(--shadow)}
+.mapinfo img{width:100%;height:140px;object-fit:cover}
+.mapinfo .b{padding:16px 18px 18px}
+.mapinfo dl{margin:0 0 14px;display:grid;grid-template-columns:auto 1fr;gap:4px 16px;
+  font-family:var(--data);font-size:10.5px}
+.mapinfo dt{color:var(--ink-soft)}
+.mapinfo dd{margin:0}
+.mapinfo a{font-family:var(--data);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;text-decoration:none}
+.mapclose{position:absolute;top:8px;right:8px;width:44px;height:44px;border:0;border-radius:50%;
+  cursor:pointer;background:rgba(21,38,22,.66);color:#fff;font-size:19px;padding:0;line-height:1}
+.maplayers-toggle{display:none;position:absolute;top:14px;left:14px;z-index:3;min-height:44px;
+  padding:0 18px;border:1px solid var(--glass-lt-line);border-radius:var(--r-pill);
+  background:rgba(255,255,255,.86);color:var(--forest);font-family:var(--data);font-size:11px;
+  letter-spacing:.12em;text-transform:uppercase;cursor:pointer;backdrop-filter:blur(10px)}
+.mapfail{position:absolute;inset:auto 14px;top:50%;transform:translateY(-50%);margin:0 auto;
+  max-width:32rem;text-align:center;background:var(--glass-lt);border:1px solid var(--glass-lt-line);
+  border-radius:var(--r-lg);padding:26px 24px;box-shadow:var(--shadow)}
+.mapfail b{display:block;font-family:var(--display);font-size:1.3rem;font-weight:400;color:var(--ink)}
+.mapfail span{display:block;margin-top:8px;font-size:15px;line-height:1.6;color:var(--ink-soft)}
+/* 12px: this is the positional-accuracy caveat, which has to stay legible. */
+.loc-note{font-family:var(--data);font-size:12px;line-height:1.7;color:var(--ink-soft);margin:14px 0 0;max-width:none}
+.src-note{font-family:var(--data);font-size:12px;line-height:1.7;color:var(--ink-soft);margin:-6px 0 20px;max-width:none}
+.trailgrid{display:grid;grid-template-columns:1.4fr 1fr;gap:52px;margin-top:56px;align-items:start}
+/* 12px, not 11: the footer carries the provenance and accuracy caveats, which are
+   the part of the page that most needs to be readable. */
+footer{background:var(--grad-band);color:rgba(238,245,234,.62);padding:64px 0 56px;
+  font-family:var(--data);font-size:12px;line-height:1.85}
+footer a{color:rgba(238,245,234,.88)}
+footer p{max-width:46rem}
+footer .pillars{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0}
+footer .pillars span{border:1px solid var(--glass-line);border-radius:var(--r-pill);padding:7px 16px;
+  letter-spacing:.13em;text-transform:uppercase;font-size:9.5px}
+.rv{opacity:0;transform:translateY(24px);transition:opacity .85s cubic-bezier(.2,.7,.3,1),transform .85s cubic-bezier(.2,.7,.3,1)}
+.rv.in{opacity:1;transform:none}
+@media (max-width:900px){
+  .wrap{padding:0 22px}
+  .trailgrid{grid-template-columns:1fr;gap:34px}
+  .sp{grid-template-columns:1fr auto;gap:6px 20px}
+  .sp-fig{grid-column:1/span 2;grid-row:auto;margin-bottom:6px;max-width:300px}
+  .sp-name,.sp-sci,.sp-desc,.sp-cite{grid-column:1}
+  .sp-recs{grid-column:2;grid-row:2/span 3;align-self:start}
+  .page-head{padding:118px 0 0}
+  .navtoggle{display:block}
+  .navlinks{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;
+    background:rgba(246,248,242,.97);backdrop-filter:blur(16px);padding:10px 16px 16px;
+    border-bottom:1px solid rgba(36,69,26,.12)}
+  .navlinks.open{display:flex}
+  .nav.over .navlinks{background:rgba(4,30,51,.95)}
+  .nav a.n{padding:12px 8px}
+  .glass,.glass-lt{padding:26px 22px}
+}
+@media (max-width:700px){
+  /* The layer list and the zoom controls both want the top of the map. Below 700px
+     the list folds behind a toggle. */
+  .maplayers-toggle{display:block}
+  .maplayers{display:none;top:66px}
+  .maplayers.open{display:block}
+  .mapshell{height:clamp(380px,64vh,560px)}
+  .maphint{bottom:56px;font-size:10.5px}
+}
+/* ---- hover zoom on photograph cards --------------------------------------------
+   The frame is fixed and clips, so only the image inside moves: no reflow, no
+   layout shift, and the caption underneath stays put. Pointer devices only. */
+@media (hover: hover){
+  .sp-fig img, .card-fig img, .watershots img, .car-item img{
+    transition:transform 300ms ease-out}
+  .sp:hover .sp-fig img,
+  .card:hover .card-fig img,
+  .watershots figure:hover img,
+  .car-item:hover img{transform:scale(1.05)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .rv{opacity:1;transform:none;transition:none}
+  .scroll-hint i{animation:none}
+  .sp-fig img, .card-fig img, .watershots img, .car-item img{transition:none}
+  .sp:hover .sp-fig img,
+  .card:hover .card-fig img,
+  .watershots figure:hover img,
+  .car-item:hover img{transform:none}
+}
