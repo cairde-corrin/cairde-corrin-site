@@ -31,6 +31,9 @@ REVEAL_MAX_VIEWPORTS = 8 # taller than this and the reveal is fragile - see belo
 
 def pages():
     for dirpath, _, files in os.walk(ROOT):
+        # Netlify Identity email templates: their links are {{ .SiteURL }} placeholders, not pages
+        if os.path.relpath(dirpath, ROOT) == os.path.join('admin', 'emails'):
+            continue
         for f in files:
             if f.endswith(('.html', '.xml')):
                 yield os.path.join(dirpath, f)

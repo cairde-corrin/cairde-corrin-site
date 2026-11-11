@@ -21,6 +21,7 @@ with no dependencies at all. `render_maps.py` also drives the installed Google C
 | `render_maps.py` | Renders the two static maps on the home page, `map-catchment` and `map-action`, from the shipped data file, Copernicus relief and OpenStreetMap, by laying each out as a page and photographing it in headless Chrome at the size the site reserves. Figures in the maps are read from the data file. `python3 tools/render_maps.py` |
 | `trail.py` | Publishes the walked Glenabo loop from the raw track in `source-data/`: removes the stretches walked twice, simplifies only below half a pixel at the map's maximum zoom, drops timestamps, and writes the map layer into the GeoJSON, `glenabo-loop.gpx`, and the profile section of the trails page. `python3 tools/trail.py` |
 | `compare_build.py` | Proves the build changed no hand-written file: compares every git-tracked file in `site/` (template sources excepted) with `_site/` by SHA-256 and byte by byte, fails on any difference, missing file or leaked template source, lists the generated News pages and sitemap, and prints the `_redirects` and `_headers` hashes side by side. `npm run build && python3 tools/compare_build.py` |
+| `vendor_cms.sh` | Rebuilds `site/admin/vendor/` from npm at the pinned Decap CMS and Netlify Identity widget versions, after checking each tarball's SHA-256. The news editor then loads nothing from a CDN. `tools/vendor_cms.sh` |
 
 ## Why the reveal height matters
 
