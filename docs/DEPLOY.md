@@ -1,191 +1,148 @@
-# Deploying cairdecorrin.ie
+# How the site is built and published
 
-The site is static. The build is Eleventy: it copies every hand-written file in
-`site/` to `_site/` unchanged, renders the News section and `sitemap.xml`, and
-Netlify serves `_site/`.
+For whoever looks after the technical side. The routine (usage, rolling back, editors,
+updating the editor) is in `MAINTENANCE.md`; connecting the domain is `DOMAIN-SETUP.md`.
 
-The site deploys by pushing to git. Netlify builds it from the repository on every
-push, so there is nothing to upload by hand.
+## How it works
+
+The pages are hand-written HTML kept as Nunjucks templates in `site/`. `npm run build`
+runs Eleventy, which renders them into `_site/`, adds the shared header and footer and
+the structured data, re-encodes any photos uploaded in the editor, and copies every other
+file (images, audio, video, fonts, CSS, JavaScript, map data, `_redirects`, `_headers`)
+across unchanged. Netlify runs that build on every push and publishes `_site/`. Nothing
+is ever uploaded by hand.
 
 ## Where it lives
 
     production       https://cairde-corrin.netlify.app         deploys from main
     branch preview   https://build--cairde-corrin.netlify.app  deploys from build
-    cairdecorrin.ie  registered with Letshost, DNS at Letshost, not yet pointed at Netlify
+    cairdecorrin.ie  registered with Letshost, not yet pointed at Netlify (DOMAIN-SETUP.md)
 
-Until the domain is connected (see "Connecting the domain" below), the site is only
-reachable at the two netlify.app addresses. The site's canonical URLs and its social
-preview images already use `https://www.cairdecorrin.ie/`, so link previews will not
-show a picture until the domain resolves.
+Every page already names `https://www.cairdecorrin.ie/` as its address in its canonical
+link, its sharing image and the sitemap, so until the domain is connected search engines
+have nothing to index and shared links show no picture.
 
-## The short version
+## Publishing a change
 
-Commit, then push. Netlify builds and publishes the branch you pushed:
+    git push origin build      # the branch preview
+    git push origin main       # production
 
-    git push origin build      # the branch preview, build--cairde-corrin.netlify.app
-    git push origin main       # production, cairde-corrin.netlify.app
+Changes are prepared and checked on `build` and merged to `main` as described in
+`CONTRIBUTING.md`. The editor is the one exception: it saves news, gallery photos and the
+home page's social posts straight to `main` (see "The editor" below).
 
-Never push to `main` directly: merge a checked phase from `build` as described in
-`docs/CONTRIBUTING.md`. News posts saved in the news editor are the one exception;
-they commit to `main` themselves (see "The news editor" below).
-
-**Do not deploy by dragging a folder onto Netlify Drop.** Dragging `site/` publishes a
-site with no News pages and no sitemap, because those only exist after the build.
-Dragging `_site/` works once but publishes a separate copy at a random address, with
-no news editor, and it goes stale the moment anyone saves a post.
+**Do not deploy by dragging a folder onto Netlify Drop.** Dragging `site/` publishes the
+templates unrendered, with no news, no header and no sitemap. Dragging `_site/` works
+once but creates a separate copy at a random address, with no editor, which goes stale
+the moment anyone publishes a post.
 
 ## Setting it up, once
 
-1. In Netlify: **Add new site -> Import an existing project**, and connect the
-   repository.
-2. Netlify reads `netlify.toml` at the repository root and fills in the
-   settings itself:
+This has been done for the current project. It is here for rebuilding from scratch.
 
-       publish   = "_site"
-       command   = "npm run build"
-       NODE_VERSION = "24.13.0"
+1. In Netlify: **Add new project -> Import an existing project**, and connect the
+   GitHub repository.
+2. Netlify reads `netlify.toml` at the repository root: publish `_site`, command
+   `npm run build`, Node 24.13.0. Keep those settings in that file, not in the Netlify
+   interface, so they travel with the repository. Netlify installs the two pinned
+   dependencies, Eleventy and its image plugin, from `package-lock.json`.
+3. **Deploy.**
+4. Under **Project configuration -> Build & deploy -> Continuous deployment -> Branches
+   and deploy contexts**, add `build` to the branch deploys and keep deploy previews on
+   for pull requests. Drafts in the editor are pull requests, so this is what gives them
+   a preview.
+5. Set up the editor's logins, below.
 
-   Keep these in `netlify.toml`, not the Netlify interface, so they travel with the
-   repository. Netlify installs the one pinned dependency, Eleventy, from
-   `package-lock.json`, and the build copies `site/` into `_site/` unchanged.
-3. **Deploy site.**
-4. Under **Site configuration -> Build & deploy -> Continuous deployment -> Branches and deploy contexts**,
-   set branch deploys to include `build`, and keep deploy previews on for pull
-   requests. Draft news posts are pull requests, so this is what gives an editor a
-   preview link.
+## The editor
 
-After that, every push to `main` redeploys production and every push to `build`
-redeploys the branch preview.
+The editor at `/admin/` is Decap CMS. Editors log in with Netlify Identity, and what they
+publish reaches the repository through Netlify Git Gateway. Decap and the login widget
+are served from `site/admin/vendor/` at pinned versions: nothing in the editor loads from
+a CDN, and no public page loads any Netlify script.
 
-## Connecting the domain
+**It commits straight to `main`.** A saved draft goes to its own `cms/...` branch and pull
+request; **Publish** merges it into `main`, and production redeploys. That bypasses
+`build` on purpose, for news posts, gallery photos and the social posts only; layouts,
+templates, `config.yml` and everything else still go through `build`. Because `main`
+moves on its own, bring `build` level with `git switch build && git merge main` before
+starting any work.
 
-`docs/DOMAIN-SETUP.md` is the complete procedure, written to be followed cold: the Netlify
-steps, the two DNS records to change at Letshost, the forwarding to switch off, the
-`config.yml` change and the checks afterwards. In short: add `www.cairdecorrin.ie` in
-Netlify and make it the primary domain, keep DNS at Letshost, point `@` at `75.2.60.5`
-and `www` at `cairde-corrin.netlify.app`, and **leave the email records alone**: the
-domain's email is hosted by Letshost, which is why moving the name servers to Netlify DNS
-is not recommended here.
+**Setting up its logins, once, in Netlify:**
 
-## Checks before you deploy
-
-Run these from the repository root, after `npm run build`. Beyond the build, none of
-them needs anything installed except Python 3, Pillow, and a copy of Chrome.
-
-    python3 tools/serve.py _site 8080     # then open http://localhost:8080
-    python3 tools/linkcheck.py --external
-
-`linkcheck.py` exits non-zero if any internal link is dead. The external pass is
-slower and depends on other people's servers being up; a 429 usually means rate
-limiting rather than a broken link, so re-run it before believing it.
-
-Use `tools/serve.py`, not `python3 -m http.server`. The built-in server does not
-answer Range requests, so the scroll-driven hero silently refuses to seek and
-appears broken locally while working perfectly in production.
-
-## The news editor
-
-The site has a news editor at `/admin/`, built with Decap CMS. Editors log in with
-Netlify Identity and their posts are saved to the repository through Netlify Git
-Gateway. Both scripts are served from `site/admin/vendor/` at pinned versions; nothing
-in the admin area loads from a CDN, and no public page loads any Netlify script.
-
-**The news editor commits straight to `main`, not to `build`.** A post saved as a
-draft goes to its own `cms/...` branch and pull request; pressing **Publish** merges it
-into `main`, and production redeploys. That bypasses the build branch on purpose, for
-news posts, gallery photos and the home page's social posts only. It is not a route for code: layouts, templates,
-`config.yml` and every other file still go through `build` and are merged by hand.
-After a post is published, bring `build` level with `git switch build && git merge
-main` before the next phase.
-
-The editor works only once this phase is on `main`. On the branch preview, drafts
-still go to `cms/...` branches, but **Publish** would merge a post into a `main` that
-has no News section yet. Do not publish from the preview before the merge.
-
-**Set-up, once, in the Netlify interface:**
-
-1. **Site configuration -> Identity -> Enable Identity.**
+1. **Project configuration -> Identity -> Enable Identity.**
 2. **Registration preferences -> Invite only.** Leave external providers (Google,
    GitHub and so on) off.
 3. **Identity -> Services -> Git Gateway -> Enable Git Gateway.** Netlify asks for
    access to the GitHub repository.
-4. **Identity -> Invite users**, and enter each editor's email address.
+4. Invite the editors (`MAINTENANCE.md`).
 
-Leave **Identity -> Emails** alone. Netlify sends its own default emails: the invite,
-the password reset and the email-address change. Each one links to the site root, with
-the token after a `#`, for example `https://www.cairdecorrin.ie/#invite_token=...`. A
-short inline script at the top of `site/index.njk` notices one of those three tokens
-and forwards the browser to `/admin/` with the `#...` part intact, where the login
-window takes over. On any other visit it does nothing; it loads nothing, sends nothing
-and sets no cookie. Do not remove it while the editor uses Netlify Identity, or invite
-links will open the home page and go no further.
+**The emails.** Leave **Identity -> Emails** alone. Netlify sends its own invitation,
+password-reset and email-change emails, and each links to the site's home page with a
+code after a `#`, for example `https://www.cairdecorrin.ie/#invite_token=...`. A one-line
+script at the top of `site/index.njk` notices those three codes and forwards the browser
+to `/admin/` with the code intact, where the login window takes over. On any other visit
+it does nothing: it loads nothing, sends nothing and sets no cookie. Do not remove it
+while the editor uses Netlify Identity.
 
-**The templates in `site/admin/emails/` are not used.** Custom email templates are a
-Netlify Pro feature, so on the free plan there is no setting to point at them. They are
-kept because they would work as they are on Pro: set the three template paths under
-**Identity -> Emails** to `/admin/emails/invitation.html`, `recovery.html` and
-`email-change.html`. Netlify reads them from the production deploy. The forwarder can
-stay in place either way.
+The templates in `site/admin/emails/` are not used: custom email templates are a paid
+Netlify feature. They are kept because they would work as they are on a paid plan (set
+the three template paths under **Identity -> Emails** to `/admin/emails/invitation.html`,
+`recovery.html` and `email-change.html`).
 
-**What to know about Git Gateway.** Netlify's documentation lists Git Gateway as
-deprecated: it keeps working for sites that have it, Netlify still fixes major
-security issues, but it no longer fixes bugs and does not recommend new set-ups.
-`docs/CMS-MIGRATION.md` says how to tell when it has to be replaced and exactly how to
-move the editor to Decap's GitHub backend.
+**Git Gateway** is listed by Netlify as deprecated: it keeps working, but Netlify no
+longer fixes bugs in it. `CMS-MIGRATION.md` says when and how to replace it.
 
-**Updating Decap or the widget.** `tools/vendor_cms.sh` downloads the pinned
-versions from npm, checks the tarballs against the recorded SHA-256 and copies the
-files into `site/admin/vendor/`. To move to a new version, change the version and
-hash in that script, change the two paths in `site/admin/index.html`, and check
-`/admin/` on the branch preview before merging. `site/admin/index.html` hides two
-pieces of Decap by their style label and button text, so after an update check that
-the top-bar **Media** button is still hidden while **Contents** and **Workflow** show,
-and that the body's Image button offers no "Insert from URL". It also refuses HEIC
-uploads; try one.
+## Checks before you deploy
+
+From the repository root, after `npm run build`:
+
+    python3 tools/serve.py _site 8080       # look at it: http://localhost:8080
+    python3 tools/compare_build.py          # every copied file identical to its source
+    python3 tools/linkcheck.py --external   # dead links, inside and out
+    python3 tools/ldcheck.py                # structured data against schema.org
+    node tools/selftest.js                  # the build's own parsers and checks
+
+Use `tools/serve.py`, not `python3 -m http.server`: the built-in server does not answer
+Range requests, so the home page film refuses to seek and looks broken locally while
+working in production. The external link check depends on other people's servers; a 429
+usually means rate limiting, so run it again before believing it.
 
 ## Checks after you deploy
 
-- Open `https://www.cairdecorrin.ie/s/1` and confirm it lands on stop 1. Then
-  `/s/10`, which should land on the reserved page, and `/s`, which should land on
-  the trails page. **These addresses are reserved for interpretation signage.**
-  Once signs are printed they cannot be changed, so treat them as fixed now.
-- Open the trails page and confirm the map draws. If it does not, the GeoJSON
-  did not deploy or a path is wrong.
-- Open the home page in Chrome or Safari and scroll: the hero should scrub. In
-  Firefox it should show a still image and never move. Both are correct.
+- Open `/s/1` and confirm it lands on stop 1, then `/s/10` (the reserved page) and `/s`
+  (the trails page). These are the sign addresses.
+- Open the trails page: the map draws, and the elevation profile shows under it.
+- Open the home page in Chrome or Safari and scroll: the film should move with the
+  scroll. In Firefox it should show a still image and never move. Both are correct.
+- Open `/admin/` and log in.
 
-## Caching, and the one thing to remember
+## Caching
 
 `site/_headers` sets how long browsers keep each kind of file:
 
-| what | how long | why |
+| What | How long | Why |
 |---|---|---|
-| `/assets/img/`, `/assets/video/`, `/assets/audio/`, `/assets/fonts/` | 1 year, immutable | the file name carries the width or the date, so a changed file is a new name. Photos and video stills from the news editor, under `/assets/img/news/`, are named by a hash of their contents, so the same holds |
-| `/assets/css/`, `/assets/js/` | 1 hour, revalidated | `site.css` and `site.js` keep their names when their contents change |
+| `/assets/img/`, `/assets/video/`, `/assets/audio/`, `/assets/fonts/` | 1 year, immutable | a changed file always gets a new name: hand-made images carry their width or an edition date, editor photos a hash of their contents, video stills their video's ID and size |
+| `/assets/css/`, `/assets/js/` | 1 hour, revalidated | `site.css` and `site.js` keep their names when they change |
 | `/assets/data/` | 1 day | |
 | everything else, including all pages | 5 minutes, revalidated | edits go live promptly |
 
-**If you edit a photograph, give it a new file name.** Overwriting
-`stream-1800.webp` with different pixels will show the old picture to anyone who
-has visited in the past year, and there is no way to force a refresh. Editing
-`site.css` or `site.js` is fine: those revalidate hourly.
-
-## Rolling back
-
-Netlify keeps every deploy. **Deploys -> pick an earlier one -> Publish deploy.**
-It is immediate and it does not touch the repository. Do that first if something
-is wrong in production, then fix the cause without anybody watching.
+**If you change a photograph, give it a new file name.** Overwriting a file with
+different pixels shows the old picture to anyone who visited in the past year, and there
+is no way to force a refresh. `map.js` and the map data carry a version instead
+(`CONTRIBUTING.md`, "Adding media").
 
 ## What must never change
 
-`site/_redirects` maps the `/s/N` addresses to stop pages. Those addresses are
-reserved for interpretation signage in development. The target of a redirect may change
-whenever the content moves. The left-hand side may not.
+The left-hand side of the `/s/N` lines in `site/_redirects`. Those addresses are printed
+on trail signs. Where they point may change whenever a page moves.
 
-## Things that are not set up, and were not asked for
+## What is deliberately not here
 
-No analytics, no forms, no functions, no edge handlers, no environment variables.
-Netlify Identity is used only by the news editor at `/admin/`; no public page loads
-it. The public site collects nothing, and `site/privacy/` says so, including what
-the news editor does. Adding anything that collects information makes that page
-wrong, so change it in the same commit.
+No analytics, no forms, no server functions, no edge functions, no environment
+variables. The public site collects nothing, and `site/privacy/` says so, including what
+the editor and a played video do. Adding anything that collects information makes that
+page wrong, so change it in the same commit.
+
+Netlify adds a short promotional HTML comment to production pages on its own. It is
+invisible and makes no requests; `OPEN-ITEMS.md` records what is known about it.

@@ -1,14 +1,15 @@
 # Cáirde Corrin - https://www.cairdecorrin.ie/
 #
-# The build is Eleventy configured as a pure passthrough (.eleventy.js): it copies
-# every file in site/ to _site/ unchanged and renders nothing, so _site/ is
-# byte-identical to site/. Check with: npm run build && python3 tools/compare_build.py
+# The build is Eleventy (.eleventy.js): it renders the page templates in site/ and
+# copies every other file to _site/ unchanged. Check the copied files with:
+#   npm run build && python3 tools/compare_build.py
 # _headers and _redirects live in site/ and are copied with everything else.
+# How the site is built and published: docs/DEPLOY.md.
 
 [build]
   publish = "_site"
   command = "npm run build"
 
 [build.environment]
-  # Exact Node version, the one the passthrough build was verified with.
+  # Exact Node version, the one the build is verified with.
   NODE_VERSION = "24.13.0"
