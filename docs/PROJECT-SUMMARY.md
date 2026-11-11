@@ -58,7 +58,6 @@ stops without audio.
 | The catchment mapping | The flow-routed catchment (about 360 ha), the 9.9 km² action area, the modelled channel network and relief, drawn as a vector map with layer controls. |
 | The home page film | The 4K clip the group already had, scrubbed by scroll position where the browser can do it. |
 | `sitemap.xml`, `robots.txt`, structured data | 15 URLs. Schema.org NGO, WebSite, BreadcrumbList, Place, TouristAttraction, AudioObject and VideoObject. |
-| GPX download | The four surveyed points, for a phone. |
 
 ## 3. Provenance
 
