@@ -84,10 +84,13 @@ collections:
         name: body
         widget: markdown
         buttons: [bold, italic, link, heading-two, heading-three, bulleted-list, numbered-list, quote]
-        editor_components: []
+        editor_components: [image]
+        media_library: { config: { max_file_size: 20000000 } }
         hint: >-
           Write the post here. Use the buttons above the box for bold text,
-          links, subheadings and lists. Photos go in the sections below, not here.
+          links, subheadings and lists. To put a photo between paragraphs, use
+          the + button above the box and choose Image. The main photo and the
+          extra photos go in the sections below.
 
       - label: Main photo
         name: hero
