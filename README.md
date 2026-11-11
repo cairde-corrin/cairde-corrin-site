@@ -58,6 +58,8 @@ Then open http://localhost:8080
       _includes/            The News layouts. Built, not copied
       news/index.njk        The News listing, ten to a page
       sitemap.njk           Writes sitemap.xml, adding each news post
+      admin/                The news editor (Decap CMS). Login required, commits to main
+      admin/vendor/         Decap and the Identity widget, pinned, served from this site
       index.html            Home - scrubbed film, then a descent from 213 m to the river at about 21 m
       trails/index.html     Interactive map and the ten stops
       stops/stop-1..10.html One page per stop. Three recorded, seven reserved

@@ -4,7 +4,8 @@ The site is static. The build is Eleventy: it copies every hand-written file in
 `site/` to `_site/` unchanged, renders the News section and `sitemap.xml`, and
 Netlify serves `_site/`.
 
-If you can drag a folder onto a web page, you can deploy this.
+The site deploys by pushing to git. Netlify builds it from the repository on every
+push, so there is nothing to upload by hand.
 
 ## Where it lives
 
@@ -19,23 +20,21 @@ show a picture until the domain resolves.
 
 ## The short version
 
-1. Run `npm install` once, then `npm run build`. That writes `_site/`.
-2. Go to <https://app.netlify.com/drop>
-3. Drag the **`_site`** folder onto it.
-4. Wait about twenty seconds.
+Commit, then push. Netlify builds and publishes the branch you pushed:
 
-That publishes a separate working copy at a random `*.netlify.app` address.
-Useful for showing someone a one-off copy. It does not touch the production site
-at cairde-corrin.netlify.app or the domain.
+    git push origin build      # the branch preview, build--cairde-corrin.netlify.app
+    git push origin main       # production, cairde-corrin.netlify.app
 
-**Drag `_site/`, not `site/` and not the folder above it.** `site/` has no News pages
-and no sitemap. If you drag the whole repository you
-will publish a site whose home page is a directory listing, and the `/s/1` sign
-addresses will not work.
+Never push to `main` directly: merge a checked phase from `build` as described in
+`docs/CONTRIBUTING.md`. News posts saved in the news editor are the one exception;
+they commit to `main` themselves (see "The news editor" below).
 
-## The proper version, connected to git
+**Do not deploy by dragging a folder onto Netlify Drop.** Dragging `site/` publishes a
+site with no News pages and no sitemap, because those only exist after the build.
+Dragging `_site/` works once but publishes a separate copy at a random address, with
+no news editor, and it goes stale the moment anyone saves a post.
 
-Set this up once and every push deploys itself.
+## Setting it up, once
 
 1. In Netlify: **Add new site -> Import an existing project**, and connect the
    repository.
@@ -50,9 +49,13 @@ Set this up once and every push deploys itself.
    repository. Netlify installs the one pinned dependency, Eleventy, from
    `package-lock.json`, and the build copies `site/` into `_site/` unchanged.
 3. **Deploy site.**
+4. Under **Site configuration -> Build & deploy -> Continuous deployment -> Branches and deploy contexts**,
+   set branch deploys to include `build`, and keep deploy previews on for pull
+   requests. Draft news posts are pull requests, so this is what gives an editor a
+   preview link.
 
-After that, every push to the main branch redeploys. Pull requests get their own
-preview URL.
+After that, every push to `main` redeploys production and every push to `build`
+redeploys the branch preview.
 
 ## Connecting the domain
 
@@ -88,6 +91,60 @@ limiting rather than a broken link, so re-run it before believing it.
 Use `tools/serve.py`, not `python3 -m http.server`. The built-in server does not
 answer Range requests, so the scroll-driven hero silently refuses to seek and
 appears broken locally while working perfectly in production.
+
+## The news editor
+
+The site has a news editor at `/admin/`, built with Decap CMS. Editors log in with
+Netlify Identity and their posts are saved to the repository through Netlify Git
+Gateway. Both scripts are served from `site/admin/vendor/` at pinned versions; nothing
+in the admin area loads from a CDN, and no public page loads any Netlify script.
+
+**The news editor commits straight to `main`, not to `build`.** A post saved as a
+draft goes to its own `cms/...` branch and pull request; pressing **Publish** merges it
+into `main`, and production redeploys. That bypasses the build branch on purpose, for
+news posts and their photos only. It is not a route for code: layouts, templates,
+`config.yml` and every other file still go through `build` and are merged by hand.
+After a post is published, bring `build` level with `git switch build && git merge
+main` before the next phase.
+
+The editor works only once this phase is on `main`. On the branch preview, drafts
+still go to `cms/...` branches, but **Publish** would merge a post into a `main` that
+has no News section yet. Do not publish from the preview before the merge.
+
+**Set-up, once, in the Netlify interface:**
+
+1. **Site configuration -> Identity -> Enable Identity.**
+2. **Registration preferences -> Invite only.** Leave external providers (Google,
+   GitHub and so on) off.
+3. **Identity -> Services -> Git Gateway -> Enable Git Gateway.** Netlify asks for
+   access to the GitHub repository.
+4. **Identity -> Emails.** Set each template path, so that the links in the emails
+   open `/admin/` and never a public page:
+
+       Invitation template            /admin/emails/invitation.html
+       Recovery template              /admin/emails/recovery.html
+       Email address change template  /admin/emails/email-change.html
+
+   The confirmation template is not used: with invite-only registration nobody
+   signs up unasked.
+5. **Identity -> Invite users**, and enter each editor's email address.
+
+Netlify reads the email templates from the deployed site, so step 4 only works once
+the templates are live on the production deploy.
+
+**What to know about Git Gateway.** Netlify's documentation lists Git Gateway as
+deprecated: it keeps working for sites that have it, Netlify still fixes major
+security issues, but it no longer fixes bugs and does not recommend new set-ups.
+Netlify Identity itself was deprecated in February 2025 and that was reversed in
+February 2026; it is supported. If Git Gateway stops working, the content stays in
+the repository and Decap can switch to its `github` backend, at the cost of every
+editor needing a GitHub account.
+
+**Updating Decap or the widget.** `tools/vendor_cms.sh` downloads the pinned
+versions from npm, checks the tarballs against the recorded SHA-256 and copies the
+files into `site/admin/vendor/`. To move to a new version, change the version and
+hash in that script, change the two paths in `site/admin/index.html`, and check
+`/admin/` on the branch preview before merging.
 
 ## Checks after you deploy
 
@@ -130,6 +187,8 @@ whenever the content moves. The left-hand side may not.
 
 ## Things that are not set up, and were not asked for
 
-No analytics, no forms, no Netlify Identity, no functions, no edge handlers, no
-environment variables. The site collects nothing, and `site/privacy/` says so.
-Adding any of them makes that page wrong, so change it in the same commit.
+No analytics, no forms, no functions, no edge handlers, no environment variables.
+Netlify Identity is used only by the news editor at `/admin/`; no public page loads
+it. The public site collects nothing, and `site/privacy/` says so, including what
+the news editor does. Adding anything that collects information makes that page
+wrong, so change it in the same commit.
