@@ -47,4 +47,17 @@ for (const h of ['<a href="https://www.instagram.com/p/x/">x</a>', '<link rel="c
   assert.equal(externalLoad(h), null, h);
 }
 
+// Navigation: Gallery only once it has a photo; the page's own link and its group are marked
+const { nav } = require('../site/_includes/nav.js');
+const links = (n) => n.flatMap((g) => g.items || [g]).map((i) => i.href);
+assert.ok(!links(nav('/', 0)).includes('gallery/'));
+assert.ok(links(nav('/', 3)).includes('gallery/'));
+assert.equal(nav('/', 0).length, 5, 'five header entries');
+const moor = nav('/new-spaces/corrin-moor.html', 0);
+assert.ok(moor.find((g) => g.id === 'work').current);
+assert.ok(moor.find((g) => g.id === 'work').items.find((i) => i.href === 'new-spaces/').current);
+assert.ok(!moor.find((g) => g.id === 'explore').current);
+assert.ok(nav('/news/some-post/', 0).find((g) => g.href === 'news/').current);
+assert.ok(nav('/', 0).every((g) => !g.current));
+
 console.log('selftest: all checks passed');

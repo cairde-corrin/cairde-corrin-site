@@ -126,7 +126,7 @@ The same goes for the two home page maps: `tools/render_maps.py` writes them und
 
 `site/assets/js/map.js` and `site/assets/data/cairde-corrin.geojson` change together, so
 they are versioned together: bump `DATA_V` in `map.js` and the `?v=` on its script tag in
-`site/trails/index.html` whenever either changes. Without it a returning visitor can get
+`site/trails/index.njk` whenever either changes. Without it a returning visitor can get
 a new script with a day-old data file, or the reverse, and a new layer silently fails to
 appear.
 
@@ -293,9 +293,9 @@ The photo goes through exactly the same re-encoding as a news photo: WebP at 700
 and 1800 px, no EXIF, XMP or GPS, original never published. `/gallery/` shows dated
 photos newest first, then undated ones, newest added first, as cards with the hover zoom
 the rest of the site uses. The entries make no pages of their own. With no photos the
-page says so, the home page shows no link to it, and the sitemap leaves it out. The
-gallery is not in the main navigation yet (see `docs/OPEN-ITEMS.md`): the home page's
-photo section links to it once it has a photo.
+page says so, and the navigation, the home page and the sitemap leave it out. Once it
+has a photo, Gallery appears under Explore in the header, in the footer, and as a link
+from the home page's photo section.
 
 **Social posts.** `site/_data/social.json` holds up to three Instagram or Facebook post
 addresses, each with a caption the editor types. The home page shows them as cards
@@ -306,13 +306,38 @@ share-tracking parameters (`igsh`, `mibextid` and the like) that identify whoeve
 the link, and stops on anything else.
 
 **The home page is a template.** `site/index.njk` is the hand-written home page with
-those two blocks added; everything else in it is written out exactly as it is. With no
-gallery photos and no social posts the built `index.html` is byte-identical to the file
-before it became a template, which is how to check that nothing else has drifted.
+those two blocks added; everything else in it is written out exactly as it is.
+
+## The navigation
+
+Every page is a `.njk` template so that its header and footer come from one place:
+`site/_includes/nav.js` defines the entries, `nav.njk` and `footnav.njk` write them. Apart
+from those two includes (and the home page's two blocks above), each page is written out
+exactly as it is in the repository. A page keeps its address: `trails/index.njk` builds
+`trails/index.html`, `stops/stop-1.njk` builds `stops/stop-1.html`.
+
+The header has five entries: **Trails** and **News** are links; **Explore**, **Our work**
+and **About** each open a short list. To add a page, add it to a group in `nav.js`; the
+header row does not grow. Add a sixth top-level entry only if it is as important as
+Trails and News.
+
+**The menu breakpoint is measured, not guessed.** The logo and the five entries need
+566 px at the current 12 px nav type. At 680 px that leaves 114 px, 20%, spare, so the
+row shows from 680 px up and folds behind **Menu** at 679 px and below. If you change the
+entries, their wording or the nav type, re-measure (the header's padding, plus the
+`.brand` and `.navlist` widths at a wide window) and move the `max-width` in `site.css` to
+match. The old nine-link row needed 966 px, which is why it used to need squeezing
+between 901 and 1000 px; that rule is gone.
+
+**Nothing on the site is set below 11 px**, legends, captions, map labels and nav
+included. Keep it that way. The elevation profile on the trails page is the one awkward
+case: it is an SVG drawn 720 units wide that scales with the page, so its labels scale
+too. Container queries in `site.css` step the label size with the profile's width so that
+the labels never show under 11 px; check them if you change the profile.
 
 ## Adding a new stop
 
-1. Copy `site/stops/stop-4.html` as the shape.
+1. Copy `site/stops/stop-4.njk` as the shape.
 2. Take position and bearing from the photograph EXIF. Do not estimate them. Take the
    elevation from a GPS track of the walk and Copernicus (`tools/dem_report.py`), rounded
    to 5 m, never from the EXIF altitude (see note 5 above).
@@ -321,7 +346,7 @@ before it became a template, which is how to check that nothing else has drifted
 4. Add the name to `STOPNO` in `site/assets/js/map.js` and the photograph slug to
    `PHOTO`. The `STOPNO` keys must match the feature names in the GeoJSON
    character for character, punctuation included.
-5. Move the entry in `site/trails/index.html` out of the `pending` state.
+5. Move the entry in `site/trails/index.njk` out of the `pending` state.
 
 ## Before you push
 

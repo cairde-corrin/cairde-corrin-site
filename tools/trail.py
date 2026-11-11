@@ -6,7 +6,7 @@
 Reads   source-data/2026-08-29_glenabo_loop.gpx (raw, timestamped, never published)
 Writes  site/assets/data/cairde-corrin.geojson   the "Walked loop" feature
         site/assets/data/glenabo-loop.gpx        the download: loop plus the four points
-        site/trails/index.html                   the walked-loop section and its profile,
+        site/trails/index.njk                    the walked-loop section and its profile,
                                                  between the walked-loop markers
 
 Cleaning. The walk doubled back on itself three times. It turned at the north end
@@ -23,7 +23,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW = os.path.join(ROOT, 'source-data', '2026-08-29_glenabo_loop.gpx')
 GEOJSON = os.path.join(ROOT, 'site', 'assets', 'data', 'cairde-corrin.geojson')
 GPX_OUT = os.path.join(ROOT, 'site', 'assets', 'data', 'glenabo-loop.gpx')
-TRAILS = os.path.join(ROOT, 'site', 'trails', 'index.html')
+TRAILS = os.path.join(ROOT, 'site', 'trails', 'index.njk')
 WALKED = '2026-08-29'
 KEEP = [(0, 100), (146, 189)]  # inclusive index ranges kept from the raw track
 MAX_ZOOM_PX_PER_MERC_M = 2.0   # map.js zoom() ceiling
@@ -99,8 +99,9 @@ def profile_svg(P, along, stop_marks, emin, emax, climb5):
                  % (x0, x1, Y(e), Y(e), x0 - 8, Y(e) + 4, e))
     km = 0.0
     while km <= L / 1000 + 1e-9:
-        g.append('<text class="ax" x="%.1f" y="%d" text-anchor="middle">%s</text>'
-                 % (X(km * 1000), y1 + 26, '%g km' % km))
+        # 0 km starts at the axis, so it cannot run into the lowest height label above it
+        g.append('<text class="ax" x="%.1f" y="%d" text-anchor="%s">%s</text>'
+                 % (X(km * 1000), y1 + 26, 'start' if km == 0 else 'middle', '%g km' % km))
         km += 0.5
     xs = [X(d) for _, d in stop_marks]
     for k, (no, d) in enumerate(stop_marks):
