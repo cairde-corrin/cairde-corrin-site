@@ -200,10 +200,27 @@ phone model. They are never published as uploaded. At build time,
 `site/_includes/images.js` re-encodes each one referenced by a post into WebP at 700,
 1100 and 1800 px wide, with width and height, plus a 1200 px JPEG for social previews,
 all under `/assets/img/news/`. Re-encoding drops the EXIF and XMP blocks, GPS
-included; the colour profile is the only block kept. `assets/uploads/` is excluded from
-the copy, and `tools/compare_build.py` fails if an original ever reaches `_site/`. This
-is a privacy fix first: do not publish anything from `assets/uploads/` directly, and
-do not reference an upload from anywhere except a post's photo fields.
+included; the colour profile is the only block kept. This covers the hero and gallery
+fields and photos placed in the body of a post with the Image button: a build step
+rewrites every `<img>` or link that points at `/assets/uploads/` in a News page to the
+processed copies. `assets/uploads/` is excluded from the copy, and
+`tools/compare_build.py` fails if an original ever reaches `_site/`. This is a privacy
+fix first: do not publish anything from `assets/uploads/` directly.
+
+The build stops, naming the post, rather than publish a page that would be broken or
+would break the site's promises: a reference to an upload that it cannot rewrite, a
+photo it cannot read, or an image, video or script loaded from another website. On
+Netlify a failed build leaves the previous deploy live, so the site never breaks; the
+new post simply does not appear until the cause is fixed.
+
+**iPhone photos and HEIC.** iPhones store photos as HEIC, which the build cannot read
+(the prebuilt image library has no HEVC decoder). What Safari on an iPhone hands the
+editor depends on how the photo is picked, according to WebKit's source
+(`WKFileUploadPanel.mm` and the `PhotoPickerPrefersOriginalImageFormat` preference,
+default off): **Photo Library** and **Take Photo** give a JPEG; **Choose File**, which
+opens the Files app, gives the original HEIC. The editor page refuses a HEIC before it
+is uploaded and tells the editor to pick it from Photo Library instead. This was read
+from WebKit's code, not tried on an iPhone.
 
 **The remaining half.** The originals still enter the repository at full size, 2 to
 13 MB each from a phone, GPS and all, so the repository grows with every photo and
@@ -213,9 +230,10 @@ repository holds those locations if it is ever made public.
 
 Each photo field in the news editor refuses files over 20 MB, as a backstop against
 videos and very large files; ordinary phone photos (2.4 to 12.5 MB on the phone used
-for the trail photographs) pass. The cap does not apply to the **Media** button in the
-editor's top bar, which uploads straight to `main` with no size check. Editor commits
-also bypass the local 25 MB pre-commit hook.
+for the trail photographs) pass. The top-bar **Media** button, which uploaded straight
+to `main` with no size check and no draft, is hidden on the editor page, and so are the
+"Insert from URL" buttons of the body's Image button. Editor commits bypass the local
+25 MB pre-commit hook.
 
 Everything below the front matter is the body, in Markdown. Images follow the media
 rules above: WebP at 1800 / 1100 / 700 px, a new file name for an edited picture, and
