@@ -48,21 +48,58 @@ no npm, no framework. Netlify publishes `site/` exactly as it sits.
 
 ## Verified data - safe to cite
 
-    Catchment area          3.30 km² (330 ha)  see the note below
-    Elevation range         34-228 m OD
-    Longest flow path       ~3.2 km
-    Outlet                  52.1333°N 8.3002°W, Munster Blackwater (HA 18)
-    Proposed action area    9.9 km² (989 ha)   see the note below
+    Catchment area          about 3.6 km² (about 360 ha)          note 1
+    Elevation range         21-213 m OD                           note 2
+    Longest flow path       about 4 km                            note 3
+    Outlet                  52.1333°N 8.3002°W, about 21 m OD, Munster Blackwater (HA 18)
+    Proposed action area    9.9 km² (about 990 ha)                note 4
     Proposed loop route     up to 15 km
     Glenabo extension       ~600 m
-    Stop 1 stream           52.12752°N 8.29878°W, 110 m, bearing 159°, 11 Apr 2026 07:10
-    Stop 2 plantation       52.12240°N 8.30604°W, 177 m, bearing 292°, 11 Apr 2026 08:48
-    Stop 3 mossy stand      52.12344°N 8.30538°W, 174 m, bearing 106°, 11 Apr 2026 08:54
+    Stop 1 stream           52.12752°N 8.29878°W, about 60 m, bearing 159°, 11 Apr 2026 07:10
+    Stop 2 plantation       52.12240°N 8.30604°W, about 110 m, bearing 292°, 11 Apr 2026 08:48
+    Stop 3 mossy stand      52.12344°N 8.30538°W, about 105 m, bearing 106°, 11 Apr 2026 08:54
 
-The two areas are the figures the group supplied. The polygons in
-`site/assets/data/cairde-corrin.geojson` measure 3.2823 km² and 9.8239 km², which is
-0.54% and 0.67% lower. Which is authoritative has not been settled. See
-`docs/PROJECT-SUMMARY.md`.
+Times are Irish summer time (UTC+1), as the cameras recorded them.
+
+1. The catchment in `site/assets/data/cairde-corrin.geojson` is the watershed of the
+   Glenabo at its Blackwater confluence, flow-routed on Copernicus GLO-30
+   (`python3 tools/catchment.py --write`). It measures 3.58 km², published as about
+   3.6 km² and about 360 ha so that every figure adds up against the map. It is good to
+   about one 30 m cell all round, roughly ±20 ha. For comparison only: c. 3.7 km²
+   (Roughan & O'Donovan, Phase 1, January 2021), c. 3.92 km² (Phase 2, April 2022) and
+   3.75 km² (flow routing on FABDEM V1-2, used as a check; FABDEM is CC BY-NC-SA, so
+   nothing derived from it is shipped). Never quote 3.30 km² or 330 ha: that came from a
+   traced map image whose boundary left out 0.36 km² in the south-east.
+2. The low end is the river at the confluence, from OPW gauge 18124 Fermoy U/S Rowing,
+   1.4 km downstream: gauge zero 21.187 m above Malin Head OD (OSGM15), levels
+   20.6-22.1 m in October-November 2026. Model heights on open water are unreliable, so
+   no model minimum is used. The high end is the highest Copernicus cell inside the
+   boundary. Copernicus is a surface model accurate to about 4 m, and that cell is
+   wooded: the bare-earth check puts the ground there about 9 m lower, and the highest
+   bare ground inside the boundary at 208 m.
+3. Measured cell to cell (D8) as 4.3 km, which overstates true length by up to about 8%.
+4. A drawn proposal: the catchment with Glenabo Wood, Corrin Hill and Knockananig
+   Reservoir added. Traced from the group's map and accurate to 10-20 m; the outline
+   measures 9.86 km². Not re-derived.
+5. Stop and photograph elevations come from the walk's own GPX (`source-data/`) and
+   Copernicus, rounded to 5 m; they agree within 4-8 m at each stop. No elevation on the
+   site is finer than 5 m, and every one carries "about". Never use photograph EXIF
+   altitudes as they stand: the Pixel 8a used on 11 April records height above the
+   ellipsoid, about 57 m above sea level here, so its photographs came down by about
+   that much.
+6. **One photograph elevation went up, not down, and is correct.** The 4 April image in
+   the home page carousel (boulder-stream, 07:56) was taken on an iPhone 15 Pro Max,
+   which records height above sea level, not above the ellipsoid. Its 125 m was never
+   57 m out; it became about 130 m only to put it on the same source as every other
+   figure (Copernicus reads 131.7 m there). Do not "correct" it back down.
+7. Stop 2 is a few metres higher than Stop 3. Estimates of the difference run from 1 to
+   6 m depending on the source, so the site gives no figure.
+8. The channel network length and segment count are withdrawn. The drawn network is
+   modelled, not walked, partial, and clipped to the catchment boundary. Publish no
+   figure for it.
+9. Positional accuracy: the catchment boundary is good to about one 30 m cell; the
+   action area is traced and good to 10-20 m; stop and photograph positions are phone
+   GPS, good to 10-20 m.
 
 ## Adding media
 
