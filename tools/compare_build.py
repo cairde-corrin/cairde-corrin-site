@@ -5,7 +5,8 @@
 
 Expected files are the git-tracked files under site/, which is exactly what a
 fresh checkout (and Netlify) builds from, minus the template sources (.njk, .md,
-*.11tydata.js, _includes/, _content/), which must never be published. Every copied
+*.11tydata.js, _includes/, _content/) and the uploaded news photos (assets/uploads/),
+which must never be published. Every copied
 file is compared twice: by SHA-256 and by a full byte-by-byte read. Files the
 templates generate (News pages, sitemap.xml) are listed, not compared. Exits
 non-zero on any difference, any missing file, or any leaked template source.
@@ -29,7 +30,8 @@ def main():
                              check=True).stdout.decode().split('\0')
     rels = {os.path.relpath(f, 'site') for f in tracked if f}
     source = lambda p: (p.endswith(('.njk', '.md', '.11tydata.js'))
-                        or p.split(os.sep)[0] in ('_includes', '_content'))
+                        or p.split(os.sep)[0] in ('_includes', '_content')
+                        or p.startswith(os.path.join('assets', 'uploads') + os.sep))
     expected = {p for p in rels if not source(p)}
     built = {os.path.relpath(os.path.join(d, f), OUT) for d, _, fs in os.walk(OUT) for f in fs}
     clutter = {p for p in built - expected if os.path.basename(p) == '.DS_Store'}

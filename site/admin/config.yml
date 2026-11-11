@@ -21,6 +21,11 @@ logo_url: /assets/img/logo.webp
 
 media_folder: site/assets/uploads
 public_folder: /assets/uploads
+# Uploads are never published as they are: the build re-encodes each one, which removes
+# its GPS position and other metadata (site/_includes/images.js). Each image field below
+# caps uploads at 20 MB, only as a backstop against videos and very large files; phone
+# photos here run 2.4 to 12.5 MB. Decap reads the cap per field: a top-level
+# media_library block without a name is a config error.
 
 slug:
   encoding: ascii
@@ -96,11 +101,14 @@ collections:
           - label: Photo
             name: src
             widget: image
+            media_library: { config: { max_file_size: 20000000 } }
             required: false
             choose_url: false
             hint: >-
               Choose or upload a photo. Please use a photo you took yourself, or
-              one you have permission to use.
+              one you have permission to use. Photos straight from a phone are
+              fine: the website makes smaller copies and removes the location
+              the phone stored in them.
           - label: Describe the photo for people who cannot see it
             name: alt
             widget: string
@@ -120,23 +128,22 @@ collections:
             value_type: int
             required: false
             hint: >-
-              Optional. Leave this empty unless you know it. On an iPhone, open
-              the photo in Photos and swipe up: the first number in, for example,
-              4032 × 3024 is the width.
+              Leave this empty. It is worked out automatically for photos
+              uploaded here.
           - label: Height in pixels
             name: height
             widget: number
             value_type: int
             required: false
-            hint: Optional. The second number, for example 3024. Leave empty if unsure.
+            hint: Leave this empty. It is worked out automatically for photos uploaded here.
           - label: Other sizes of the same photo
             name: srcset
             widget: list
             required: false
             collapsed: true
             hint: >-
-              Leave this empty. It is filled in by whoever looks after the website
-              when the same photo exists at several sizes.
+              Leave this empty. The smaller sizes of an uploaded photo are made
+              automatically.
             field: { label: Size, name: size, widget: string }
 
       - label: More photos
@@ -153,10 +160,13 @@ collections:
           - label: Photo
             name: src
             widget: image
+            media_library: { config: { max_file_size: 20000000 } }
             choose_url: false
             hint: >-
               Choose or upload a photo. Please use a photo you took yourself, or
-              one you have permission to use.
+              one you have permission to use. Photos straight from a phone are
+              fine: the website makes smaller copies and removes the location
+              the phone stored in them.
           - label: Describe the photo for people who cannot see it
             name: alt
             widget: string
@@ -173,13 +183,13 @@ collections:
             widget: number
             value_type: int
             required: false
-            hint: Optional. Leave empty unless you know it.
+            hint: Leave this empty. It is worked out automatically for photos uploaded here.
           - label: Height in pixels
             name: height
             widget: number
             value_type: int
             required: false
-            hint: Optional. Leave empty unless you know it.
+            hint: Leave this empty. It is worked out automatically for photos uploaded here.
 
       - label: YouTube video
         name: youtube

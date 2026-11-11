@@ -1,11 +1,12 @@
 {
   "name": "cairde-corrin-site",
   "private": true,
-  "description": "Static site for Cáirde Corrin. The build is a passthrough copy of site/ into _site/.",
+  "description": "Static site for Cáirde Corrin. Eleventy copies site/ into _site/ unchanged and builds the News section and its photos.",
   "scripts": {
     "build": "eleventy"
   },
   "devDependencies": {
-    "@11ty/eleventy": "3.1.8"
+    "@11ty/eleventy": "3.1.8",
+    "@11ty/eleventy-img": "7.1.1"
   }
 }

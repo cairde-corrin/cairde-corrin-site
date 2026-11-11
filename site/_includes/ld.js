@@ -48,7 +48,8 @@ module.exports = {
       author: { '@type': data.author === 'Cáirde Corrin' ? 'Organization' : 'Person', name: data.author },
       publisher: { '@id': SITE + '/#organisation' },
       mainEntityOfPage: url,
-      image: SITE + (data.hero && data.hero.src ? data.hero.src : '/assets/img/og-default.jpg'),
+      image: SITE + (data.hero && data.hero.og ? data.hero.og.src
+        : data.hero && data.hero.src ? data.hero.src : '/assets/img/og-default.jpg'),
       inLanguage: 'en-IE',
     };
     const graph = module.exports.page([['Home', '/'], ['News', '/news/'], [data.title]])['@graph'];
