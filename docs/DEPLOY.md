@@ -118,19 +118,23 @@ has no News section yet. Do not publish from the preview before the merge.
    GitHub and so on) off.
 3. **Identity -> Services -> Git Gateway -> Enable Git Gateway.** Netlify asks for
    access to the GitHub repository.
-4. **Identity -> Emails.** Set each template path, so that the links in the emails
-   open `/admin/` and never a public page:
+4. **Identity -> Invite users**, and enter each editor's email address.
 
-       Invitation template            /admin/emails/invitation.html
-       Recovery template              /admin/emails/recovery.html
-       Email address change template  /admin/emails/email-change.html
+Leave **Identity -> Emails** alone. Netlify sends its own default emails: the invite,
+the password reset and the email-address change. Each one links to the site root, with
+the token after a `#`, for example `https://www.cairdecorrin.ie/#invite_token=...`. A
+short inline script at the top of `site/index.html` notices one of those three tokens
+and forwards the browser to `/admin/` with the `#...` part intact, where the login
+window takes over. On any other visit it does nothing; it loads nothing, sends nothing
+and sets no cookie. Do not remove it while the editor uses Netlify Identity, or invite
+links will open the home page and go no further.
 
-   The confirmation template is not used: with invite-only registration nobody
-   signs up unasked.
-5. **Identity -> Invite users**, and enter each editor's email address.
-
-Netlify reads the email templates from the deployed site, so step 4 only works once
-the templates are live on the production deploy.
+**The templates in `site/admin/emails/` are not used.** Custom email templates are a
+Netlify Pro feature, so on the free plan there is no setting to point at them. They are
+kept because they would work as they are on Pro: set the three template paths under
+**Identity -> Emails** to `/admin/emails/invitation.html`, `recovery.html` and
+`email-change.html`. Netlify reads them from the production deploy. The forwarder can
+stay in place either way.
 
 **What to know about Git Gateway.** Netlify's documentation lists Git Gateway as
 deprecated: it keeps working for sites that have it, Netlify still fixes major
