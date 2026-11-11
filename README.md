@@ -28,10 +28,10 @@ this size, and Firefox paid all of it. Worth revisiting again.
 
 ## The site
 
-Static site. No framework and no templating. The build, `npm run build`, is Eleventy
-configured as a pure passthrough: it copies `site/` to `_site/` byte for byte and
-renders nothing, and Netlify publishes `_site/`. So `site/` is still exactly the
-website. `python3 tools/compare_build.py` proves the two are identical.
+Static site. No framework. The build, `npm run build`, is Eleventy: it copies every
+hand-written file in `site/` to `_site/` byte for byte, and renders only the News
+section and `sitemap.xml`. Netlify publishes `_site/`. `python3 tools/compare_build.py`
+proves every copied file is identical.
 
 ## Before you edit
 
@@ -41,11 +41,11 @@ and everything borrowed is credited.
 
 ## Local preview
 
-The map fetches `site/assets/data/cairde-corrin.geojson`, which browsers block on
+The map fetches `assets/data/cairde-corrin.geojson`, which browsers block on
 `file://`, and the hero video needs HTTP Range requests, which `http.server` does
-not answer. Use the local server in `tools/`:
+not answer. Build, then serve the output with the local server in `tools/`:
 
-    python3 tools/serve.py site 8080
+    npm run build && python3 tools/serve.py _site 8080
 
 Then open http://localhost:8080
 
@@ -54,6 +54,10 @@ Then open http://localhost:8080
 ## Structure
 
     site/                   Everything that deploys, and nothing else
+      _content/news/        News posts, one Markdown file each. Built, not copied
+      _includes/            The News layouts. Built, not copied
+      news/index.njk        The News listing, ten to a page
+      sitemap.njk           Writes sitemap.xml, adding each news post
       index.html            Home - scrubbed film, then a descent from 213 m to the river at about 21 m
       trails/index.html     Interactive map and the ten stops
       stops/stop-1..10.html One page per stop. Three recorded, seven reserved

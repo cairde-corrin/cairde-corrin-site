@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Walk every page under site/ and report dead links and missing assets.
+"""Walk every page of the built site, _site/, and report dead links and missing assets.
 
-    python3 tools/linkcheck.py            # internal only
+    npm run build && python3 tools/linkcheck.py   # internal only
     python3 tools/linkcheck.py --external # also fetch every external URL
     python3 tools/linkcheck.py --reveal   # also measure scroll-reveal block heights
 
@@ -12,7 +12,10 @@ needs Node and Chrome. Neither is needed to build or deploy the site.
 import os, re, sys, html, json, socket, subprocess, tempfile, time
 import urllib.parse, urllib.request, collections
 
-ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'site')
+# The built output, not site/: News pages and sitemap.xml exist only after `npm run build`.
+ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '_site')
+if not os.path.isdir(ROOT):
+    sys.exit('No _site/ yet: run `npm run build` first.')
 # href and src hold ONE url which may itself contain commas (Commons file names do).
 # srcset holds several, comma separated. content is prose except on the og/twitter
 # image and url tags, so it is matched separately rather than scanned wholesale.

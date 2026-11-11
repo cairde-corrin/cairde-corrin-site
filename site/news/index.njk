@@ -1,0 +1,26 @@
+---
+layout: base.njk
+title: News
+description: News from Cáirde Corrin, newest first.
+pagination:
+  data: collections.news
+  size: 10
+  alias: posts
+permalink: "news/{% if pagination.pageNumber > 0 %}page/{{ pagination.pageNumber + 1 }}/{% endif %}index.html"
+---
+{%- set r = page.url | root -%}
+    <p class="eyebrow rv">News</p>
+    <h1 class="rv page-title">News.</h1>
+    <p class="lede rv">Updates from Cáirde Corrin, newest first.</p>
+{%- if not posts.length %}
+    <p class="rv">Nothing has been posted yet.</p>
+{%- else %}
+    <div class="cards">
+{%- for post in posts %}
+      <article class="card rv"><p class="k"><time datetime="{{ post.date | isoDate }}">{{ post.date | longDate }}</time></p><h2 class="as-h3"><a href="{{ r }}{{ post.url | rel('') }}">{{ post.data.title }}</a></h2><p>{{ post.data.summary }}</p><a class="card-link" href="{{ r }}{{ post.url | rel('') }}" aria-hidden="true" tabindex="-1">Read</a></article>
+{%- endfor %}
+    </div>
+{%- endif %}
+{%- if pagination.href.previous or pagination.href.next %}
+    <p class="rv" style="margin-top:44px">{% if pagination.href.previous %}<a class="card-link" href="{{ r }}{{ pagination.href.previous | rel('') }}">Newer</a>{% endif %}{% if pagination.href.previous and pagination.href.next %} · {% endif %}{% if pagination.href.next %}<a class="card-link" href="{{ r }}{{ pagination.href.next | rel('') }}">Older</a>{% endif %}</p>
+{%- endif %}

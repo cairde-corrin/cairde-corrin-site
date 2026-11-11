@@ -25,10 +25,10 @@ it sits.
 
 ## Hard rules
 
-- **The build is a passthrough copy.** `npm run build` runs Eleventy, which copies
-  `site/` to `_site/` byte for byte and renders nothing (`.eleventy.js` sets no template
-  formats). Netlify publishes `_site/`. That keeps the one promise this repository
-  makes: the folder in front of you is the website. Do not add templates, layouts,
+- **The build copies, and renders only News.** `npm run build` runs Eleventy, which
+  copies every hand-written file in `site/` to `_site/` byte for byte and renders only
+  the News section and `sitemap.xml` from `.njk` and `.md` sources. Netlify publishes
+  `_site/`. Every hand-written page is still exactly what you see in `site/`. Do not add templates, layouts,
   plugins, a bundler, Tailwind or React without a decision to do so. After any change to
   the build, `npm run build && python3 tools/compare_build.py` must report no
   differences.
@@ -160,13 +160,39 @@ AVIF is written by Pillow at quality 45, roughly equivalent to avifenc q58.
 
 ## Useful commands
 
-    python3 tools/serve.py site 8080     # preview at http://localhost:8080
+    npm run build                        # writes _site/
+    python3 tools/serve.py _site 8080    # preview at http://localhost:8080
     python3 tools/linkcheck.py --external
     python3 tools/linkcheck.py --reveal  # scroll-reveal block heights
 
 Use `tools/serve.py` rather than `python3 -m http.server`. The built-in server does not
 answer Range requests, so the hero cannot seek and appears broken locally while working
-in production. `serve.py` also reads `site/_headers`, so caching behaves as it will live.
+in production. `serve.py` also reads the `_headers` it serves, so caching behaves as it
+will live.
+
+## Adding a news post
+
+One Markdown file in `site/_content/news/`, named `YYYY-MM-DD-short-slug.md`. The
+slug, without the date, becomes the address: `/news/short-slug/`. The front matter:
+
+    title:    the headline
+    date:     2026-11-11              the real publication date; it drives the order,
+                                      the sitemap and the Article structured data
+    author:   a name, or Cáirde Corrin
+    summary:  one or two sentences for the listing and the page description
+    hero:     optional: src, alt, width, height, and srcset for the -700 and -1100
+              variants, so phones download the small one
+    gallery:  optional list of src, alt, width, height, caption
+    youtube:  optional video ID; carried, not shown on the page yet
+
+Everything below the front matter is the body, in Markdown. Images follow the media
+rules above: WebP at 1800 / 1100 / 700 px, a new file name for an edited picture, and
+real alt text. The usual rules apply in full: invent nothing, name no living person
+without consent, hyphens never dashes.
+
+`sample: true` marks a placeholder. It adds a notice and `noindex` to the post and keeps
+it out of the sitemap. The two sample posts exist only to show the layout and must be
+deleted before News goes live.
 
     # batch resize a folder of photographs
     python3 -c "
