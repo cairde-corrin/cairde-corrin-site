@@ -19,9 +19,10 @@ derived from it, write the processed result into `site/` and commit both.
 ## What this is
 
 A static website for a voluntary community group in Fermoy, Co. Cork, working on
-the Glenabo and Corrin woodlands. Vanilla HTML, CSS and JavaScript. No framework
-and no templating. Netlify runs a passthrough build that publishes `site/` exactly as
-it sits.
+the Glenabo and Corrin woodlands. Vanilla HTML, CSS and JavaScript, no framework.
+The build copies every hand-written page in `site/` unchanged and renders only the
+News section and the sitemap. News posts can also be written in the news editor at
+`/admin/`, which commits them to `main`.
 
 ## Hard rules
 
@@ -172,6 +173,11 @@ will live.
 
 ## Adding a news post
 
+Most posts should be written in the news editor at `/admin/` (see "The news editor" in
+`docs/DEPLOY.md`). It writes exactly the file described here and commits it to `main`.
+Writing the file by hand on `build` works too, and is the route for anything the editor
+cannot do, such as the `-700` / `-1100` photo variants.
+
 One Markdown file in `site/_content/news/`, named `YYYY-MM-DD-short-slug.md`. The
 slug, without the date, becomes the address: `/news/short-slug/`. The front matter:
 
@@ -181,9 +187,16 @@ slug, without the date, becomes the address: `/news/short-slug/`. The front matt
     author:   a name, or Cáirde Corrin
     summary:  one or two sentences for the listing and the page description
     hero:     optional: src, alt, width, height, and srcset for the -700 and -1100
-              variants, so phones download the small one
+              variants, so phones download the small one. width and height may be
+              left out; the page then omits them rather than writing empty ones
+    updated:  optional date of a significant later change, for dateModified
     gallery:  optional list of src, alt, width, height, caption
     youtube:  optional video ID; carried, not shown on the page yet
+
+Photos uploaded through the news editor go to `site/assets/uploads/` exactly as the
+editor's phone produced them: Decap does not resize, recompress or strip location
+data. Until an upload pipeline exists, check the size of anything in that folder
+before a phase merge, and replace a phone photo with a resized WebP.
 
 Everything below the front matter is the body, in Markdown. Images follow the media
 rules above: WebP at 1800 / 1100 / 700 px, a new file name for an edited picture, and
@@ -250,6 +263,12 @@ Two branches:
 
     main    what is live. Netlify deploys every push to it.
     build   where all work happens. Never commit to main directly.
+
+The one exception is the news editor at `/admin/`. It commits news posts and their
+photos straight to `main`, bypassing `build`, and that is intended: it is for content,
+never for code. Do not use it, or GitHub's web editor, to change anything else. Because
+`main` moves on its own, run `git switch build && git merge main` before starting work
+and before merging a phase, so the merge does not undo a post.
 
 Work proceeds in phases. A phase is merged to `main` only after it has been checked
 on its preview URL.
