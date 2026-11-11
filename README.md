@@ -52,7 +52,7 @@ Then open http://localhost:8080
 ## Structure
 
     site/                   Everything that deploys, and nothing else
-      index.html            Home - scrubbed film, then a descent from 228 m to 34 m
+      index.html            Home - scrubbed film, then a descent from 213 m to the river at about 21 m
       trails/index.html     Interactive map and the ten stops
       stops/stop-1..10.html One page per stop. Three recorded, seven reserved
       species/index.html    13 species with determinations and reference photographs
@@ -101,15 +101,18 @@ can be rebuilt entirely without reprinting a sign. Never change the `/s/N` addre
 
 ## Data accuracy
 
-Catchment, action area, drainage and points in `assets/data/` were recovered from the
-published map images by georeferencing and raster tracing. Validated to within 0.8%
-of the stated areas. Positional accuracy roughly 10-20 m.
+The catchment in `assets/data/` is flow-routed on the Copernicus GLO-30 elevation model
+to the Glenabo's Blackwater confluence (`python3 tools/catchment.py --write`), and is good
+to about one 30 m cell. The action area and the channel network were recovered from the
+group's map images by georeferencing and raster tracing, and are good to roughly
+10-20 m. Stop positions are phone GPS, good to 10-20 m.
 
 Adequate for web mapping, navigation and discussion. Not adequate for boundary
 definition, planning submissions or anything with a legal consequence.
 
-The modelled channel network in `cairde-corrin.geojson` is partial - 5.28 km across 61
-segments. Finer tributaries on the source map did not trace cleanly.
+The modelled channel network in `cairde-corrin.geojson` is partial: finer tributaries on
+the source map did not trace cleanly. It is clipped to the catchment boundary, and no
+length is published for it.
 
 `assets/data/` holds one GeoJSON and one GPX. The four single-feature GeoJSON files that
 duplicated the combined one were removed.
@@ -122,12 +125,6 @@ duplicated the combined one were removed.
 - Committee names and roles on the About page
 
 ## Needs confirmation before publication
-
-- **The two area figures.** The site publishes 3.30 km² (330 ha) for the
-  catchment and 9.9 km² (989 ha) for the action area. The polygons in
-  `site/assets/data/cairde-corrin.geojson` measure 3.2823 km² (328.2 ha) and
-  9.8239 km² (982.4 ha), by two independent methods that agree exactly. High by
-  0.54% and 0.67%. Nothing has been changed. See `docs/PROJECT-SUMMARY.md`.
 
 Nothing here is wrong as far as we know. Each is an attribution or a
 determination that no source in this repository establishes, so each is

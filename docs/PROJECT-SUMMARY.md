@@ -55,7 +55,7 @@ stops without audio.
 | `/recordings/` | Nineteen field recordings from one morning, in the order they were made, with real durations. Plus three short films. |
 | `/credits/` | Every photograph, licence, map source, folklore reference and determination in one place. Written because the accuracy claim is worthless if the sources are not visible. |
 | `/privacy/`, `/terms/` | Published. Terms carries the land access and liability position, which matters for a site describing ground the group does not own. |
-| The catchment mapping | 3.30 km² catchment, 9.89 km² action area, 5.28 km of modelled channel, and relief, drawn as a vector map with layer controls. |
+| The catchment mapping | The flow-routed catchment (about 360 ha), the 9.9 km² action area, the modelled channel network and relief, drawn as a vector map with layer controls. |
 | The home page film | The 4K clip the group already had, scrubbed by scroll position where the browser can do it. |
 | `sitemap.xml`, `robots.txt`, structured data | 15 URLs. Schema.org NGO, WebSite, BreadcrumbList, Place, TouristAttraction, AudioObject and VideoObject. |
 | GPX download | The four surveyed points, for a phone. |
@@ -66,11 +66,13 @@ Where every class of claim on the site comes from.
 
 | Claim | Source | Confidence |
 |---|---|---|
-| Relief 34-228 m, longest flow path ~3.2 km | Computed from the supplied elevation data | Firm |
-| Catchment 3.30 km² (330 ha), action area 9.9 km² (989 ha) | The figures the group supplied, carried into `docs/CONTRIBUTING.md` as verified data | **Disputed by the geometry in this repository - see limitations** |
+| Relief 21-213 m OD, longest flow path about 4 km | Low end: OPW gauge 18124, the river at the confluence. High end and flow path: Copernicus GLO-30 inside the routed boundary (`tools/catchment.py`) | Low end ±1 m; high end is a wooded cell, bare ground about 9 m lower; flow path overstated by up to 8% (D8) |
+| Catchment about 3.6 km² (about 360 ha) | Flow-routed on Copernicus GLO-30 to the Blackwater confluence (`tools/catchment.py --write`); the boundary measures 3.58 km². Compared with c. 3.7 and c. 3.92 km² (Roughan & O'Donovan, 2021 and 2022) and 3.75 km² (FABDEM, a check only) | Firm to about ±20 ha |
+| Action area 9.9 km² (about 990 ha) | A drawn proposal traced from the group's map; the outline measures 9.86 km² | As drawn |
 | Outlet 52.1333°N 8.3002°W, Munster Blackwater, HA 18 | Derived from the catchment geometry | Firm |
-| Channel network, 5.28 km in 61 segments | Modelled from elevation, **not walked** | Modelled, and labelled "partial" on the map |
-| Stop 1-3 positions, elevations, bearings, times | EXIF of the photographs taken at each stop. Never estimated. | Firm, ±10-20 m as GPS allows |
+| Channel network | Modelled from elevation for the group's original map, **not walked**, clipped to the routed boundary. No length is published | Modelled, and labelled "partial" |
+| Stop 1-3 positions, bearings, times | EXIF of the photographs taken at each stop. Never estimated. Times are Irish summer time | Firm, ±10-20 m as GPS allows |
+| Stop and photograph elevations | The walk's own GPX and Copernicus GLO-30, rounded to 5 m. Not EXIF: the Pixel 8a records height above the ellipsoid, about 57 m above sea level here | ±5 m |
 | Recording durations and times | ffprobe. Timestamps reconstructed from `creation_time` as end-of-recording UTC, validated against 10 independent photograph timestamps, all within 20 s | Firm |
 | Species names and determinations | Pl@ntNet records made by a group contributor, read off the source recordings | **As accepted by the contributor. Not independently verified.** Tormentil is marked proposed. |
 | Species reference photographs | Wikimedia Commons, 12 files, each CC BY or CC BY-SA, binomial in the file title, photographer and licence displayed | Firm on licence; the photograph shows the species, not the recorded plant |
@@ -86,10 +88,10 @@ Where every class of claim on the site comes from.
 
 Work that is not done, in rough order of what would improve the site most.
 
-1. **Settle the two area figures.** See the limitation below: the site
-   publishes 330 ha and 989 ha, and the polygons measure 328.2 ha and 982.4 ha.
-   One of the two is wrong and it is a five-minute conversation with whoever
-   produced the original delineation.
+1. **Field-check the catchment divide in the south-east.** The area figures were
+   settled in November 2026 by flow routing (see `docs/CONTRIBUTING.md`). The traced
+   boundary and the routed one disagreed most in the south-east, around
+   52.116°N 8.295°W, where the routed boundary takes in 0.36 km² more.
 2. **Stops 4 to 10.** Seven positions to survey. Each needs a photograph with GPS, a bearing, and text. The pages and sign addresses already exist and will pick the content up.
 3. **Audio for stops 2 and 3.** Nineteen recordings exist from that morning but none matches those two stops in time or place: the nearest are a six-minute and a 105-second gap. Guessing a match would put the wrong sound under the wrong photograph. Both pages carry transcript blocks and no audio.
 4. **GPX traces of the actual trails.** Nobody has walked them with a GPS. The GPX file holds four points, not a route.
@@ -113,23 +115,9 @@ Things that are true about this site and worth saying out loud.
 - **`/new-spaces/corrin-moor.html` and `corrin-wetlands.html` are shells** and carry `noindex`. They exist so the navigation is honest about what is coming, not because there is content.
 - **The invasive species descriptions are second-hand.** Attributed to Invasive Species Ireland rather than presented as the group's own survey work.
 - **No analytics, no forms, no cookies, no third-party requests.** Adding any of them makes `/privacy/` wrong.
-- **The two published areas do not match the polygons.** Measured off
-  `cairde-corrin.geojson` by two independent methods, spherical excess and
-  Lambert azimuthal equal-area, which agree to four decimal places:
-
-  | | published | measured off the polygon | polygon's own `area_km2` |
-  |---|---|---|---|
-  | Catchment | 3.30 km², 330 ha | **3.2823 km², 328.2 ha** | 3.29 |
-  | Action area | 9.9 km², 989 ha | **9.8239 km², 982.4 ha** | 9.846 |
-
-  The published numbers are high by 0.54% and 0.67%. Three possibilities, and
-  the repository cannot settle which: the drawn boundary is a simplified
-  rendering of a larger true catchment, or the supplied figures were rounded
-  generously, or the polygon is simply wrong. The polygon's own stored
-  `area_km2` matches neither, which suggests it was written by hand.
-
-  Nothing has been changed. "330 hectares" carries rhetorical weight in six
-  places on the home page, and the supplied figure should not be overwritten on
-  the strength of a measurement taken off a boundary that may itself be a
-  simplification. It is first on the list of things to settle, because it is the
-  number a landowner is most likely to check.
+- **The catchment is modelled.** Its boundary is flow-routed on a 30 m elevation
+  model and is good to about one cell, roughly ±20 ha. The earlier figures,
+  3.30 km² and 330 ha, came from a boundary traced off a map image; they are
+  withdrawn and must not come back. Other delineations give 3.7 to 3.92 km²; see
+  `docs/CONTRIBUTING.md`. The action area is still a traced drawing: it is published
+  as 9.9 km² and its outline measures 9.86 km².

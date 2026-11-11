@@ -62,7 +62,7 @@
       }
       if (k > 0.05) {
         var t = make('text', { x: x + 15, y: y + 4, 'font-family': 'IBM Plex Mono,monospace', 'font-size': 11, fill: '#152616', stroke: '#fff', 'stroke-width': 3, 'paint-order': 'stroke' }, g);
-        t.textContent = (p.k === 'outlet' ? 'Outlet' : 'Stop ' + (no || '')) + ' · ' + p.e + ' m';
+        t.textContent = (p.k === 'outlet' ? 'Outlet' : 'Stop ' + (no || '')) + ' · about ' + p.e + ' m';
       }
     });
     el.me.textContent = '';
@@ -87,7 +87,7 @@
     var img = no && PHOTO[no] ? '<img src="/assets/img/' + PHOTO[no] + '-1100.webp" alt="">' : '';
     b.innerHTML = img + '<div class="b"><h4>' + p.n + '</h4><dl>' +
       '<dt>Position</dt><dd>' + Math.abs(p.c[1]).toFixed(5) + '°N ' + Math.abs(p.c[0]).toFixed(5) + '°W</dd>' +
-      '<dt>Elevation</dt><dd>' + p.e + ' m OD</dd>' +
+      '<dt>Elevation</dt><dd>about ' + p.e + ' m OD</dd>' +
       (p.b != null ? '<dt>Facing</dt><dd>' + p.b + '°</dd>' : '') + '</dl>' +
       (no ? '<a href="/stops/stop-' + no + '.html">Open stop ' + no + ' →</a>' : '') + '</div>';
     box.hidden = false;

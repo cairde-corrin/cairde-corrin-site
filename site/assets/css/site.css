@@ -324,7 +324,7 @@ em.hy{font-style:italic;font-family:var(--display)}
   .car-scroll{scroll-behavior:auto}
 }
 
-/* ---- the 177 m / 174 m comparison ---------------------------------------------- */
+/* ---- the stop 2 / stop 3 comparison ---------------------------------------------- */
 .compare{padding-bottom:clamp(80px,11vh,140px)}
 .pair{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2.4vw,30px);margin-top:44px}
 .pair-item{margin:0}
@@ -348,6 +348,7 @@ em.hy{font-style:italic;font-family:var(--display)}
 .fig dd{margin:0;font-family:var(--display);font-size:2.1rem;line-height:1;font-variant-numeric:tabular-nums;
   background:linear-gradient(90deg,#EEF5EA,#7FD4FF);-webkit-background-clip:text;
   background-clip:text;color:transparent}
+.fig dd small:first-child{margin:0 6px 0 0}
 .fig dd small{font-size:.86rem;margin-left:4px;-webkit-text-fill-color:rgba(238,245,234,.78);color:rgba(238,245,234,.78)}
 .figs.light .fig{background:var(--glass-lt);border-color:var(--glass-lt-line)}
 .figs.light dt{color:var(--ink-soft)}
