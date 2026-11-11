@@ -9,7 +9,7 @@ the rest is reference.
     docs/         this file, the deployment guide and the project summary
     source-data/  inputs that the site is made from. Tracked, never published.
     archive/      masters and source material. Not deployed, not tracked.
-    tools/        helper scripts. Not a build step; nothing here has to run.
+    tools/        helper scripts. Not part of the build; nothing here has to run.
 
 `source-data/` holds raw inputs, such as route exports, that are processed into files
 under `site/`. Nothing in it is ever published directly: Netlify publishes only
@@ -19,14 +19,19 @@ derived from it, write the processed result into `site/` and commit both.
 ## What this is
 
 A static website for a voluntary community group in Fermoy, Co. Cork, working on
-the Glenabo and Corrin woodlands. Vanilla HTML, CSS and JavaScript. No build step,
-no npm, no framework. Netlify publishes `site/` exactly as it sits.
+the Glenabo and Corrin woodlands. Vanilla HTML, CSS and JavaScript. No framework
+and no templating. Netlify runs a passthrough build that publishes `site/` exactly as
+it sits.
 
 ## Hard rules
 
-- **No build step.** Do not add npm, a bundler, Tailwind, React, or a `package.json`.
-  Anything that has to be compiled before the site works breaks the one promise this
-  repository makes: that the folder in front of you is the website.
+- **The build is a passthrough copy.** `npm run build` runs Eleventy, which copies
+  `site/` to `_site/` byte for byte and renders nothing (`.eleventy.js` sets no template
+  formats). Netlify publishes `_site/`. That keeps the one promise this repository
+  makes: the folder in front of you is the website. Do not add templates, layouts,
+  plugins, a bundler, Tailwind or React without a decision to do so. After any change to
+  the build, `npm run build && python3 tools/compare_build.py` must report no
+  differences.
 - **Hyphens, never em or en dashes** as sentence punctuation. Use `-` throughout, in
   prose, in ranges and in data files.
 - **The name is Cáirde Corrin**, always with the fada on the á.

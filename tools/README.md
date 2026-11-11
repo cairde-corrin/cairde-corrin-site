@@ -1,7 +1,7 @@
 # tools
 
-Helpers for maintaining and checking the site. **None of these is a build
-step.** `site/` is deployed exactly as it sits; nothing here has to run for the
+Helpers for maintaining and checking the site. **None of these is part of the
+build.** The build copies `site/` unchanged; nothing here has to run for the
 site to work, and nothing here is deployed. They exist so that anyone can repeat the
 checks rather than take the published numbers on trust.
 
@@ -20,6 +20,7 @@ with no dependencies at all. `render_maps.py` also drives the installed Google C
 | `catchment.py` | Delineates the Glenabo catchment by flow routing (Priority-Flood fill, D8, accumulation) on Copernicus and on FABDEM, tests sensitivity to the pour point, and compares the result with the published geometry. `python3 tools/catchment.py --write` regenerates the catchment in `site/assets/data/cairde-corrin.geojson` from the Copernicus routing only, with its area, elevation range, flow path, outlet and stop figures; FABDEM is a cross-check and nothing derived from it is written. An optional `outdir` gets the routed boundaries and a comparison image. |
 | `render_maps.py` | Renders the two static maps on the home page, `map-catchment` and `map-action`, from the shipped data file, Copernicus relief and OpenStreetMap, by laying each out as a page and photographing it in headless Chrome at the size the site reserves. Figures in the maps are read from the data file. `python3 tools/render_maps.py` |
 | `trail.py` | Publishes the walked Glenabo loop from the raw track in `source-data/`: removes the stretches walked twice, simplifies only below half a pixel at the map's maximum zoom, drops timestamps, and writes the map layer into the GeoJSON, `glenabo-loop.gpx`, and the profile section of the trails page. `python3 tools/trail.py` |
+| `compare_build.py` | Proves the build changed nothing: compares every git-tracked file in `site/` with `_site/` by SHA-256 and byte by byte, reports missing, extra and differing files, and prints the `_redirects` and `_headers` hashes side by side. `npm run build && python3 tools/compare_build.py` |
 
 ## Why the reveal height matters
 
