@@ -3,7 +3,8 @@
 
     python3 tools/render_maps.py
 
-Writes site/assets/img/map-catchment-{1800,1000}.webp and map-action-{1800,1000}.webp.
+Writes site/assets/img/map-catchment-<EDITION>-{1800,1000}.webp and map-action-<EDITION>-....
+Images are cached for a year, so a redrawn map needs a new EDITION and new names in index.html.
 Each map is laid out as an HTML page and photographed by headless Chrome at the size
 the page already reserves for it, so nothing on the site shifts.
 
@@ -27,6 +28,7 @@ CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 OVERPASS = 'https://overpass-api.de/api/interpreter'
 OSM_BBOX = (52.085, -8.38, 52.16, -8.22)  # south, west, north, east
 R = 6378137.0
+EDITION = '202611'  # bump on every redraw, then update site/index.html
 FRAME = (74, 213, 1652, 1233)  # x, y, width, height of the map frame in an 1800 px canvas
 SANS = '"Helvetica Neue", Helvetica, Arial, sans-serif'
 
@@ -295,10 +297,20 @@ def shoot(html_text, relief_rgb, canvas_h, name):
                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     im = Image.open(png).convert('RGB')
     assert im.size == (1800, canvas_h), im.size
-    im.save(os.path.join(IMG, name + '-1800.webp'), 'WEBP', quality=82, method=6)
+    im.save(os.path.join(IMG, '%s-%s-1800.webp' % (name, EDITION)), 'WEBP', quality=82, method=6)
     small = im.resize((1000, round(canvas_h * 1000 / 1800)), Image.LANCZOS)
-    small.save(os.path.join(IMG, name + '-1000.webp'), 'WEBP', quality=82, method=6)
-    print('wrote %s-1800.webp %s and -1000.webp %s  (%s)' % (name, im.size, small.size, d))
+    small.save(os.path.join(IMG, '%s-%s-1000.webp' % (name, EDITION)), 'WEBP', quality=82, method=6)
+    print('wrote %s-%s-1800.webp %s and -1000.webp %s' % (name, EDITION, im.size, small.size))
+    return im
+
+
+def og(full, top, name):
+    """A 1200 x 630 social card cut from the map frame, starting `top` px down the canvas."""
+    x, w = FRAME[0], FRAME[2]
+    card = full.crop((x, top, x + w, top + round(w * 630 / 1200))).resize((1200, 630), Image.LANCZOS)
+    card.save(os.path.join(IMG, '%s-%s.jpg' % (name, EDITION)), 'JPEG', quality=84, optimize=True,
+              progressive=True)
+    print('wrote %s-%s.jpg' % (name, EDITION))
 
 
 def main():
@@ -370,9 +382,10 @@ def main():
             'about 30 m) from the Glenabo\'s confluence with the Munster Blackwater, by priority-flood '
             'depression filling and D8 flow routing; shaded relief from the same model. ' + foot_tail +
             ' Indicative boundary - for planning and discussion, not a substitute for field survey.')
-    shoot(page(1547, 'Glenabo (Glenaboy) River - hydrological catchment',
+    full = shoot(page(1547, 'Glenabo (Glenaboy) River - hydrological catchment',
                'Fermoy, Co. Cork  ·  the surface-water area draining to the Munster Blackwater',
                box, '\n'.join(svg), foot), relief(proj, cop), 1547, 'map-catchment')
+    og(full, 213, 'og-trails')
 
     # ---- action-area map ----
     proj = Proj(52.1212, -8.2965, 0.212)
@@ -408,9 +421,10 @@ def main():
             'and Knockananig Reservoir added - offered for discussion, not a designation. Corrin Wood is '
             'Coillte property whose outline is not held as mapped geometry in OpenStreetMap. Catchment '
             'boundary flow-routed on Copernicus GLO-30; shaded relief from the same model. ' + foot_tail)
-    shoot(page(1549, 'Glenabo - Corrin - Knockananig: proposed area for action',
+    full = shoot(page(1549, 'Glenabo - Corrin - Knockananig: proposed area for action',
                'Fermoy, Co. Cork  ·  catchment, woodland and recreational amenity within one working boundary',
                None, '\n'.join(svg), foot), relief(proj, cop), 1549, 'map-action')
+    og(full, 318, 'og-new-spaces')
 
 
 if __name__ == '__main__':
