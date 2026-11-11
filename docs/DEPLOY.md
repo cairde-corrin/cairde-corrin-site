@@ -135,10 +135,8 @@ the templates are live on the production deploy.
 **What to know about Git Gateway.** Netlify's documentation lists Git Gateway as
 deprecated: it keeps working for sites that have it, Netlify still fixes major
 security issues, but it no longer fixes bugs and does not recommend new set-ups.
-Netlify Identity itself was deprecated in February 2025 and that was reversed in
-February 2026; it is supported. If Git Gateway stops working, the content stays in
-the repository and Decap can switch to its `github` backend, at the cost of every
-editor needing a GitHub account.
+`docs/CMS-MIGRATION.md` says how to tell when it has to be replaced and exactly how to
+move the editor to Decap's GitHub backend.
 
 **Updating Decap or the widget.** `tools/vendor_cms.sh` downloads the pinned
 versions from npm, checks the tarballs against the recorded SHA-256 and copies the
@@ -163,7 +161,7 @@ hash in that script, change the two paths in `site/admin/index.html`, and check
 
 | what | how long | why |
 |---|---|---|
-| `/assets/img/`, `/assets/video/`, `/assets/audio/`, `/assets/fonts/` | 1 year, immutable | the file name carries the width or the date, so a changed file is a new name |
+| `/assets/img/`, `/assets/video/`, `/assets/audio/`, `/assets/fonts/` | 1 year, immutable | the file name carries the width or the date, so a changed file is a new name. News photos under `/assets/img/news/` are named by a hash of their contents, so the same holds |
 | `/assets/css/`, `/assets/js/` | 1 hour, revalidated | `site.css` and `site.js` keep their names when their contents change |
 | `/assets/data/` | 1 day | |
 | everything else, including all pages | 5 minutes, revalidated | edits go live promptly |

@@ -55,7 +55,7 @@ Then open http://localhost:8080
 
     site/                   Everything that deploys, and nothing else
       _content/news/        News posts, one Markdown file each. Built, not copied
-      _includes/            The News layouts. Built, not copied
+      _includes/            The News layouts and images.js. Built, not copied
       news/index.njk        The News listing, ten to a page
       sitemap.njk           Writes sitemap.xml, adding each news post
       admin/                The news editor (Decap CMS). Login required, commits to main
@@ -79,11 +79,12 @@ Then open http://localhost:8080
       assets/js/map.js      Vector map
       assets/data/          GeoJSON and GPX
       assets/img/           Photography, logo, terrain basemap, species/ reference set
+      assets/uploads/       News photos as uploaded. Never published; re-encoded to assets/img/news/
       assets/audio/         Nineteen field recordings and the stop 1 clip
       assets/video/         hero-1920.mp4
       assets/fonts/         Five subsetted woff2 faces
 
-    docs/                   CONTRIBUTING.md, DEPLOY.md and PROJECT-SUMMARY.md
+    docs/                   CONTRIBUTING.md, DEPLOY.md, CMS-MIGRATION.md and PROJECT-SUMMARY.md
     source-data/            Inputs the site is made from. Tracked, never published.
     archive/                Masters and source material. Not deployed, not tracked.
     tools/                  serve.py, linkcheck.py, cdp.mjs and friends. Not part of the build.
