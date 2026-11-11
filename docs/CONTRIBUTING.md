@@ -193,10 +193,29 @@ slug, without the date, becomes the address: `/news/short-slug/`. The front matt
     gallery:  optional list of src, alt, width, height, caption
     youtube:  optional video ID; carried, not shown on the page yet
 
-Photos uploaded through the news editor go to `site/assets/uploads/` exactly as the
-editor's phone produced them: Decap does not resize, recompress or strip location
-data. Until an upload pipeline exists, check the size of anything in that folder
-before a phase merge, and replace a phone photo with a resized WebP.
+**Uploaded photos.** Photos uploaded through the news editor go to
+`site/assets/uploads/` exactly as the editor's phone produced them, with the phone's
+EXIF block, which holds the GPS position where the photo was taken, the time and the
+phone model. They are never published as uploaded. At build time,
+`site/_includes/images.js` re-encodes each one referenced by a post into WebP at 700,
+1100 and 1800 px wide, with width and height, plus a 1200 px JPEG for social previews,
+all under `/assets/img/news/`. Re-encoding drops the EXIF and XMP blocks, GPS
+included; the colour profile is the only block kept. `assets/uploads/` is excluded from
+the copy, and `tools/compare_build.py` fails if an original ever reaches `_site/`. This
+is a privacy fix first: do not publish anything from `assets/uploads/` directly, and
+do not reference an upload from anywhere except a post's photo fields.
+
+**The remaining half.** The originals still enter the repository at full size, 2 to
+13 MB each from a phone, GPS and all, so the repository grows with every photo and
+keeps every location in its history. The fix is to shrink and strip photos in the
+browser before they are uploaded; that is not built yet. Until it is, remember that the
+repository holds those locations if it is ever made public.
+
+Each photo field in the news editor refuses files over 20 MB, as a backstop against
+videos and very large files; ordinary phone photos (2.4 to 12.5 MB on the phone used
+for the trail photographs) pass. The cap does not apply to the **Media** button in the
+editor's top bar, which uploads straight to `main` with no size check. Editor commits
+also bypass the local 25 MB pre-commit hook.
 
 Everything below the front matter is the body, in Markdown. Images follow the media
 rules above: WebP at 1800 / 1100 / 700 px, a new file name for an edited picture, and

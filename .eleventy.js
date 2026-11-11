@@ -2,8 +2,10 @@
 // The only templates are the News sources: .njk pages, .md posts in _content/news/, and
 // the layouts in _includes/. The copy filter keeps those sources out of the output, and
 // no other file format is a template, so nothing else is parsed or rewritten.
+// assets/uploads/ holds news photos exactly as uploaded, GPS and all. They are never copied:
+// _includes/images.js publishes re-encoded sizes under assets/img/news/ instead.
 const SOURCES = ['!**/*.njk', '!**/*.md', '!**/*.11tydata.js', '!_includes', '!_includes/**',
-  '!_content', '!_content/**'];
+  '!_content', '!_content/**', '!assets/uploads', '!assets/uploads/**'];
 
 module.exports = function (eleventyConfig) {
   eleventyConfig.setTemplateFormats(['njk', 'md']);

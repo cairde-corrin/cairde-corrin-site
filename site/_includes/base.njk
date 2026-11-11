@@ -1,7 +1,8 @@
 {%- set r = page.url | root -%}
 {%- set site = "https://www.cairdecorrin.ie" -%}
 {%- set fullTitle = title + " - Cáirde Corrin" -%}
-{%- set ogImage = (site + hero.src) if hero and hero.src else (site + "/assets/img/og-default.jpg") -%}
+{%- set og = hero.og if hero and hero.og else (hero if hero and hero.src else none) -%}
+{%- set ogImage = (site + og.src) if og else (site + "/assets/img/og-default.jpg") -%}
 <!DOCTYPE html>
 <html lang="en-IE">
 <head>
@@ -20,8 +21,8 @@
 <link rel="stylesheet" href="{{ r }}assets/css/site.css">
 <meta property="og:site_name" content="Cáirde Corrin"><meta property="og:locale" content="en_IE">
 <meta property="og:image" content="{{ ogImage }}">
-{%- if not (hero and hero.src) %}<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-{%- elif hero.width and hero.height %}<meta property="og:image:width" content="{{ hero.width }}"><meta property="og:image:height" content="{{ hero.height }}">{% endif %}
+{%- if not og %}<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+{%- elif og.width and og.height %}<meta property="og:image:width" content="{{ og.width }}"><meta property="og:image:height" content="{{ og.height }}">{% endif %}
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{{ fullTitle }}">
 <meta name="twitter:description" content="{{ description }}"><meta name="twitter:image" content="{{ ogImage }}">
 <script type="application/ld+json">

@@ -2,6 +2,7 @@
 // optionally, hero, gallery and youtube. The Markdown below the front matter is the body.
 // The youtube field is carried but not rendered yet.
 const ld = require('../../_includes/ld.js');
+const images = require('../../_includes/images.js');
 
 module.exports = {
   layout: 'post.njk',
@@ -9,6 +10,9 @@ module.exports = {
   permalink: (data) => `news/${data.page.fileSlug}/index.html`,
   eleventyComputed: {
     description: (data) => data.summary,
+    // Uploaded photos are swapped for their re-encoded, metadata-free sizes (see images.js)
+    hero: (data) => images.resolve(data.hero),
+    gallery: (data) => (Array.isArray(data.gallery) ? Promise.all(data.gallery.map(images.resolve)) : data.gallery),
     ld: (data) => ld.article(data),
   },
 };
