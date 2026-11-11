@@ -5,15 +5,26 @@ compile. Netlify takes the `site/` folder and serves it exactly as it is.
 
 If you can drag a folder onto a web page, you can deploy this.
 
+## Where it lives
+
+    production       https://cairde-corrin.netlify.app         deploys from main
+    branch preview   https://build--cairde-corrin.netlify.app  deploys from build
+    cairdecorrin.ie  registered, DNS not yet pointed at Netlify: pending
+
+Until the domain is connected (see "Connecting the domain" below), the site is only
+reachable at the two netlify.app addresses. The site's canonical URLs and its social
+preview images already use `https://www.cairdecorrin.ie/`, so link previews will not
+show a picture until the domain resolves.
+
 ## The short version
 
 1. Go to <https://app.netlify.com/drop>
 2. Drag the **`site`** folder onto it.
 3. Wait about twenty seconds.
 
-That publishes a working copy at a random address such as
-`sunny-marzipan-12ab34.netlify.app`. Useful for showing someone before it goes
-live. It does not touch cairdecorrin.ie.
+That publishes a separate working copy at a random `*.netlify.app` address.
+Useful for showing someone a one-off copy. It does not touch the production site
+at cairde-corrin.netlify.app or the domain.
 
 **Drag `site/`, not the folder above it.** If you drag the whole repository you
 will publish a site whose home page is a directory listing, and the `/s/1` sign
@@ -49,7 +60,7 @@ preview URL.
 3. Point DNS at Netlify. Either delegate the nameservers to Netlify DNS, or, if
    the registrar keeps the zone, add:
 
-       www   CNAME   <your-site>.netlify.app
+       www   CNAME   cairde-corrin.netlify.app
        @     ALIAS   apex-loadbalancer.netlify.com      (or the registrar's
                                                          equivalent of ALIAS)
 
