@@ -115,6 +115,14 @@ Times are Irish summer time (UTC+1), as the cameras recorded them.
 
 Give an edited photograph a **new file name**. Images are cached for a year, so
 overwriting one shows the old picture to anyone who has visited since.
+The same goes for the two home page maps: `tools/render_maps.py` writes them under an
+`EDITION` in the name; bump it on every redraw and update `site/index.html`.
+
+`site/assets/js/map.js` and `site/assets/data/cairde-corrin.geojson` change together, so
+they are versioned together: bump `DATA_V` in `map.js` and the `?v=` on its script tag in
+`site/trails/index.html` whenever either changes. Without it a returning visitor can get
+a new script with a day-old data file, or the reverse, and a new layer silently fails to
+appear.
 
 **Audio.** Mono, 64 kbps, MP3, into `site/assets/audio/`. Every clip needs a written
 transcript inside the `<details class="transcript">` block on that stop page. This is

@@ -7,6 +7,10 @@
   var W = 0, H = 0, cx = 0, cy = 0, k = 1, G = null, me = null;
   var TB = { w: -8.36823, e: -8.26065, n: 52.14340, s: 52.10163 };  // terrain image bounds
   /* Keys must match the feature names in cairde-corrin.geojson exactly, punctuation included. */
+  /* map.js and the GeoJSON change together, so they are versioned together: bump DATA_V
+     and the ?v= on this script in trails/index.html whenever either changes. Without it
+     a browser can pair a new script with a day-old cached data file, or the reverse. */
+  var DATA_V = '2026-11-11';
   var STOPNO = { 'Stop 01 - the stream': 1, 'Stop 02 - closed canopy': 2, 'Stop 03 - the mossy stand': 3 };
   var PHOTO = { 1: 'stream', 2: 'plantation', 3: 'mossy' };
 
@@ -231,7 +235,7 @@
     shell.appendChild(d);
   }
 
-  fetch('/assets/data/cairde-corrin.geojson').then(function (r) {
+  fetch('/assets/data/cairde-corrin.geojson?v=' + DATA_V).then(function (r) {
     if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + r.url);
     return r.json();
   }).then(function (fc) {
@@ -244,7 +248,8 @@
       catchment: f('Glenabo hydrological catchment').geometry.coordinates[0],
       action: f('Proposed area for action').geometry.coordinates[0],
       channels: f('Modelled channel network').geometry.coordinates,
-      trail: f('Walked loop').geometry.coordinates,
+      /* optional: a data file without the loop must not take the whole map down */
+      trail: (fc.features.filter(function (x) { return x.properties.name === 'Walked loop' })[0] || { geometry: {} }).geometry.coordinates || null,
       points: fc.features.filter(function (x) { return x.geometry.type === 'Point' })
         .map(function (x) { return { n: x.properties.name, k: x.properties.kind, e: x.properties.elevation_m, b: x.properties.bearing_deg, c: x.geometry.coordinates } })
     };
