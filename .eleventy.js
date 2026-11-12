@@ -8,6 +8,8 @@
 // social posts.
 // assets/uploads/ holds the editor's uploads (already stripped in the browser). They are never copied:
 // _includes/images.js publishes re-encoded sizes under assets/img/news/ instead.
+const fs = require('node:fs');
+const path = require('node:path');
 const SOURCES = ['!**/*.njk', '!**/*.md', '!**/*.11tydata.js', '!_includes', '!_includes/**',
   '!_content', '!_content/**', '!_data', '!_data/**', '!assets/uploads', '!assets/uploads/**'];
 const images = require('./site/_includes/images.js');
@@ -25,6 +27,17 @@ module.exports = function (eleventyConfig) {
   // attribute in a post would otherwise run on the public site. Tags are shown as text.
   eleventyConfig.amendLibrary('md', (md) => md.set({ html: false }));
   eleventyConfig.addPassthroughCopy({ site: '/' }, { filter: ['**', ...SOURCES] });
+  // A post, photo or article an editor has taken off the website ("Take this off the
+  // website", hidden: true in its front matter) is left out of the build entirely: no
+  // page, no place in any list or the sitemap, its photos not encoded. The file stays in
+  // the repository so the editor can untick it and publish it again.
+  for (const dir of ['news', 'gallery', 'articles']) {
+    const folder = path.join(__dirname, 'site', '_content', dir);
+    for (const f of fs.readdirSync(folder).filter((n) => n.endsWith('.md'))) {
+      const front = fs.readFileSync(path.join(folder, f), 'utf8').match(/^---\r?\n([\s\S]*?)\r?\n---/);
+      if (front && /^hidden:\s*true\s*$/m.test(front[1])) eleventyConfig.ignores.add(`site/_content/${dir}/${f}`);
+    }
+  }
   // Each page keeps the address it had as a hand-written file: trails/index.njk ->
   // trails/index.html, stops/stop-1.njk -> stops/stop-1.html. Front matter or a
   // directory data file (News, the sitemap) overrides this.

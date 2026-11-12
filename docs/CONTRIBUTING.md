@@ -448,6 +448,13 @@ To bring a reverted release back later, revert the revert on `build`
 (`git revert <revert-commit>`) before merging again. Otherwise Git treats those
 changes as already merged and leaves them out.
 
+**Deleting something an editor took off the website.** Editors cannot delete a published
+post, gallery photo or article (`SECURITY.md`, "Taking things down"); they tick **Take
+this off the website**, which sets `hidden: true` and leaves the file out of the build.
+To remove it for good, delete the Markdown file on `build`, and any photo in
+`site/assets/uploads/` that nothing else uses, then release as usual. The files stay in
+git history; if a photo must vanish from history too, that needs a history rewrite.
+
 ## Tone
 
 Plain, specific, unhurried. Short declarative sentences. Let the numbers carry the

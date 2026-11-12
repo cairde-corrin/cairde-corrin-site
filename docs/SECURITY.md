@@ -91,9 +91,18 @@ this order.
    so only people with that role can save.
 
 **What changes for editors:** almost nothing. If **Publish** reports an error straight
-after saving, the check has not finished yet: wait a minute and publish again. Deleting a
-post that is already published stops working in the editor, because Decap deletes by
-writing straight to `main`; ask the person who looks after the site to remove it.
+after saving, the check has not finished yet: wait a minute and publish again.
+
+**Taking things down.** Decap's **Delete published entry** and **Unpublish** commit
+straight to `main` rather than through a pull request (its GitHub backend moves the branch
+itself), so protection on `main` refuses them; the check is not involved, and it allows
+deleting content. GitHub cannot narrow that rule by path for this repository: push rules
+limited to certain files exist only for private repositories. Letting the editor account
+push to `main` directly would skip the check altogether. So `site/admin/editor.js` hides
+those two buttons, and each post, gallery photo and article has a **Take this off the
+website** tick instead (`hidden: true`), published through a pull request like any other
+change. `.eleventy.js` leaves every entry with that tick out of the build. To delete one
+for good, remove the file on `build` and release it (`CONTRIBUTING.md`).
 
 ## Revoking an editor
 

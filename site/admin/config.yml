@@ -220,6 +220,15 @@ collections:
           Optional. Only fill this in if you make an important change to a post
           after it has been published.
 
+      - label: Take this off the website
+        name: hidden
+        widget: boolean
+        required: false
+        default: false
+        hint: >-
+          Tick this, save and publish to take the post off the website. It stays here in the
+          editor: untick it and publish again to put it back.
+
   - name: gallery
     label: Gallery
     label_singular: photo
@@ -269,6 +278,15 @@ collections:
         hint: >-
           Optional. The day the photo was taken. Dated photos are shown newest
           first; photos without a date come after them.
+
+      - label: Take this off the website
+        name: hidden
+        widget: boolean
+        required: false
+        default: false
+        hint: >-
+          Tick this, save and publish to take the photo off the website. It stays here in the
+          editor: untick it and publish again to put it back.
 
   - name: home
     label: Home page
@@ -575,3 +593,12 @@ collections:
         hint: >-
           Optional. At most one short sentence, copied exactly. It is shown in quotation marks
           with the publication's name. Never more than this.
+
+      - label: Take this off the website
+        name: hidden
+        widget: boolean
+        required: false
+        default: false
+        hint: >-
+          Tick this, save and publish to take the article off the website. It stays here in the
+          editor: untick it and publish again to put it back.

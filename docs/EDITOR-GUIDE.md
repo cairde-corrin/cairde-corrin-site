@@ -137,10 +137,18 @@ Click a post there to carry on with it.
 **Save**, then set **Status** to **Ready** and **Publish** -> **Publish now** again. The
 website shows the old version until you publish the new one.
 
-**To remove a post** from the website, open it and use the delete button at the top. To
-throw away a draft that was never published, use **Delete unpublished entry**. Deleting
-cannot be undone from the editor, so be sure. If deleting a published post reports an
-error, ask the person who looks after the website to remove it.
+**To take a post off the website,** open it, tick **Take this off the website** at the
+bottom, press **Save**, then publish it as usual. Once the site has rebuilt, the post has
+no page and appears in no list. It stays in the editor, so you can put it back the same
+way: untick, save, publish. Photos in the Gallery and Articles have the same tick. Use it
+for anything published by mistake.
+
+There is no button to delete a published post: the editor's own delete cannot work with
+the protection that keeps the website safe. If something must go for good, for example a
+photo someone has asked to have removed, take it off the website first, then ask the
+person who looks after the website to delete it completely.
+
+To throw away a draft that was never published, use **Delete unpublished entry**.
 
 ## Changing the wording of a page
 

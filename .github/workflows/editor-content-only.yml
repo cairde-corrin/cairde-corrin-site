@@ -32,7 +32,10 @@ jobs:
           case "$HEAD" in cms/*) editor=1 ;; *) editor=0 ;; esac
           if [ -n "$CMS_USER" ] && [ "$AUTHOR" = "$CMS_USER" ]; then editor=1; fi
           if [ "$editor" = 0 ]; then echo "Not an editor change ($AUTHOR, $HEAD): no path limit."; exit 0; fi
-          files=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[].filename')
+          # Every path the change touches: added, changed or deleted files, and for a
+          # renamed file its old path too, so moving a build file into a content folder
+          # counts as removing the build file. Deleting content is allowed.
+          files=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[] | .filename, (.previous_filename // empty)')
           bad=$(printf '%s\n' "$files" | grep -v -E '^site/(_content/(news|gallery|articles)/[^/]+\.md|_data/social\.json|_data/pages/[^/]+\.json|assets/uploads/[^/]+)$' || true)
           if [ -n "$bad" ]; then
             echo "::error::This editor change touches files outside editor content:"

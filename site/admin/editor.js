@@ -5,10 +5,15 @@
   // choose_url: false, but Decap does not pass that setting to the body's Image button,
   // and the URL buttons share their style with the upload buttons, so they are hidden by
   // their text. The build also refuses a page that loads anything from another site.
-  var URL_BUTTONS = /^(Insert from URL|Replace with URL)$/;
+  //
+  // "Delete published entry" and "Unpublish" are hidden the same way. Decap carries both
+  // out by committing straight to main, not through a pull request, so once main is
+  // protected (docs/SECURITY.md) they can only fail. Editors take a post down with its
+  // "Take this off the website" tick instead, which is published like any other change.
+  var HIDE = /^(Insert from URL|Replace with URL|Delete published entry|Unpublish)$/;
   new MutationObserver(function () {
-    Array.prototype.forEach.call(document.querySelectorAll('button'), function (b) {
-      if (URL_BUTTONS.test(b.textContent.trim())) b.style.display = 'none';
+    Array.prototype.forEach.call(document.querySelectorAll('button, [role="button"], [role="menuitem"]'), function (b) {
+      if (HIDE.test(b.textContent.trim())) b.style.display = 'none';
     });
   }).observe(document.documentElement, { childList: true, subtree: true });
 

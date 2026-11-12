@@ -87,8 +87,8 @@ Until then an editor's session can still write code into the build.
 **Tests that need a real person or a real device**
 
 - The editor end to end, by a committee member: accept an invitation, write a post with a
-  photo in the text, save it, check it is not live, publish, check it on the site, delete
-  it. The invitation itself has only been tested with made-up codes.
+  photo in the text, save it, check it is not live, publish, check it on the site, take it
+  off the website with its tick. The invitation itself has only been tested with made-up codes.
 - Photos chosen on a real iPhone, from Photo Library and through **Choose File**. The
   browser-side shrink, which also converts iPhone HEIC, was tested in Safari's engine,
   Chrome and Firefox on a computer, not on a phone.
