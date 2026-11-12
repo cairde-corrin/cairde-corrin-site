@@ -64,6 +64,16 @@ which commits them to `main`.
   Folklore from dúchas.ie is summarised and linked, never reproduced.
 - **No named living person, and no photograph of an identifiable person, without
   consent.**
+- **No private individual's name anywhere in the repository.** The repository is public,
+  and everything in it, including its history, can be read and copied by anyone. That
+  covers the docs, open items, code comments, data files, file metadata and commit
+  messages. Refer to people by their role: "the photographer", "the oral-history
+  contributor", "the developer". The names themselves are kept in the developer's own
+  notes, outside the repository. The one exception is a credit the person has agreed to,
+  published on the credits page: that is attribution they consented to. An unconfirmed
+  credit is not. Licence attributions (the Wikimedia Commons photographers, the authors
+  of a cited dataset) and the collectors named in published archive records such as
+  dúchas.ie are credits of this kind.
 - Keep `prefers-reduced-motion` respected and keyboard focus visible.
 - Stop pages must stay light. They are read in a forest on a weak connection.
 
