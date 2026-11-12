@@ -12,6 +12,15 @@
 # they do not end in .html.
 /*
   Cache-Control: public, max-age=300, must-revalidate
+  # Security headers, the same everywhere (docs/SECURITY.md). The Content Security Policy
+  # itself is a <meta> tag in each page, so the editor can carry a looser one than the site;
+  # only frame-ancestors, which a <meta> tag cannot set, is sent here.
+  Content-Security-Policy: frame-ancestors 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(self), camera=(), microphone=(), payment=(), usb=(), autoplay=(self "https://www.youtube-nocookie.com"), fullscreen=(self "https://www.youtube-nocookie.com"), encrypted-media=(self "https://www.youtube-nocookie.com"), picture-in-picture=(self "https://www.youtube-nocookie.com")
+  Strict-Transport-Security: max-age=31536000
 
 /assets/img/*
   Cache-Control: public, max-age=31536000, immutable

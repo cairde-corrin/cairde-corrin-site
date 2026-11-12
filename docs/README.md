@@ -17,6 +17,8 @@ own ground and points to the others rather than repeating them.
   how the editor is wired up, caching, and the checks after a deploy.
 - **`DOMAIN-SETUP.md`** - the complete procedure for connecting cairdecorrin.ie, written
   to be followed cold.
+- **`SECURITY.md`** - the threat model, what protects the site and the editor, revoking an
+  editor, recovering from a compromise, and the GitHub settings that complete it.
 - **`HANDOVER.md`** - what the group needs to own the site outright, and the order to
   transfer it in.
 - **`CMS-MIGRATION.md`** - what to do if Netlify's Git Gateway, which the editor uses to

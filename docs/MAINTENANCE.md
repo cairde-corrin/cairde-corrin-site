@@ -78,7 +78,8 @@ their email. They get Netlify's standard invitation email; `EDITOR-GUIDE.md` tel
 what to do with it. Send them that guide.
 
 **Removing someone.** **Identity**, click the person, **Delete user**. They can no longer
-log in. What they published stays on the site, and their name and email stay in the
+log in, though a session already open keeps working for up to an hour (`SECURITY.md`,
+"Revoking an editor"). What they published stays on the site, and their name and email stay in the
 repository's change history.
 
 **If someone's invitation link opens the home page and stops there.** Netlify's default

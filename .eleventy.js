@@ -14,11 +14,15 @@ const images = require('./site/_includes/images.js');
 const social = require('./site/_includes/social.js');
 const { nav } = require('./site/_includes/nav.js');
 const ldPages = require('./site/_includes/ld-pages.js');
+const csp = require('./site/_includes/csp.js');
 // Relative prefix back to the site root: /news/x/ -> ../../, /stops/stop-1.html -> ../
 const root = (url) => '../'.repeat(url.replace(/[^/]*$/, '').split('/').filter(Boolean).length);
 
 module.exports = function (eleventyConfig) {
   eleventyConfig.setTemplateFormats(['njk', 'md']);
+  // Markdown is written by editors, so it may not carry raw HTML: a <script> or an onerror
+  // attribute in a post would otherwise run on the public site. Tags are shown as text.
+  eleventyConfig.amendLibrary('md', (md) => md.set({ html: false }));
   eleventyConfig.addPassthroughCopy({ site: '/' }, { filter: ['**', ...SOURCES] });
   // Each page keeps the address it had as a hand-written file: trails/index.njk ->
   // trails/index.html, stops/stop-1.njk -> stops/stop-1.html. Front matter or a
@@ -40,6 +44,11 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addTransform('ld', function (content) {
     const out = this.page.outputPath;
     return typeof out === 'string' && out.endsWith('.html') ? ldPages.addLd(content, this.page.url) : content;
+  });
+  // The Content Security Policy, as a <meta> tag on every page (_includes/csp.js)
+  eleventyConfig.addTransform('csp', function (content) {
+    const out = this.page.outputPath;
+    return typeof out === 'string' && out.endsWith('.html') ? csp.addCsp(content, this.page.inputPath) : content;
   });
 
   eleventyConfig.addCollection('news', (api) =>

@@ -8,6 +8,11 @@ Last reviewed 11 November 2026.
 
 ## Needs a decision
 
+**First: switch on the GitHub protections in `SECURITY.md`** (a machine account for Git
+Gateway, the `CMS_GITHUB_USER` variable, branch protection on `main`, Identity roles).
+Until then an editor's session can still write code into the build.
+
+
 1. **What to do if Netlify's free allowance runs out.** On the credit-based free plan,
    each editor publish costs 15 of 300 monthly credits and visitors' bandwidth costs more,
    so a busy month could pause the site until the next (`MAINTENANCE.md`). Options if it

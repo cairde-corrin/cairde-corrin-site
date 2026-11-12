@@ -2,6 +2,10 @@
 <html lang="en-IE">
 <head>
 <meta charset="utf-8">
+<!-- The editor's own Content Security Policy: everything from this site only. Looser than the
+     public pages': Decap's config validator compiles code at runtime ('unsafe-eval'), Decap
+     styles itself inline, and it shows uploads as blob: previews; see docs/SECURITY.md. The public pages get theirs at build time (_includes/csp.js). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self' data:; connect-src 'self' blob: data:; frame-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>News editor - Cáirde Corrin</title>
@@ -16,21 +20,7 @@
 button[class*="-AppHeaderButton"]:not([class*="-AppHeaderNavLink"]){display:none !important}
 </style>
 <script src="photos.js"></script>
-<script>
-(function () {
-  // The Image button in the post body offers "Insert from URL", which would make the
-  // public page load a photo from another website. The photo fields switch it off with
-  // choose_url: false, but Decap does not pass that setting to the body's Image button,
-  // and the URL buttons share their style with the upload buttons, so they are hidden by
-  // their text. The build also refuses a page that loads anything from another site.
-  var URL_BUTTONS = /^(Insert from URL|Replace with URL)$/;
-  new MutationObserver(function () {
-    Array.prototype.forEach.call(document.querySelectorAll('button'), function (b) {
-      if (URL_BUTTONS.test(b.textContent.trim())) b.style.display = 'none';
-    });
-  }).observe(document.documentElement, { childList: true, subtree: true });
-})();
-</script>
+<script src="editor.js"></script>
 <!-- Both scripts are served from this site at pinned versions; nothing loads from a CDN.
      The widget must load first: Decap uses it to log editors in, and it picks up the
      invite and password-reset links in the address that the Netlify emails point here. -->
