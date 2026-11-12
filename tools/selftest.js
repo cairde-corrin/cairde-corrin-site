@@ -60,6 +60,15 @@ assert.ok(!moor.find((g) => g.id === 'explore').current);
 assert.ok(nav('/news/some-post/', 0).find((g) => g.href === 'news/').current);
 assert.ok(nav('/', 0).every((g) => !g.current));
 
+// Page text: figures come only from figures.json, raw HTML never renders, italics keep the site's class
+const { prose } = require('../site/_includes/prose.js');
+const figs = require('../site/_data/figures.json');
+assert.equal(prose('About {catchment.area_ha} hectares'), `About ${figs.catchment.area_ha} hectares`);
+assert.equal(prose('the *Munster Blackwater*'), 'the <em class="hy">Munster Blackwater</em>');
+assert.ok(!prose('<script>alert(1)</script>').includes('<script>'), 'raw HTML must not render');
+assert.throws(() => prose('{catchment.nonsense} ha'), /not a figure/);
+assert.throws(() => prose('{catchment} ha'), /not a figure/);  // a whole group is not a figure
+
 // The editor's photo step: strip() must leave no EXIF, XMP or comment in what it uploads
 const photos = { exports: {} };
 new Function('module', 'window', require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'site', 'admin', 'photos.js'), 'utf8'))(photos, undefined);

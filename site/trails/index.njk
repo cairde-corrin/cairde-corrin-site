@@ -207,11 +207,11 @@
         <svg id="map" role="img" tabindex="0" aria-label="Interactive map of the Glenabo catchment showing relief, boundary, drainage, the walked loop and recorded stops. Arrow keys move the map, plus and minus zoom, zero resets it."></svg>
         <button class="maplayers-toggle" id="mlt" aria-expanded="false" aria-controls="maplayers">Layers</button>
         <div class="maplayers" id="maplayers">
-          <label><input type="checkbox" id="L-terr" checked> Relief <i>21-213 m</i></label>
-          <label><input type="checkbox" id="L-action" checked> Action area <i>about 990 ha</i></label>
-          <label><input type="checkbox" id="L-catch" checked> Catchment <i>about 360 ha</i></label>
+          <label><input type="checkbox" id="L-terr" checked> Relief <i>{{ figures.catchment.outlet_m }}-{{ figures.catchment.elev_max_m }} m</i></label>
+          <label><input type="checkbox" id="L-action" checked> Action area <i>about {{ figures.action_area.ha }} ha</i></label>
+          <label><input type="checkbox" id="L-catch" checked> Catchment <i>about {{ figures.catchment.area_ha }} ha</i></label>
           <label><input type="checkbox" id="L-chan" checked> Drainage <i>modelled</i></label>
-          <label><input type="checkbox" id="L-trail" checked> Walked loop <i>about 2.3 km</i></label>
+          <label><input type="checkbox" id="L-trail" checked> Walked loop <i>about {{ figures.loop.length_km }} km</i></label>
           <label><input type="checkbox" id="L-stops" checked> Stops <i>3 recorded</i></label>
         </div>
         <div class="mapctl">
@@ -235,11 +235,11 @@
         <h2 class="as-h3">The stops</h2>
         <div class="stoplist">
       <a class="stopitem" href="../stops/stop-1.html"><span class="sn">01</span>
-        <span><span class="st">The stream at about 60 metres</span><span class="sd">52.12752°N 8.29878°W</span></span><span class="se">about 60 m</span></a>
+        <span><span class="st">The stream at about {{ figures.stops.s1.elevation_m }} metres</span><span class="sd">{{ figures.stops.s1.lat }}°N {{ figures.stops.s1.lon_abs }}°W</span></span><span class="se">about {{ figures.stops.s1.elevation_m }} m</span></a>
       <a class="stopitem" href="../stops/stop-2.html"><span class="sn">02</span>
-        <span><span class="st">Closed canopy</span><span class="sd">52.12240°N 8.30604°W</span></span><span class="se">about 110 m</span></a>
+        <span><span class="st">Closed canopy</span><span class="sd">{{ figures.stops.s2.lat }}°N {{ figures.stops.s2.lon_abs }}°W</span></span><span class="se">about {{ figures.stops.s2.elevation_m }} m</span></a>
       <a class="stopitem" href="../stops/stop-3.html"><span class="sn">03</span>
-        <span><span class="st">The mossy stand</span><span class="sd">52.12344°N 8.30538°W</span></span><span class="se">about 105 m</span></a>
+        <span><span class="st">The mossy stand</span><span class="sd">{{ figures.stops.s3.lat }}°N {{ figures.stops.s3.lon_abs }}°W</span></span><span class="se">about {{ figures.stops.s3.elevation_m }} m</span></a>
       <div class="stopitem pending"><span class="sn">04</span><span><span class="st">To be surveyed</span></span><span class="se">-</span></div>
       <div class="stopitem pending"><span class="sn">05</span><span><span class="st">To be surveyed</span></span><span class="se">-</span></div>
       <div class="stopitem pending"><span class="sn">06</span><span><span class="st">To be surveyed</span></span><span class="se">-</span></div>

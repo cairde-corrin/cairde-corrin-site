@@ -15,6 +15,7 @@ const social = require('./site/_includes/social.js');
 const { nav } = require('./site/_includes/nav.js');
 const ldPages = require('./site/_includes/ld-pages.js');
 const csp = require('./site/_includes/csp.js');
+const { prose } = require('./site/_includes/prose.js');
 // Relative prefix back to the site root: /news/x/ -> ../../, /stops/stop-1.html -> ../
 const root = (url) => '../'.repeat(url.replace(/[^/]*$/, '').split('/').filter(Boolean).length);
 
@@ -29,6 +30,14 @@ module.exports = function (eleventyConfig) {
   // directory data file (News, the sitemap) overrides this.
   eleventyConfig.addGlobalData('permalink', () => (data) => `${data.page.filePathStem.slice(1)}.html`);
   eleventyConfig.addFilter('navItems', nav);
+  // Page text from the editor, with measured figures filled in (_includes/prose.js)
+  eleventyConfig.addFilter('prose', prose);
+  // The address shown under each link on the Links page; editors type the full address
+  eleventyConfig.addFilter('domain', (url) => {
+    const u = new URL(url);
+    if (u.protocol !== 'https:') throw new Error(`Links page: ${url} is not an https:// address.`);
+    return u.hostname.replace(/^www\./, '');
+  });
 
   // Photos placed in a post's body come out of Markdown as <img src="/assets/uploads/...">.
   // This sends them through the same re-encoding as the hero and gallery, and stops the
@@ -64,6 +73,18 @@ module.exports = function (eleventyConfig) {
     api.getFilteredByGlob('site/_content/gallery/*.md')
       .sort((a, b) => (taken(b) - taken(a)) || b.inputPath.localeCompare(a.inputPath)));
   eleventyConfig.addFilter('socialPosts', social.posts);
+  eleventyConfig.addCollection('articles', (api) =>
+    api.getFilteredByGlob('site/_content/articles/*.md').sort((a, b) => b.date - a.date));
+  // Where "Edit this page" leads in the editor, for pages an editor can change; '' for the rest
+  const EDIT = { '/': 'pages/entries/home', '/about/': 'pages/entries/about', '/links/': 'pages/entries/links',
+    '/new-spaces/': 'pages/entries/new_spaces', '/new-spaces/corrin-moor.html': 'pages/entries/corrin_moor',
+    '/new-spaces/corrin-wetlands.html': 'pages/entries/corrin_wetlands', '/stops/stop-1.html': 'pages/entries/stop_1',
+    '/stops/stop-2.html': 'pages/entries/stop_2', '/stops/stop-3.html': 'pages/entries/stop_3',
+    '/news/': 'news', '/gallery/': 'gallery', '/articles/': 'articles' };
+  eleventyConfig.addFilter('editLink', (page) => {
+    if (/\/_content\/news\/[^/]+\.md$/.test(page.inputPath)) return `collections/news/entries/${page.inputPath.split('/').pop().slice(0, -3)}`;
+    return EDIT[page.url] ? `collections/${EDIT[page.url]}` : '';
+  });
 
   // Relative root for a page URL, as every existing page writes its links: /news/ -> ../
   eleventyConfig.addFilter('root', root);

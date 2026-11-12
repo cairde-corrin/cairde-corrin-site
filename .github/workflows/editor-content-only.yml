@@ -33,7 +33,7 @@ jobs:
           if [ -n "$CMS_USER" ] && [ "$AUTHOR" = "$CMS_USER" ]; then editor=1; fi
           if [ "$editor" = 0 ]; then echo "Not an editor change ($AUTHOR, $HEAD): no path limit."; exit 0; fi
           files=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[].filename')
-          bad=$(printf '%s\n' "$files" | grep -v -E '^site/(_content/(news|gallery|pages|articles)/[^/]+\.(md|json)|_data/(social|pages)\.json|assets/uploads/[^/]+)$' || true)
+          bad=$(printf '%s\n' "$files" | grep -v -E '^site/(_content/(news|gallery|articles)/[^/]+\.md|_data/social\.json|_data/pages/[^/]+\.json|assets/uploads/[^/]+)$' || true)
           if [ -n "$bad" ]; then
             echo "::error::This editor change touches files outside editor content:"
             printf '%s\n' "$bad"

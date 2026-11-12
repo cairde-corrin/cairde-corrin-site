@@ -112,13 +112,13 @@ if (/^#(invite|recovery|email_change)_token=/.test(location.hash)) location.repl
       <div class="film-panel" data-at="0.10">
         <p class="film-strap">Cáirde Corrin</p>
         <h1>Glenabo<br><em>&amp; Corrin</em></h1>
-        <p class="film-sub">An historical land where all living things can thrive in harmony with nature.</p>
+        <p class="film-sub">{{ pages.home.p1 | prose | safe }}</p>
       </div>
       <div class="film-panel" data-at="0.40">
-        <p class="film-line">Everything that falls here ends up in the Blackwater.</p>
+        <p class="film-line">{{ pages.home.p2 | prose | safe }}</p>
       </div>
       <div class="film-panel" data-at="0.75">
-        <p class="film-line">About 360 hectares. One outlet. A catchment small enough that a community can change what comes down it.</p>
+        <p class="film-line">{{ pages.home.p3 | prose | safe }}</p>
       </div>
     </div>
   </div>
@@ -129,7 +129,7 @@ if (/^#(invite|recovery|email_change)_token=/.test(location.hash)) location.repl
     <p class="scroll-hint rv"><i></i> This page runs downhill</p>
     <p class="eyebrow rv">The ground we are talking about</p>
     <h2 class="rv">Everything that falls here<br>ends up in the Blackwater.</h2>
-    <p class="rv">A catchment is not an opinion. It is the exact area of ground whose surface water drains to one point. Ours drains to a single confluence on the <em class="hy">Munster Blackwater</em> at the northern tip of Glenabo Wood, and it can be drawn.</p>
+    <p class="rv">{{ pages.home.p4 | prose | safe }}</p>
     <dl class="figs rv">
       <div class="fig"><dt>Catchment area</dt><dd><small>about</small>3.6<small>km²</small></dd></div>
       <div class="fig"><dt>Or, in hectares</dt><dd><small>about</small>360<small>ha</small></dd></div>
@@ -149,7 +149,7 @@ if (/^#(invite|recovery|email_change)_token=/.test(location.hash)) location.repl
   <div class="wrap">
     <p class="eyebrow rv">Two photographs, twelve minutes apart</p>
     <h2 class="rv">Same hill.<br>Same morning.</h2>
-    <p class="rv">One hundred and thirty-six metres apart on the same slope. What separates them is what was planted here, and when.</p>
+    <p class="rv">{{ pages.home.p5 | prose | safe }}</p>
     <div class="pair">
       <figure class="pair-item rv">
         <picture><source type="image/avif" srcset="assets/img/open-broadleaf-700.avif 700w, assets/img/open-broadleaf-1100.avif 1100w, assets/img/open-broadleaf-1800.avif 1800w" sizes="(min-width:840px) 46vw, calc(100vw - 44px)"><source type="image/webp" srcset="assets/img/open-broadleaf-700.webp 700w, assets/img/open-broadleaf-1100.webp 1100w, assets/img/open-broadleaf-1800.webp 1800w" sizes="(min-width:840px) 46vw, calc(100vw - 44px)"><img src="assets/img/open-broadleaf-1100.webp" width="1800" height="2397" loading="lazy" decoding="async" alt="Widely spaced slim broadleaf trunks with a thick green grass and herb layer covering the ground"></picture>
@@ -173,8 +173,8 @@ if (/^#(invite|recovery|email_change)_token=/.test(location.hash)) location.repl
   <div class="wrap">
     <p class="eyebrow rv">About 21 m OD - the outlet</p>
     <h2 class="rv">One point on the <em class="hy">Blackwater</em>.</h2>
-    <p class="rv">About three hundred and sixty hectares drain through a single confluence. Upstream of it, every field, track, drain and stand of trees is part of the same system. Downstream, it is somebody else's water.</p>
-    <p class="rv">That is why we work to a catchment rather than a parish.</p>
+    <p class="rv">{{ pages.home.p6 | prose | safe }}</p>
+    <p class="rv">{{ pages.home.p7 | prose | safe }}</p>
   </div>
 </section>
 
@@ -182,7 +182,7 @@ if (/^#(invite|recovery|email_change)_token=/.test(location.hash)) location.repl
   <div class="wrap">
     <p class="eyebrow rv">The wider picture</p>
     <h2 class="rv">Catchment, woodland and amenity<br>inside one working boundary.</h2>
-    <p class="rv">The hydrological catchment is the scientific unit. The area we propose to work in is larger, because Corrin Hill, Corrin Wood and Knockananig Reservoir belong to the same landscape and the same walk, even where they drain elsewhere.</p>
+    <p class="rv">{{ pages.home.p8 | prose | safe }}</p>
     <dl class="figs light rv">
       <div class="fig"><dt>Proposed action area</dt><dd>9.9<small>km²</small></dd></div>
       <div class="fig"><dt>Or, in hectares</dt><dd><small>about</small>990<small>ha</small></dd></div>
@@ -201,16 +201,16 @@ if (/^#(invite|recovery|email_change)_token=/.test(location.hash)) location.repl
   <div class="wrap">
     <p class="eyebrow rv">Strands of our Work</p>
     <h2 class="rv">The three strands of our work are</h2>
-    <p class="rv">We work to protect, restore and celebrate the environment, heritage and recreational use of our Glenabo-Corrin waterways, engaging with our local community, partnering with agencies, and taking action to ensure the rivers and their valleys flourish for future generations.</p>
+    <p class="rv">{{ pages.home.p9 | prose | safe }}</p>
     <div class="strands">
       <div class="strand rv"><div class="strand-n">Strand 1</div><div><h3>Points of interest</h3>
-        <p>Enhancing existing trails to include information on the ecology, history and folklore of our area</p>
+        <p>{{ pages.home.p10 | prose | safe }}</p>
         <a href="trails/">See the trail →</a></div></div>
       <div class="strand rv"><div class="strand-n">Strand 2</div><div><h3>New spaces</h3>
-        <p>Developing new local recreational and educational amenities in the Glenabo/Corrin catchment</p>
+        <p>{{ pages.home.p11 | prose | safe }}</p>
         <a href="new-spaces/">What we are working on →</a></div></div>
       <div class="strand rv"><div class="strand-n">Strand 3</div><div><h3>Improving water and ecosystems</h3>
-        <p>Working with other local and national community, state, voluntary, educational and outdoor activity bodies to improve the water quality and biodiversity of our target area</p>
+        <p>{{ pages.home.p12 | prose | safe }}</p>
         <a href="water/">How to help →</a></div></div>
     </div>
   </div>
@@ -219,8 +219,8 @@ if (/^#(invite|recovery|email_change)_token=/.test(location.hash)) location.repl
 <section class="plain gallery">
   <div class="wrap">
     <p class="eyebrow rv">From inside the catchment</p>
-    <h2 class="rv">What 360 hectares<br>actually looks like.</h2>
-    <p class="rv">Photographed on the Glenabo trail on 4 and 11 April 2026. Each carries the elevation and time it was taken.</p>
+    <h2 class="rv">What {{ figures.catchment.area_ha }} hectares<br>actually looks like.</h2>
+    <p class="rv">{{ pages.home.p13 | prose | safe }}</p>
   </div>
   <div class="carousel rv">
     <div class="car-head">
@@ -312,7 +312,7 @@ if (/^#(invite|recovery|email_change)_token=/.test(location.hash)) location.repl
   <div class="wrap">
     <p class="eyebrow rv">Get involved</p>
     <h2 class="rv">It is a small catchment.<br>That is the good news.</h2>
-    <p class="rv">About three hundred and sixty hectares is walkable in a morning and knowable in a season. Survey work, invasive species removal, recording what is here - none of it needs a specialist to start.</p>
+    <p class="rv">{{ pages.home.p14 | prose | safe }}</p>
     <a class="cta rv" href="about/">Join Cáirde Corrin</a>
   </div>
 </section>

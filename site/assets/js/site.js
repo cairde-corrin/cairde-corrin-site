@@ -25,6 +25,14 @@
     if (open) { closeGroups(); open.focus(); }
     else if (links && links.classList.contains('open')) { tgl.click(); tgl.focus(); }
   });
+  /* "Edit this page": every editable page carries the link hidden; it shows only in a
+     browser where an editor is logged in (the login keeps "gotrue.user" in storage). This
+     is about who sees the button, not about access: the editor still needs the login. */
+  try {
+    if (localStorage.getItem('gotrue.user')) {
+      document.querySelectorAll('.editlink').forEach(function (a) { a.hidden = false; });
+    }
+  } catch (e) { /* storage blocked: no button */ }
   /* Menu, below the menu breakpoint. Opening it also opens the group holding this page. */
   if (tgl && links) tgl.addEventListener('click', function () {
     var open = links.classList.toggle('open');

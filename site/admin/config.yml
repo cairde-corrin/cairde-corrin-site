@@ -305,3 +305,273 @@ collections:
                 widget: string
                 pattern: ['^.{1,160}$', 'Keep the caption to one short line, under 160 characters.']
                 hint: One short line saying what the post is about. This is what the card shows.
+
+  - name: pages
+    label: Page text
+    label_singular: page
+    description: >-
+      The wording of the home page, About, Links, New spaces and the stop pages. Only the
+      text: measured figures (heights, areas, distances) and the folklore sources are kept
+      elsewhere and cannot be changed here. Nothing you change appears on the website until
+      it is published.
+    editor: { preview: false }
+    files:
+      - name: home
+        label: "Home page"
+        file: site/_data/pages/home.json
+        fields:
+          - label: "Under \"Glenabo & Corrin\""
+            name: p1
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"Glenabo & Corrin\""
+            name: p2
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"Glenabo & Corrin\""
+            name: p3
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics. Words in {curly brackets} are measured figures that the website fills in: leave them exactly as they are."
+          - label: "Under \"Everything that falls here ends up in the Blackwater.\""
+            name: p4
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"Same hill. Same morning.\""
+            name: p5
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics. Words in {curly brackets} are measured figures that the website fills in: leave them exactly as they are."
+          - label: "Under \"One point on the Blackwater .\""
+            name: p6
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics. Words in {curly brackets} are measured figures that the website fills in: leave them exactly as they are."
+          - label: "Under \"One point on the Blackwater .\""
+            name: p7
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"Catchment, woodland and amenity inside one working boundary.\""
+            name: p8
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"The three strands of our work are\""
+            name: p9
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"Points of interest\""
+            name: p10
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"New spaces\""
+            name: p11
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"Improving water and ecosystems\""
+            name: p12
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"What 360 hectares actually looks like.\""
+            name: p13
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"It is a small catchment. That is the good news.\""
+            name: p14
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics. Words in {curly brackets} are measured figures that the website fills in: leave them exactly as they are."
+      - name: about
+        label: "About"
+        file: site/_data/pages/about.json
+        fields:
+          - label: "Under \"A community group working to a catchment.\""
+            name: p1
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"Our vision\""
+            name: p2
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"Our mission\""
+            name: p3
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"Coillte\""
+            name: p4
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"National Biodiversity Data Centre\""
+            name: p5
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"The local authority\""
+            name: p6
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"How to get involved\""
+            name: p7
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+      - name: links
+        label: "Links"
+        file: site/_data/pages/links.json
+        fields:
+          - label: "Under \"Where to go next.\""
+            name: p1
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: The links
+            name: sites
+            widget: list
+            label_singular: link
+            summary: "{{fields.name}}"
+            hint: The sites listed on the Links page, in this order. Drag to reorder.
+            fields:
+              - { label: Name, name: name, widget: string }
+              - label: Address
+                name: url
+                widget: string
+                pattern: ['^https://\S+$', 'Paste the full address, starting https://']
+      - name: new_spaces
+        label: "New spaces"
+        file: site/_data/pages/new_spaces.json
+        fields:
+          - label: "Under \"Two projects in early development.\""
+            name: p1
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics. Words in {curly brackets} are measured figures that the website fills in: leave them exactly as they are."
+          - label: "Under \"Corrin moorland\""
+            name: p2
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"Corrin wetlands\""
+            name: p3
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"The proposed route\""
+            name: p4
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"Glenabo interpretation\""
+            name: p5
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"Corrin interpretation\""
+            name: p6
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"Glenabo extension\""
+            name: p7
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics. Words in {curly brackets} are measured figures that the website fills in: leave them exactly as they are."
+          - label: "Under \"The full loop\""
+            name: p8
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics. Words in {curly brackets} are measured figures that the website fills in: leave them exactly as they are."
+          - label: "Under \"The full loop\""
+            name: p9
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+      - name: corrin_moor
+        label: "New spaces: Corrin Moor"
+        file: site/_data/pages/corrin_moor.json
+        fields:
+          - label: "Under \"Corrin moorland.\""
+            name: p1
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"Corrin moorland.\""
+            name: p2
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+      - name: corrin_wetlands
+        label: "New spaces: Corrin Wetlands"
+        file: site/_data/pages/corrin_wetlands.json
+        fields:
+          - label: "Under \"Corrin wetlands.\""
+            name: p1
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"Corrin wetlands.\""
+            name: p2
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+      - name: stop_1
+        label: "Stop 01"
+        file: site/_data/pages/stop_1.json
+        fields:
+          - label: "Under \"The stream at about 60 metres.\""
+            name: p1
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics. Words in {curly brackets} are measured figures that the website fills in: leave them exactly as they are."
+          - label: "Under \"The stream at about 60 metres.\""
+            name: p2
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+      - name: stop_2
+        label: "Stop 02"
+        file: site/_data/pages/stop_2.json
+        fields:
+          - label: "Under \"Closed canopy.\""
+            name: p1
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - label: "Under \"Closed canopy.\""
+            name: p2
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics. Words in {curly brackets} are measured figures that the website fills in: leave them exactly as they are."
+      - name: stop_3
+        label: "Stop 03"
+        file: site/_data/pages/stop_3.json
+        fields:
+          - label: "Under \"The mossy stand.\""
+            name: p1
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics. Words in {curly brackets} are measured figures that the website fills in: leave them exactly as they are."
+          - label: "Under \"The mossy stand.\""
+            name: p2
+            widget: text
+            hint: "Plain text. Put *asterisks* round words to set them in italics."
+
+  - name: articles
+    label: Articles
+    label_singular: article
+    description: >-
+      Articles about Cáirde Corrin or the catchment published elsewhere: newspapers,
+      magazines, other websites. Each appears on the Articles page as a card that links to
+      the original. Nothing you add appears on the website until it is published.
+    folder: site/_content/articles
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "{{title}} ({{publication}})"
+    sortable_fields: [date, title]
+    editor: { preview: false }
+    fields:
+      - { label: Headline of the article, name: title, widget: string, hint: "Exactly as the publication gave it." }
+      - { label: Published in, name: publication, widget: string, hint: "The newspaper, magazine or website, for example The Avondhu." }
+      - { label: Written by, name: author, widget: string, required: false, hint: "Optional. The journalist or author, if named." }
+      - label: Date it was published
+        name: date
+        widget: datetime
+        format: YYYY-MM-DD
+        date_format: D MMMM YYYY
+        time_format: false
+        picker_utc: true
+        default: '{{now}}'
+      - label: Address of the article
+        name: url
+        widget: string
+        pattern: ['^https://\S+$', 'Paste the full address of the article, starting https://']
+      - label: Summary in your own words
+        name: summary
+        widget: text
+        hint: >-
+          Two or three sentences saying what the article is about, written by you. Do not
+          copy text from the article: it belongs to the publication. The card links to the
+          original for anyone who wants to read it.
+      - label: One short line quoted from the article (optional)
+        name: quote
+        widget: string
+        required: false
+        pattern: ['^.{0,200}$', 'Keep the quoted line short: one sentence, under 200 characters.']
+        hint: >-
+          Optional. At most one short sentence, copied exactly. It is shown in quotation marks
+          with the publication's name. Never more than this.

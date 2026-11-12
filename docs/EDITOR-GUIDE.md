@@ -141,17 +141,25 @@ page simply has no social section. Save and publish as usual.
 
 ## What you cannot change here, and why
 
-The trails, the stop pages, the species list and the folklore are not in the editor, and
-that is deliberate. Every figure on those pages, every height, distance, area, grid
-position, species name and story, was checked against a source: a GPS track, an
-elevation survey, a botanical record, the National Folklore Collection. The website
-exists partly to be read by landowners and people who know the ground, and those pages
-are what it will be judged on. Changing them goes through the person who looks after the
-website, so that each change can be checked against its source first.
+Some things are not in the editor at all, on purpose:
 
-If you spot something wrong on one of those pages, or have something to add (a new stop,
-a species record, a recording), tell that person. The same goes for the About page, the
-privacy and terms pages, and anything about the look of the site.
+- **Measured figures:** every height, distance, area, grid position and time on the site.
+  In the page text they appear as words in {curly brackets}, which the website fills in;
+  leave those as they are. You can reword the sentence around them, never the figure.
+- **The species determinations,** which record what was identified and how.
+- **The folklore and its sources,** and the attribution to the National Folklore
+  Collection on dúchas.ie.
+- **The credits and licences,** which are legal conditions of using other people's
+  photographs and maps.
+- **The privacy and terms pages,** which are the group's commitments to visitors.
+- **The trails page,** whose map, profile and figures come from the survey data.
+
+Each of these was checked against a source: a GPS track, an elevation survey, a botanical
+record, the National Folklore Collection, a licence. The website exists partly to be read
+by landowners and people who know the ground, and those are what it will be judged on.
+Changes to them go through the person who looks after the website, so that each change
+can be checked against its source first. If you spot something wrong, or have something
+to add, tell them.
 
 ## When something looks wrong
 
