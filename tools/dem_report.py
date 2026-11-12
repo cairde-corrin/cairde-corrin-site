@@ -3,7 +3,7 @@
 
     python3 tools/dem_report.py ["/path/to/photographs" ...]
 
-Reads site/assets/data/cairde-corrin.geojson and source-data/*.gpx, changes
+Reads site/assets/data/cairde-corrin.geojson and archive/source-data/*.gpx, changes
 nothing. With a photograph folder (needs exiftool) it also uses the unrounded
 EXIF altitudes. Data comes from tools/fetch_dem.py.
 

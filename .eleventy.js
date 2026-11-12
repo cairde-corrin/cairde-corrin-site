@@ -45,6 +45,11 @@ module.exports = function (eleventyConfig) {
     const out = this.page.outputPath;
     return typeof out === 'string' && out.endsWith('.html') ? ldPages.addLd(content, this.page.url) : content;
   });
+  // HTML comments in the sources are notes for whoever edits them; visitors' copies do not need them
+  eleventyConfig.addTransform('comments', function (content) {
+    const out = this.page.outputPath;
+    return typeof out === 'string' && out.endsWith('.html') ? content.replace(/[ \t]*<!--[\s\S]*?-->\n?/g, '') : content;
+  });
   // The Content Security Policy, as a <meta> tag on every page (_includes/csp.js)
   eleventyConfig.addTransform('csp', function (content) {
     const out = this.page.outputPath;

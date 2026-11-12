@@ -2,7 +2,7 @@
 <gpx version="1.1" creator="Cáirde Corrin" xmlns="http://www.topografix.com/GPX/1/1">
   <metadata>
     <name>Glenabo loop</name>
-    <desc>The Glenabo loop as walked by Cáirde Corrin with a phone GPS on 29 August 2026, with the stretches where the walk doubled back removed. About 2.3 km. Positions are good to roughly 10-20 m. Track elevations are the walk's own GPS elevations; waypoint elevations are the site's published figures, to the nearest 5 m. Not a waymarked route: https://www.cairdecorrin.ie/terms/</desc>
+    <desc>The Glenabo loop as walked by Cáirde Corrin with a phone GPS on 29 August 2026, with the stretches where the walk doubled back removed. About 2.3 km. Positions are good to roughly 10-20 m. Track elevations are the walk's own GPS elevations; waypoint elevations are the site's published figures, to the nearest 5 m. A record of one walk through unwaymarked woodland on land the group does not own: not a surveyed or waymarked route, and not for navigation. Access is not guaranteed, and tracks may be closed, felled or unsafe. Read https://www.cairdecorrin.ie/terms/ before you go.</desc>
     <link href="https://www.cairdecorrin.ie/trails/"><text>Cáirde Corrin - Trails</text></link>
   </metadata>
   <wpt lat="52.1333" lon="-8.3002"><ele>21</ele><name>Catchment outlet</name><type>outlet</type></wpt>
@@ -11,6 +11,7 @@
   <wpt lat="52.12344" lon="-8.30538"><ele>105</ele><name>Stop 03 - the mossy stand</name><type>stop</type></wpt>
   <trk>
     <name>Glenabo loop</name>
+    <desc>A record of one walk through unwaymarked woodland on land the group does not own: not a surveyed or waymarked route, and not for navigation. Access is not guaranteed, and tracks may be closed, felled or unsafe. Read https://www.cairdecorrin.ie/terms/ before you go.</desc>
     <trkseg>
       <trkpt lat="52.12754" lon="-8.29879"><ele>61.4</ele></trkpt>
       <trkpt lat="52.12751" lon="-8.29869"><ele>60.6</ele></trkpt>

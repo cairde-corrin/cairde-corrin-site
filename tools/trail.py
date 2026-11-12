@@ -3,7 +3,7 @@
 
     python3 tools/trail.py
 
-Reads   source-data/2026-08-29_glenabo_loop.gpx (raw, timestamped, never published)
+Reads   archive/source-data/2026-08-29_glenabo_loop.gpx (raw, timestamped; kept out of the repository)
 Writes  site/assets/data/cairde-corrin.geojson   the "Walked loop" feature
         site/assets/data/glenabo-loop.gpx        the download: loop plus the four points
         site/trails/index.njk                    the walked-loop section and its profile,
@@ -20,9 +20,13 @@ dropped; elevations are kept.
 import html, json, math, os, re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-RAW = os.path.join(ROOT, 'source-data', '2026-08-29_glenabo_loop.gpx')
+RAW = os.path.join(ROOT, 'archive', 'source-data', '2026-08-29_glenabo_loop.gpx')
 GEOJSON = os.path.join(ROOT, 'site', 'assets', 'data', 'cairde-corrin.geojson')
 GPX_OUT = os.path.join(ROOT, 'site', 'assets', 'data', 'glenabo-loop.gpx')
+# Carried inside the GPX, because a file opened in a navigation app arrives without the web page
+WARN = ('A record of one walk through unwaymarked woodland on land the group does not own: not a '
+        'surveyed or waymarked route, and not for navigation. Access is not guaranteed, and tracks may be '
+        'closed, felled or unsafe. Read https://www.cairdecorrin.ie/terms/ before you go.')
 TRAILS = os.path.join(ROOT, 'site', 'trails', 'index.njk')
 WALKED = '2026-08-29'
 KEEP = [(0, 100), (146, 189)]  # inclusive index ranges kept from the raw track
@@ -182,10 +186,9 @@ def main():
            '    <desc>The Glenabo loop as walked by Cáirde Corrin with a phone GPS on 29 August 2026, '
            'with the stretches where the walk doubled back removed. About %.1f km. Positions are good '
            'to roughly 10-20 m. Track elevations are the walk\'s own GPS elevations; waypoint '
-           'elevations are the site\'s published figures, to the nearest 5 m. Not a waymarked route: '
-           'https://www.cairdecorrin.ie/terms/</desc>\n'
+           'elevations are the site\'s published figures, to the nearest 5 m. ' + WARN + '</desc>\n'
            '    <link href="https://www.cairdecorrin.ie/trails/"><text>Cáirde Corrin - Trails</text></link>\n'
-           '  </metadata>\n%s  <trk>\n    <name>Glenabo loop</name>\n    <trkseg>\n%s    </trkseg>\n'
+           '  </metadata>\n%s  <trk>\n    <name>Glenabo loop</name>\n    <desc>' + WARN + '</desc>\n    <trkseg>\n%s    </trkseg>\n'
            '  </trk>\n</gpx>\n' % (simp_len / 1000, wpts, trk))
     assert '<time' not in gpx and 'time' not in json.dumps(feature)
     open(GPX_OUT, 'w', encoding='utf-8').write(gpx)
@@ -202,8 +205,9 @@ def main():
         'about %d to %d m, with about %d m of climbing. Like every elevation on this site, given to '
         'the nearest five metres.</figcaption>\n      </figure>\n'
         '      <p><a href="../assets/data/glenabo-loop.gpx" download>Download the walked loop as GPX</a> '
-        '(%d KB). It also carries the three stops and the outlet. A record of one walk, not a '
-        'waymarked route: read the <a href="../terms/">terms</a> before you go.</p>\n    </section>\n    '
+        '(%d KB). It also carries the three stops and the outlet. It is a record of one walk through '
+        'unwaymarked woodland, not a surveyed route and not for navigation: read the '
+        '<a href="../terms/">terms</a> before you go.</p>\n    </section>\n    '
         % (simp_len / 1000, profile_svg(S, along, marks, emin, emax, climb5), 5 * round(emin / 5),
            5 * round(emax / 5), climb5, size_kb))
     page = open(TRAILS, encoding='utf-8').read()

@@ -8,14 +8,13 @@ anything; the rest is reference.
 
     site/         everything that deploys, and nothing else. Netlify publishes this.
     docs/         every document; docs/README.md is the index
-    source-data/  inputs that the site is made from. Tracked, never published.
     archive/      masters and source material. Not deployed, not tracked.
     tools/        helper scripts. Not part of the build; nothing here has to run.
 
-`source-data/` holds raw inputs, such as route exports, that are processed into files
-under `site/`. Nothing in it is ever published directly: Netlify publishes only
-`site/`, and nothing on the site links into `source-data/`. To publish something
-derived from it, write the processed result into `site/` and commit both.
+The repository is public, so it holds nothing that should not be. Raw inputs that
+identify a person, such as the GPS track of the walked loop (it names who walked it and
+records when, minute by minute), are kept in `archive/source-data/`, outside the
+repository, and only their processed results are committed under `site/`.
 
 ## What this is
 
@@ -103,7 +102,7 @@ Times are Irish summer time (UTC+1), as the cameras recorded them.
 4. A drawn proposal: the catchment with Glenabo Wood, Corrin Hill and Knockananig
    Reservoir added. Traced from the group's map and accurate to 10-20 m; the outline
    measures 9.86 km². Not re-derived.
-5. Stop and photograph elevations come from the walk's own GPX (`source-data/`) and
+5. Stop and photograph elevations come from the walk's own GPX (`archive/source-data/`) and
    Copernicus, rounded to 5 m; they agree within 4-8 m at each stop. No elevation on the
    site is finer than 5 m, and every one carries "about". Never use photograph EXIF
    altitudes as they stand: the Pixel 8a used on 11 April records height above the
@@ -119,7 +118,7 @@ Times are Irish summer time (UTC+1), as the cameras recorded them.
 8. The walked loop is about 2.3 km with about 65 m of climbing, walked with a GPS on
    29 August 2026 and published by `python3 tools/trail.py` (map layer, profile, GPX).
    Its profile uses the track's own elevations, never photograph EXIF. The raw track in
-   `source-data/` keeps its timestamps and is never published. Those timestamps carry a
+   `archive/source-data/` keeps its timestamps and is kept out of the repository. Those timestamps carry a
    Z, which GPX defines as UTC, so the walk ran 07:59-09:08 Irish summer time; nothing
    else recorded that morning can confirm the clock, so publish the date only.
 9. The channel network length and segment count are withdrawn. The drawn network is

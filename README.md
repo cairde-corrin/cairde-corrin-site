@@ -50,8 +50,7 @@ does not answer.
 
     docs/                   The documents; docs/README.md is the index
     tools/                  Helper scripts, listed in tools/README.md. Not part of the build
-    source-data/            Inputs the site is made from, such as the raw GPS track. Never published
-    archive/                Masters and source material. Not deployed, not tracked
+    archive/                Masters and source material, including the raw GPS track. Not deployed, not tracked
 
 ## The QR signs
 

@@ -365,7 +365,7 @@ def longest_flow_path(g, ws, p):
 # unreliable, so this comes from OPW station 18124 Fermoy U/S Rowing, 1.4 km downstream:
 # gauge zero 21.187 m above Malin Head OD (OSGM15); 7 Oct-11 Nov 2026 levels 20.64-22.11.
 OUTLET_OD = 21
-# Stop elevations, m OD, rounded to 5 m: the walk's own GPX (source-data/) and Copernicus
+# Stop elevations, m OD, rounded to 5 m: the walk's own GPX (archive/source-data/) and Copernicus
 # GLO-30 agree to within 4-8 m at each stop (tools/dem_report.py). The original EXIF
 # altitudes were ellipsoidal heights, about 57 m above OD.
 STOP_OD = {'Stop 01 - the stream': 60, 'Stop 02 - closed canopy': 110,
