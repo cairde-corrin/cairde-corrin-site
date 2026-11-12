@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 760" width="1240" height="760" role="img" aria-labelledby="t d" font-family="Inter, Helvetica, Arial, sans-serif">
+<title id="t">How the Cáirde Corrin website works</title>
+<desc id="d">Editors write in Decap at /admin/, log in with Netlify Identity and save through Git Gateway to GitHub, where a check keeps them to content; publishing merges into main, Netlify builds the site with Eleventy and serves it to visitors. Developers release from the build branch.</desc>
+<style>.canvas{fill:#F3F5F7}.grid{fill:#D5DAE0}.wire{stroke:#7A8794;stroke-width:2;fill:none}.tag{fill:#FFFFFF;stroke:#B9C1CA}.tagt{fill:#3C4652;font-size:11px}@media (prefers-color-scheme: dark){.canvas{fill:#1B1F24}.grid{fill:#2C333B}.wire{stroke:#9AA6B2}.tag{fill:#262C33;stroke:#4A535D}.tagt{fill:#D9DEE3}}</style>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#7A8794"/></marker><pattern id="g" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" class="grid"/></pattern></defs>
+<rect class="canvas" width="1240" height="760" rx="14"/><rect width="1240" height="760" fill="url(#g)" rx="14"/>
+<path class="wire" d="M260 86 L330 86" marker-end="url(#a)"/>
+<rect class="tag" x="269" y="76" width="51" height="20" rx="10"/><text class="tagt" x="295" y="90" text-anchor="middle">writes</text>
+<path class="wire" d="M145 132 L145 190" marker-end="url(#a)"/>
+<rect class="tag" x="92" y="151" width="107" height="20" rx="10"/><text class="tagt" x="145" y="165" text-anchor="middle">chooses a photo</text>
+<path class="wire" d="M237 190 L353 132" marker-end="url(#a)"/>
+<rect class="tag" x="257" y="151" width="76" height="20" rx="10"/><text class="tagt" x="295" y="165" text-anchor="middle">clean copy</text>
+<path class="wire" d="M445 132 L445 190" marker-end="url(#a)"/>
+<rect class="tag" x="422" y="151" width="45" height="20" rx="10"/><text class="tagt" x="445" y="165" text-anchor="middle">login</text>
+<path class="wire" d="M560 86 L630 86" marker-end="url(#a)"/>
+<rect class="tag" x="545" y="76" width="101" height="20" rx="10"/><text class="tagt" x="595" y="90" text-anchor="middle">save / publish</text>
+<path class="wire" d="M860 86 L930 86" marker-end="url(#a)"/>
+<rect class="tag" x="866" y="76" width="57" height="20" rx="10"/><text class="tagt" x="895" y="90" text-anchor="middle">commits</text>
+<path class="wire" d="M1045 132 L1045 190" marker-end="url(#a)"/>
+<rect class="tag" x="1001" y="151" width="88" height="20" rx="10"/><text class="tagt" x="1045" y="165" text-anchor="middle">pull request</text>
+<path class="wire" d="M1045 282 L1045 340" marker-end="url(#a)"/>
+<rect class="tag" x="992" y="301" width="107" height="20" rx="10"/><text class="tagt" x="1045" y="315" text-anchor="middle">merge if passed</text>
+<path class="wire" d="M930 386 L860 386" marker-end="url(#a)"/>
+<rect class="tag" x="857" y="376" width="76" height="20" rx="10"/><text class="tagt" x="895" y="390" text-anchor="middle">every push</text>
+<path class="wire" d="M745 282 L745 340" marker-end="url(#a)"/>
+<rect class="tag" x="722" y="301" width="45" height="20" rx="10"/><text class="tagt" x="745" y="315" text-anchor="middle">still</text>
+<path class="wire" d="M745 432 L745 490" marker-end="url(#a)"/>
+<rect class="tag" x="695" y="451" width="101" height="20" rx="10"/><text class="tagt" x="745" y="465" text-anchor="middle">publish _site/</text>
+<path class="wire" d="M860 536 L930 536" marker-end="url(#a)"/>
+<rect class="tag" x="872" y="526" width="45" height="20" rx="10"/><text class="tagt" x="895" y="540" text-anchor="middle">HTTPS</text>
+<path class="wire" d="M260 536 L330 536" marker-end="url(#a)"/>
+<rect class="tag" x="257" y="526" width="76" height="20" rx="10"/><text class="tagt" x="295" y="540" text-anchor="middle">push build</text>
+<path class="wire" d="M260 517 L930 405" marker-end="url(#a)"/>
+<rect class="tag" x="517" y="451" width="157" height="20" rx="10"/><text class="tagt" x="595" y="465" text-anchor="middle">release by pull request</text>
+<path class="wire" d="M1045 640 L1045 582" marker-end="url(#a)"/>
+<rect class="tag" x="1016" y="601" width="57" height="20" rx="10"/><text class="tagt" x="1045" y="615" text-anchor="middle">address</text>
+<g><rect x="30" y="40" width="230" height="92" rx="12" fill="#FFF4D6" stroke="#C98A00" stroke-width="1.5"/><rect x="30" y="40" width="8" height="92" rx="4" fill="#C98A00"/><text x="52" y="70" font-size="15" font-weight="600" fill="#1E242B">Committee editor</text>
+<text x="52" y="94" font-size="12" fill="#3C4652">phone or computer</text>
+<text x="52" y="112" font-size="12" fill="#3C4652">logs in at /admin/</text>
+</g>
+<g><rect x="30" y="190" width="230" height="92" rx="12" fill="#E7F1FF" stroke="#2F6FD1" stroke-width="1.5"/><rect x="30" y="190" width="8" height="92" rx="4" fill="#2F6FD1"/><text x="52" y="220" font-size="15" font-weight="600" fill="#1E242B">photos.js</text>
+<text x="52" y="244" font-size="12" fill="#3C4652">shrinks to 2000 px and strips</text>
+<text x="52" y="262" font-size="12" fill="#3C4652">location before upload</text>
+</g>
+<g><rect x="330" y="40" width="230" height="92" rx="12" fill="#E7F1FF" stroke="#2F6FD1" stroke-width="1.5"/><rect x="330" y="40" width="8" height="92" rx="4" fill="#2F6FD1"/><text x="352" y="70" font-size="15" font-weight="600" fill="#1E242B">Decap CMS  /admin/</text>
+<text x="352" y="94" font-size="12" fill="#3C4652">news, gallery, page text,</text>
+<text x="352" y="112" font-size="12" fill="#3C4652">articles, social posts</text>
+</g>
+<g><rect x="330" y="190" width="230" height="92" rx="12" fill="#DFF5F2" stroke="#00897B" stroke-width="1.5"/><rect x="330" y="190" width="8" height="92" rx="4" fill="#00897B"/><text x="352" y="220" font-size="15" font-weight="600" fill="#1E242B">Netlify Identity</text>
+<text x="352" y="244" font-size="12" fill="#3C4652">invite-only logins,</text>
+<text x="352" y="262" font-size="12" fill="#3C4652">one-hour tokens</text>
+</g>
+<g><rect x="630" y="40" width="230" height="92" rx="12" fill="#DFF5F2" stroke="#00897B" stroke-width="1.5"/><rect x="630" y="40" width="8" height="92" rx="4" fill="#00897B"/><text x="652" y="70" font-size="15" font-weight="600" fill="#1E242B">Netlify Git Gateway</text>
+<text x="652" y="94" font-size="12" fill="#3C4652">writes to GitHub with</text>
+<text x="652" y="112" font-size="12" fill="#3C4652">a member&#x27;s token</text>
+</g>
+<g><rect x="930" y="40" width="230" height="92" rx="12" fill="#EEEAF7" stroke="#5B45A8" stroke-width="1.5"/><rect x="930" y="40" width="8" height="92" rx="4" fill="#5B45A8"/><text x="952" y="70" font-size="15" font-weight="600" fill="#1E242B">GitHub repository</text>
+<text x="952" y="94" font-size="12" fill="#3C4652">cms/... branch and pull</text>
+<text x="952" y="112" font-size="12" fill="#3C4652">request for each draft</text>
+</g>
+<g><rect x="930" y="190" width="230" height="92" rx="12" fill="#EEEAF7" stroke="#5B45A8" stroke-width="1.5"/><rect x="930" y="190" width="8" height="92" rx="4" fill="#5B45A8"/><text x="952" y="220" font-size="15" font-weight="600" fill="#1E242B">Editor content only</text>
+<text x="952" y="244" font-size="12" fill="#3C4652">check fails any editor change</text>
+<text x="952" y="262" font-size="12" fill="#3C4652">outside content files</text>
+</g>
+<g><rect x="930" y="340" width="230" height="92" rx="12" fill="#EEEAF7" stroke="#5B45A8" stroke-width="1.5"/><rect x="930" y="340" width="8" height="92" rx="4" fill="#5B45A8"/><text x="952" y="370" font-size="15" font-weight="600" fill="#1E242B">main branch</text>
+<text x="952" y="394" font-size="12" fill="#3C4652">Publish merges the pull</text>
+<text x="952" y="412" font-size="12" fill="#3C4652">request into main</text>
+</g>
+<g><rect x="30" y="490" width="230" height="92" rx="12" fill="#FFF4D6" stroke="#C98A00" stroke-width="1.5"/><rect x="30" y="490" width="8" height="92" rx="4" fill="#C98A00"/><text x="52" y="520" font-size="15" font-weight="600" fill="#1E242B">Developer</text>
+<text x="52" y="544" font-size="12" fill="#3C4652">works on the build branch,</text>
+<text x="52" y="562" font-size="12" fill="#3C4652">releases by pull request</text>
+</g>
+<g><rect x="330" y="490" width="230" height="92" rx="12" fill="#DFF5F2" stroke="#00897B" stroke-width="1.5"/><rect x="330" y="490" width="8" height="92" rx="4" fill="#00897B"/><text x="352" y="520" font-size="15" font-weight="600" fill="#1E242B">Branch preview</text>
+<text x="352" y="544" font-size="12" fill="#3C4652">build--cairde-corrin</text>
+<text x="352" y="562" font-size="12" fill="#3C4652">.netlify.app</text>
+</g>
+<g><rect x="630" y="340" width="230" height="92" rx="12" fill="#E8F3E0" stroke="#487629" stroke-width="1.5"/><rect x="630" y="340" width="8" height="92" rx="4" fill="#487629"/><text x="652" y="370" font-size="15" font-weight="600" fill="#1E242B">Netlify build: Eleventy</text>
+<text x="652" y="394" font-size="12" fill="#3C4652">templates + figures.json, page</text>
+<text x="652" y="412" font-size="12" fill="#3C4652">text, photos re-encoded, CSP</text>
+</g>
+<g><rect x="630" y="190" width="230" height="92" rx="12" fill="#F4E9E9" stroke="#A23B3B" stroke-width="1.5"/><rect x="630" y="190" width="8" height="92" rx="4" fill="#A23B3B"/><text x="652" y="220" font-size="15" font-weight="600" fill="#1E242B">YouTube</text>
+<text x="652" y="244" font-size="12" fill="#3C4652">video stills fetched at build</text>
+<text x="652" y="262" font-size="12" fill="#3C4652">when not yet committed</text>
+</g>
+<g><rect x="630" y="490" width="230" height="92" rx="12" fill="#DFF5F2" stroke="#00897B" stroke-width="1.5"/><rect x="630" y="490" width="8" height="92" rx="4" fill="#00897B"/><text x="652" y="520" font-size="15" font-weight="600" fill="#1E242B">Netlify CDN</text>
+<text x="652" y="544" font-size="12" fill="#3C4652">_site/ with _headers</text>
+<text x="652" y="562" font-size="12" fill="#3C4652">and _redirects (/s/1-10)</text>
+</g>
+<g><rect x="930" y="490" width="230" height="92" rx="12" fill="#FFF4D6" stroke="#C98A00" stroke-width="1.5"/><rect x="930" y="490" width="8" height="92" rx="4" fill="#C98A00"/><text x="952" y="520" font-size="15" font-weight="600" fill="#1E242B">Visitor</text>
+<text x="952" y="544" font-size="12" fill="#3C4652">static pages, nothing from</text>
+<text x="952" y="562" font-size="12" fill="#3C4652">other sites until video play</text>
+</g>
+<g><rect x="930" y="640" width="230" height="92" rx="12" fill="#F4E9E9" stroke="#A23B3B" stroke-width="1.5"/><rect x="930" y="640" width="8" height="92" rx="4" fill="#A23B3B"/><text x="952" y="670" font-size="15" font-weight="600" fill="#1E242B">cairdecorrin.ie</text>
+<text x="952" y="694" font-size="12" fill="#3C4652">DNS at Letshost;</text>
+<text x="952" y="712" font-size="12" fill="#3C4652">see DOMAIN-SETUP.md</text>
+</g>
+</svg>

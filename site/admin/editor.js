@@ -11,4 +11,12 @@
       if (URL_BUTTONS.test(b.textContent.trim())) b.style.display = 'none';
     });
   }).observe(document.documentElement, { childList: true, subtree: true });
+
+  // A Help button on every editor screen, opening the editor guide (admin/help/) in a new tab
+  var help = document.createElement('a');
+  help.href = '/admin/help/'; help.target = '_blank'; help.rel = 'noopener';
+  help.textContent = 'Help'; help.setAttribute('aria-label', 'Help: how to use the editor (opens in a new tab)');
+  help.style.cssText = 'position:fixed;right:16px;bottom:16px;z-index:1000;padding:10px 18px;border-radius:999px;' +
+    'background:#24451A;color:#fff;font:600 14px/1 system-ui,sans-serif;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.25)';
+  document.addEventListener('DOMContentLoaded', function () { document.body.appendChild(help); });
 })();

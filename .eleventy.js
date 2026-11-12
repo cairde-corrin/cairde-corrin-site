@@ -32,6 +32,10 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter('navItems', nav);
   // Page text from the editor, with measured figures filled in (_includes/prose.js)
   eleventyConfig.addFilter('prose', prose);
+  // The editor's Help page (admin/help.njk) is docs/EDITOR-GUIDE.md itself, rendered here
+  eleventyConfig.addFilter('guide', (file) => require('markdown-it')({ html: false })
+    .render(require('node:fs').readFileSync(require('node:path').join(__dirname, file), 'utf8')));
+  eleventyConfig.addWatchTarget('./docs/EDITOR-GUIDE.md');
   // The address shown under each link on the Links page; editors type the full address
   eleventyConfig.addFilter('domain', (url) => {
     const u = new URL(url);

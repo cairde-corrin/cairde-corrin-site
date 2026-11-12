@@ -23,6 +23,7 @@ with no dependencies at all. `render_maps.py` also drives the installed Google C
 | `vendor_cms.sh` | Rebuilds `site/admin/vendor/` from npm at the pinned Decap CMS and Netlify Identity widget versions, after checking each tarball's SHA-256. The news editor then loads nothing from a CDN. `tools/vendor_cms.sh` |
 | `selftest.js` | Checks the code that parses what an editor types or what a page contains: YouTube addresses, social post addresses, the navigation, the check that stops any generated page loading something from another website, and the editor's removal of EXIF, XMP and comments from photos before upload. No network, no build needed. `node tools/selftest.js` |
 | `ldcheck.py` | Validates the structured data on every built page against the schema.org vocabulary: every type and property exists, each property is allowed on its type, nested types are accepted, and every `@id` reference is defined somewhere on the site. Downloads the vocabulary once into `.cache/`. `npm run build && python3 tools/ldcheck.py` |
+| `diagram.py` | Draws `docs/how-it-works.svg`, the flow diagram in the developer guide, from the node and arrow lists in the script. `python3 tools/diagram.py` |
 
 ## Why the reveal height matters
 

@@ -26,6 +26,9 @@ own ground and points to the others rather than repeating them.
 
 ## If you change the site itself
 
+- **`DEVELOPER-GUIDE.md`** - how the whole thing works, with a diagram: the build, the
+  content and image pipelines, the editor and Git Gateway, deploying, every integration.
+
 - **`CONTRIBUTING.md`** - the rules (nothing invented, the sign addresses never change,
   everything borrowed is credited), the verified figures and where each comes from, how
   to add media, news by hand, stops and pages, and how changes are checked and released.

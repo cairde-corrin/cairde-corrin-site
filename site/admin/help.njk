@@ -1,0 +1,24 @@
+---
+permalink: admin/help/index.html
+eleventyExcludeFromCollections: true
+---
+<!DOCTYPE html>
+<html lang="en-IE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Help - News editor - Cáirde Corrin</title>
+<link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/favicon-32.png">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<style>body{background:var(--paper)} .help{max-width:46rem;margin:0 auto;padding:40px 22px 80px}
+.help h1{font-size:2.2rem} .help h2{font-size:1.4rem;margin:40px 0 8px} .help h3{font-size:1.1rem;margin:24px 0 6px}
+.help li{margin:6px 0} .help code{font-size:.9em} .back{font-family:var(--data);font-size:12px;letter-spacing:.1em;text-transform:uppercase}</style>
+</head>
+<body>
+<main class="help">
+<p><a class="back" href="../">Back to the editor</a></p>
+{{ "docs/EDITOR-GUIDE.md" | guide | safe }}
+</main>
+</body>
+</html>
