@@ -5,13 +5,14 @@
 // is written out exactly as it is. The copy filter keeps those
 // sources out of the output, and no other file format is a template, so nothing else is
 // parsed or rewritten. _data/ holds data the editor changes, such as the home page's
-// social posts.
+// social posts. _instagram/ holds the saved Instagram posts; _includes/instagram.js
+// publishes their pictures under assets/img/instagram/.
 // assets/uploads/ holds the editor's uploads (already stripped in the browser). They are never copied:
 // _includes/images.js publishes re-encoded sizes under assets/img/news/ instead.
 const fs = require('node:fs');
 const path = require('node:path');
 const SOURCES = ['!**/*.njk', '!**/*.md', '!**/*.11tydata.js', '!_includes', '!_includes/**',
-  '!_content', '!_content/**', '!_data', '!_data/**', '!assets/uploads', '!assets/uploads/**'];
+  '!_content', '!_content/**', '!_data', '!_data/**', '!assets/uploads', '!assets/uploads/**', '!_instagram', '!_instagram/**'];
 const images = require('./site/_includes/images.js');
 const social = require('./site/_includes/social.js');
 const { nav } = require('./site/_includes/nav.js');

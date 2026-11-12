@@ -93,5 +93,42 @@ const webp = Buffer.concat([Buffer.from('RIFF'), Buffer.from([(webpBody.length +
   assert.ok(w.includes('VP8 ') && w.includes('pixels!'), 'WebP lost its image data');
   assert.equal(w.readUInt32LE(4), w.length - 8, 'WebP RIFF size wrong after stripping');
   assert.equal(w[20] & 0x0C, 0, 'WebP still flags EXIF or XMP');
+
+  // Instagram: Behold's feed is checked, pictures re-encoded and saved, and a failed refresh
+  // falls back to the saved posts without ever throwing
+  const ig = require('../site/_includes/instagram.js');
+  const fsp = require('node:fs'), pth = require('node:path'), osm = require('node:os');
+  const good = (n) => ({ id: `1789${n}`, timestamp: '2026-11-01T10:00:00+0000', permalink: `https://www.instagram.com/p/Abc${n}/?img_index=1`,
+    prunedCaption: `Clean-up on the Corrin \u2014 thanks all ${n}`, sizes: { full: { mediaUrl: `https://cdn.behold.pictures/${n}.webp` } } });
+  assert.deepEqual(ig.readFeed({ username: 'cairdecorrin', posts: [good(1)] }).posts[0],
+    { id: '17891', permalink: 'https://www.instagram.com/p/Abc1/', date: '2026-11-01T10:00:00.000Z',
+      caption: 'Clean-up on the Corrin - thanks all 1', picture: 'https://cdn.behold.pictures/1.webp' });
+  for (const bad of [{ ...good(1), id: '../x' }, { ...good(1), permalink: 'https://evil.example/p/x/' },
+    { ...good(1), sizes: { full: { mediaUrl: 'http://x/a.jpg' } } }, { ...good(1), timestamp: 'never' }]) {
+    assert.throws(() => ig.readFeed({ posts: [bad] }), undefined, JSON.stringify(bad));
+  }
+  assert.ok(ig.shorten('word '.repeat(60)).endsWith('…') && ig.shorten('word '.repeat(60)).length <= 161);
+  const photo = fsp.readFileSync(pth.join(__dirname, '..', 'site', 'assets', 'img', 'white-flowers-700.webp'));
+  const fakeFetch = (feed) => async (url) => {
+    if (url.startsWith('https://feeds.behold.so/')) return new Response(JSON.stringify(feed), { headers: { 'content-type': 'application/json' } });
+    return new Response(photo, { headers: { 'content-type': 'image/webp' } });
+  };
+  const down = async () => { throw new Error('getaddrinfo ENOTFOUND feeds.behold.so'); };
+  const quiet = { log() {}, warn() {} };
+  const tmp = fsp.mkdtempSync(pth.join(osm.tmpdir(), 'igtest-'));
+  const opts = { feedId: 'TESTFEED', dir: pth.join(tmp, 'cache'), out: pth.join(tmp, 'out'), log: quiet };
+  const first = await ig.load({ ...opts, fetch: fakeFetch({ username: 'cairdecorrin', posts: [good(1), good(2)] }) });
+  assert.equal(first.posts.length, 2);
+  assert.equal(first.username, 'cairdecorrin');
+  assert.match(first.posts[0].srcset, /^\/assets\/img\/instagram\/17891-700x\d+\.webp 700w$/);
+  assert.ok(fsp.existsSync(pth.join(opts.out, first.posts[0].src.split('/').pop())), 'picture not published');
+  assert.deepEqual(await ig.load({ ...opts, fetch: down }), first, 'Behold down: the saved posts must be used');
+  assert.deepEqual(await ig.load({ ...opts, fetch: fakeFetch({ posts: 'nonsense' }) }), first, 'a bad feed must not replace the saved posts');
+  assert.deepEqual((await ig.load({ ...opts, feedId: 'OTHER', fetch: down })).posts, [], 'posts from another feed must not show');
+  const pruned = await ig.load({ ...opts, fetch: fakeFetch({ username: 'cairdecorrin', posts: [good(2)] }) });
+  assert.equal(pruned.posts.length, 1);
+  assert.ok(!fsp.readdirSync(opts.dir).some((f) => f.startsWith('17891-')), 'a post gone from the feed keeps its picture');
+  assert.deepEqual(await ig.load({ ...opts, feedId: '' }), { username: '', posts: [] });
+  fsp.rmSync(tmp, { recursive: true, force: true });
   console.log('selftest: all checks passed');
 })().catch((e) => { console.error(e); process.exit(1); });

@@ -53,6 +53,17 @@ and its image plugin, pinned in `package-lock.json`; `npm audit` reported no kno
 vulnerability on 12 November 2026. Decap and the Identity widget are served from this
 site at versions pinned by SHA-256 (`tools/vendor_cms.sh`), so no CDN can change them.
 
+**Behold, or the feed, is compromised.** The build reads the Instagram feed from Behold.
+*Mitigated:* every post must link to an `instagram.com` post and every picture is
+re-encoded, so nothing Behold sends is published as it arrived; captions are escaped like
+any text; nothing from Behold reaches visitors' browsers at runtime, so the Content
+Security Policy is unchanged. The worst case is wrong pictures or captions on the home
+page until `FEED_ID` is emptied. Behold itself only has read access to the account.
+
+**The build hook address leaks.** Anyone holding it can start production builds, each
+costing 15 credits. *Mitigated:* it is a GitHub Actions secret, never in the repository;
+`MAINTENANCE.md`, "The weekly rebuild", says how to replace it.
+
 **Photos give away where an editor lives or walks.** *Mitigated:* photos are stripped of
 their location, time and camera details in the editor's browser before upload, and again
 by the build (`CONTRIBUTING.md`, "Uploaded photos").

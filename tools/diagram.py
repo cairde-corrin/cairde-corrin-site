@@ -29,7 +29,8 @@ NODES = {
     'dev':      (30, 490, 'person', 'Developer', ['works on the build branch,', 'releases by pull request']),
     'preview':  (330, 490, 'netlify', 'Branch preview', ['build--cairde-corrin', '.netlify.app']),
     'build':    (630, 340, 'build', 'Netlify build: Eleventy', ['templates + figures.json, page', 'text, photos re-encoded, CSP']),
-    'youtube':  (630, 190, 'outside', 'YouTube', ['video stills fetched at build', 'when not yet committed']),
+    'youtube':  (630, 190, 'outside', 'YouTube and Behold', ['video stills and Instagram', 'posts, read at build, saved']),
+    'weekly':   (330, 340, 'github', 'Weekly rebuild', ['GitHub Actions calls a', 'Netlify build hook']),
     'cdn':      (630, 490, 'netlify', 'Netlify CDN', ['_site/ with _headers', 'and _redirects (/s/1-10)']),
     'visitor':  (930, 490, 'person', 'Visitor', ['static pages, nothing from', 'other sites until video play']),
     'domain':   (930, 640, 'outside', 'cairdecorrin.ie', ['DNS at Letshost;', 'see DOMAIN-SETUP.md']),
@@ -38,7 +39,7 @@ EDGES = [  # from, to, label
     ('editor', 'decap', 'writes'), ('editor', 'photos', 'chooses a photo'), ('photos', 'decap', 'clean copy'),
     ('decap', 'identity', 'login'), ('decap', 'gateway', 'save / publish'), ('gateway', 'repo', 'commits'),
     ('repo', 'check', 'pull request'), ('check', 'main', 'merge if passed'), ('main', 'build', 'every push'),
-    ('youtube', 'build', 'still'), ('build', 'cdn', 'publish _site/'), ('cdn', 'visitor', 'HTTPS'),
+    ('youtube', 'build', 'stills, posts'), ('weekly', 'build', 'Mondays'), ('build', 'cdn', 'publish _site/'), ('cdn', 'visitor', 'HTTPS'),
     ('dev', 'preview', 'push build'), ('dev', 'main', 'release by pull request'), ('domain', 'visitor', 'address'),
 ]
 
@@ -60,7 +61,7 @@ def main():
          '<title id="t">How the Cáirde Corrin website works</title>',
          '<desc id="d">Editors write in Decap at /admin/, log in with Netlify Identity and save through Git '
          'Gateway to GitHub, where a check keeps them to content; publishing merges into main, Netlify builds '
-         'the site with Eleventy and serves it to visitors. Developers release from the build branch.</desc>',
+         'the site with Eleventy and serves it to visitors, rebuilding weekly to refresh the Instagram posts. Developers release from the build branch.</desc>',
          '<style>.canvas{fill:#F3F5F7}.grid{fill:#D5DAE0}.wire{stroke:#7A8794;stroke-width:2;fill:none}'
          '.tag{fill:#FFFFFF;stroke:#B9C1CA}.tagt{fill:#3C4652;font-size:11px}'
          '@media (prefers-color-scheme: dark){.canvas{fill:#1B1F24}.grid{fill:#2C333B}.wire{stroke:#9AA6B2}'

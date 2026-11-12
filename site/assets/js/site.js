@@ -280,12 +280,13 @@
     startFrames();
   }
 
-  /* ---- photograph carousel ------------------------------------------------------
+  /* ---- carousels (the photographs, the Instagram posts) ---------------------------
      Scroll-snap does the work; these buttons just nudge it by one card. The track is
      focusable, so arrow keys already scroll it without any of this. */
-  var track = document.getElementById('car-track');
-  var carPrev = document.getElementById('car-prev'), carNext = document.getElementById('car-next');
-  if (track && carPrev && carNext) {
+  Array.prototype.forEach.call(document.querySelectorAll('.carousel'), function (car) {
+    var track = car.querySelector('.car-scroll');
+    var carPrev = car.querySelector('.car-prev'), carNext = car.querySelector('.car-next');
+    if (!track || !carPrev || !carNext) return;
     var step = function () {
       var first = track.querySelector('.car-item');
       return first ? first.getBoundingClientRect().width + 20 : 320;
@@ -301,7 +302,7 @@
     track.addEventListener('scroll', function () { requestAnimationFrame(ends); }, { passive: true });
     addEventListener('resize', ends, { passive: true });
     ends();
-  }
+  });
 
   /* nav treatment over the film (home only) */
   var ticking = false;

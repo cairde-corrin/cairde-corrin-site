@@ -224,10 +224,10 @@ if (/^#(invite|recovery|email_change)_token=/.test(location.hash)) location.repl
   </div>
   <div class="carousel rv">
     <div class="car-head">
-      <button class="car-btn" id="car-prev" type="button" aria-label="Scroll photographs left">←</button>
-      <button class="car-btn" id="car-next" type="button" aria-label="Scroll photographs right">→</button>
+      <button class="car-btn car-prev" type="button" aria-label="Scroll photographs left">←</button>
+      <button class="car-btn car-next" type="button" aria-label="Scroll photographs right">→</button>
     </div>
-    <div class="car-scroll" id="car-track" tabindex="0" role="region"
+    <div class="car-scroll" tabindex="0" role="region"
          aria-label="Photographs from the Glenabo catchment, scrollable">
       <ul class="car-track">
         <li class="car-item">
@@ -296,7 +296,33 @@ if (/^#(invite|recovery|email_change)_token=/.test(location.hash)) location.repl
 {% if collections.gallery.length %}  <div class="wrap" style="margin-top:36px"><a class="cta rv" href="gallery/">See all photographs</a></div>
 {% endif %}</section>
 
-{% set posts = social | socialPosts %}{% if posts.length %}<section class="plain">
+{% if instagram.posts.length %}<section class="plain gallery">
+  <div class="wrap">
+    <p class="eyebrow rv">Elsewhere</p>
+    <h2 class="rv">Recent posts<br>from the group.</h2>
+  </div>
+  <div class="carousel ig rv">
+    <div class="car-head">
+      <button class="car-btn car-prev" type="button" aria-label="Scroll Instagram posts left">←</button>
+      <button class="car-btn car-next" type="button" aria-label="Scroll Instagram posts right">→</button>
+    </div>
+    <div class="car-scroll" tabindex="0" role="region" aria-label="Recent Instagram posts from Cáirde Corrin, scrollable">
+      <ul class="car-track">
+{%- for p in instagram.posts %}
+        <li class="car-item"><a class="ig-post" href="{{ p.permalink }}">
+          <figure>
+            <picture><img src="{{ p.src | rel('') }}" srcset="{{ p.srcset | replace('/assets/', 'assets/') }}" sizes="(min-width:900px) 400px, 74vw" width="{{ p.width }}" height="{{ p.height }}" loading="lazy" decoding="async" alt=""></picture>
+            <figcaption><span class="car-meta">Instagram - {{ p.date | longDate }}</span>{% if p.caption %} <span class="ig-cap">{{ p.caption }}</span>{% endif %}</figcaption>
+          </figure>
+        </a></li>
+{%- endfor %}
+      </ul>
+    </div>
+  </div>
+{% if instagram.username %}  <div class="wrap" style="margin-top:36px"><a class="cta rv" href="https://www.instagram.com/{{ instagram.username }}/">Follow @{{ instagram.username }} on Instagram</a></div>
+{% endif %}</section>
+
+{% else %}{% set posts = social | socialPosts %}{% if posts.length %}<section class="plain">
   <div class="wrap">
     <p class="eyebrow rv">Elsewhere</p>
     <h2 class="rv">Recent posts<br>from the group.</h2>
@@ -308,7 +334,7 @@ if (/^#(invite|recovery|email_change)_token=/.test(location.hash)) location.repl
   </div>
 </section>
 
-{% endif %}<section class="plain">
+{% endif %}{% endif %}<section class="plain">
   <div class="wrap">
     <p class="eyebrow rv">Get involved</p>
     <h2 class="rv">It is a small catchment.<br>That is the good news.</h2>

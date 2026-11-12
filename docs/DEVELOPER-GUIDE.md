@@ -28,8 +28,9 @@ nothing from any other site until they press play on a video.
     site/_includes/  the build's code: layouts, nav, helpers (listed below)
     site/_data/      figures.json (measured figures), pages/ (page text), social.json
     site/_content/   news, gallery and articles, one Markdown file each
+    site/_instagram/ the saved Instagram posts and their re-encoded pictures
     site/admin/      the editor: index.html, config.yml, photos.js, editor.js, help.njk
-    .github/         the editor-content-only check
+    .github/         the editor-content-only check and the weekly rebuild
     docs/            the documents (index: docs/README.md)
     tools/           checks and generators (index: tools/README.md); none run in the build
 
@@ -40,8 +41,9 @@ nothing from any other site until they press play on a video.
 1. **Copy.** Every file in `site/` that is not a template source is copied to `_site/`
    byte for byte (`addPassthroughCopy` with a filter). `tools/compare_build.py` proves it.
 2. **Data.** `site/_data/figures.json` becomes `figures`, `site/_data/pages/*.json`
-   becomes `pages`, `social.json` becomes `social`. Collections: `news`, `gallery`,
-   `articles`.
+   becomes `pages`, `social.json` becomes `social`, and `instagram.js` reads the Behold
+   feed into `instagram` (`_includes/instagram.js`; falls back to `site/_instagram/`).
+   Collections: `news`, `gallery`, `articles`.
 3. **Render.** Every `.njk` page renders. A global permalink keeps each page at the
    address it had as a hand-written file (`stops/stop-1.njk` to `stops/stop-1.html`).
    `_includes/nav.njk` and `footnav.njk` draw the navigation from `_includes/nav.js`.
@@ -66,7 +68,8 @@ Filters worth knowing: `prose` (page text, with figure tokens, `_includes/prose.
 | News posts | `site/_content/news/*.md` | editors (News) | `_includes/post.njk`, `/news/` |
 | Gallery photos | `site/_content/gallery/*.md` | editors (Gallery) | `/gallery/` |
 | Articles | `site/_content/articles/*.md` | editors (Articles) | `/articles/` |
-| Social posts | `site/_data/social.json` | editors (Home page) | home page cards, `_includes/social.js` |
+| Social posts | `site/_data/social.json` | editors (Home page) | home page cards, `_includes/social.js`, when there is no Instagram feed |
+| Instagram posts | Behold, saved in `site/_instagram/` | the group, on Instagram | home page carousel, `_includes/instagram.js` |
 | Species, folklore, credits, privacy, terms, trails | the `.njk` page itself | developers only | as written |
 
 An entry with `hidden: true` (the editor's "Take this off the website" tick) is added to
@@ -125,12 +128,15 @@ drafts, gets a deploy preview. Details and checks: `DEPLOY.md`. The domain: `DOM
 | Netlify Git Gateway | editor saves to GitHub | Netlify: Identity -> Services; `config.yml` `backend` |
 | Decap CMS | the editor | `site/admin/config.yml`; `tools/vendor_cms.sh` |
 | YouTube | video stills at build, the player after a click | `_includes/youtube.js`; `site/assets/js/site.js` |
+| Behold | the group's Instagram posts, read at build | `FEED_ID` in `_includes/instagram.js`; Behold account |
+| GitHub Actions schedule | rebuilds the live site weekly through a Netlify build hook | `.github/workflows/weekly-rebuild.yml`; secret `NETLIFY_BUILD_HOOK` |
 | npm | Eleventy and eleventy-img at build | `package.json`, `package-lock.json` |
 | Letshost | the domain, its DNS and its email | Letshost; `DOMAIN-SETUP.md` |
 | schema.org | vocabulary for `tools/ldcheck.py`, downloaded once | `tools/ldcheck.py` |
 | Copernicus, OpenStreetMap | elevation and base data for the tools | `tools/fetch_dem.py`, `tools/render_maps.py` |
 
-There are no analytics, no forms, no server functions and no environment variables.
+There are no analytics, no forms, no server functions and no environment variables. The
+one secret, the build hook address, lives in GitHub, not in the build.
 
 ## Checking a change
 

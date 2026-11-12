@@ -83,6 +83,12 @@ Until then an editor's session can still write code into the build.
   and shared links show no picture.
 - The handover: `HANDOVER.md`. Several parts currently sit with the developer's personal
   accounts.
+- The Instagram feed: a Behold account connected to the group's Instagram, and its feed
+  ID in `site/_includes/instagram.js` (`MAINTENANCE.md`, "The Instagram feed"). Until
+  then the home page shows the editor's social cards, if any. The carousel has only been
+  tested with made-up posts.
+- The weekly rebuild's build hook and the `NETLIFY_BUILD_HOOK` secret
+  (`MAINTENANCE.md`, "The weekly rebuild"). Until then the workflow runs and does nothing.
 
 **Tests that need a real person or a real device**
 

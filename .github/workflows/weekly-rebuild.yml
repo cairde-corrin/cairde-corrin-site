@@ -1,0 +1,29 @@
+# Rebuilds the live site on a schedule, so the home page's Instagram posts (fetched from
+# Behold at build time, site/_includes/instagram.js) stay current even when nobody
+# publishes anything. It calls a Netlify build hook for main, kept in the repository
+# secret NETLIFY_BUILD_HOOK (docs/MAINTENANCE.md, "The weekly rebuild").
+#
+# Each production build uses 15 of the Netlify free plan's 300 monthly credits.
+# To change how often it runs, change the cron line below: '0 6 * * 1' is 06:00 UTC every
+# Monday; '0 6 * * 1,4' would be Mondays and Thursdays. It can also be run by hand from
+# the Actions tab (Run workflow).
+name: Weekly rebuild
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+permissions: {}
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ask Netlify to rebuild the live site
+        env:
+          HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "::warning::The NETLIFY_BUILD_HOOK secret is not set, so nothing was rebuilt."
+            exit 0
+          fi
+          curl --fail --silent --show-error --max-time 30 -X POST -d '{}' "$HOOK"
+          echo "Netlify has started a production build."

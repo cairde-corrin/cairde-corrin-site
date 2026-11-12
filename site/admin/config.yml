@@ -309,7 +309,9 @@ collections:
               Up to three Instagram or Facebook posts to show on the home page, as
               cards that link to the post. Nothing is loaded from Instagram or
               Facebook: the card shows only the caption you type here. Leave the
-              list empty and the home page shows no social section at all.
+              list empty and the home page shows no social section at all. Once the
+              automatic Instagram feed is set up, the home page shows that instead and
+              these cards are not shown.
             fields:
               - label: Address of the post
                 name: url

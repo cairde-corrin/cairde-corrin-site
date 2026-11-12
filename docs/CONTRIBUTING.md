@@ -328,7 +328,28 @@ linking out, in a section that only exists when the list is not empty. Nothing i
 embedded and nothing is fetched from Meta, at build time or in the browser. The build
 checks each address is an `https://` Instagram or Facebook address, removes the
 share-tracking parameters (`igsh`, `mibextid` and the like) that identify whoever copied
-the link, and stops on anything else.
+the link, and stops on anything else. These cards show only while the Instagram feed
+below is not set up.
+
+**The Instagram feed.** When `FEED_ID` in `site/_includes/instagram.js` is set, the home
+page shows a carousel of the group's latest Instagram posts instead of the cards. Each
+build reads the Behold feed (`https://feeds.behold.so/<FEED_ID>`), checks every post
+(an `instagram.com` post address, a date, an `https://` picture), downloads any picture it
+has not saved yet and re-encodes it with eleventy-img into WebP at 700 and 1100 px, which
+drops all metadata. The posts and those WebP files are saved in `site/_instagram/`
+(`feed.json` and `<id>-<width>x<height>.webp`); the build copies the pictures to
+`/assets/img/instagram/` and never publishes the folder itself. A refresh replaces the
+saved posts only when the feed and every new picture arrived, and removes pictures of
+posts no longer in the feed. If anything fails, a 15-second timeout included, the build
+uses what is saved and logs a warning; it never stops for Behold. Captions are cut to
+160 characters, with en and em dashes turned into hyphens.
+
+Like video stills, the saved posts only reach the repository when a developer commits
+them: after a release, `git switch build && git merge main && npm run build`, then
+commit `site/_instagram/`. Netlify refreshes them on every build regardless; committing
+just moves the fallback forward. The carousel uses the same markup, styles and script as
+the photo carousel (`.carousel`, scroll-snap, no autoplay), with square pictures.
+`tools/selftest.js` covers the feed checks, the fallback and the pruning.
 
 **The home page is a template.** `site/index.njk` is the hand-written home page with
 those two blocks added; everything else in it is written out exactly as it is.
