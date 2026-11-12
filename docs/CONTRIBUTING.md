@@ -74,6 +74,12 @@ which commits them to `main`.
   credit is not. Licence attributions (the Wikimedia Commons photographers, the authors
   of a cited dataset) and the collectors named in published archive records such as
   dúchas.ie are credits of this kind.
+- **Commit with a GitHub no-reply address, never a personal one.** Every commit records
+  an email address, and in a public repository anyone can read it. This repository is
+  set to use the developer's GitHub no-reply address (`git config user.email`, in
+  `.git/config`). Anyone else committing here sets their own once in their clone:
+  `git config user.email <ID>+<username>@users.noreply.github.com`, from GitHub ->
+  Settings -> Emails, where **Keep my email addresses private** should also be on.
 - Keep `prefers-reduced-motion` respected and keyboard focus visible.
 - Stop pages must stay light. They are read in a forest on a weak connection.
 
