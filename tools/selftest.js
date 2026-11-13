@@ -180,17 +180,50 @@ const webp = Buffer.concat([Buffer.from('RIFF'), Buffer.from([(webpBody.length +
   for (const key of Object.keys(real)) await blocks.render(key, real[key], ctx(URLS[key] || `/${key}/`));
   const page = (...list) => ({ page: { title: 'Test page', description: 'A test.' }, hero: { eyebrow: 'E', title: 'T' }, blocks: list });
   const broken = async (data, re, key = 'about') => assert.rejects(blocks.render(key, data, ctx('/about/')), re);
-  await broken({ ...page(), page: { description: 'x' } }, /site\/_data\/pages\/about\.json.*no page title/);
-  await broken(page({ type: 'nonsense' }), /Page "Test page".*block 1 \(nonsense\) is not a kind of block/);
-  await broken(page({ type: 'text', heading: 'Fine' }, { type: 'pair', items: [{ photo: '/assets/img/stream-1800.webp', alt: 'x' }] }), /block 2 \(Two photos side by side\) needs exactly two photos; it has 1/);
-  await broken(page({ type: 'image', photo: '/assets/img/stream-1800.webp' }), /block 1 \(Single image\) has a photo .* no description/);
-  await broken(page({ type: 'image', photo: 'https://example.org/x.jpg', alt: 'x' }), /not a photograph on this website/);
-  await broken(page({ type: 'map' }, { type: 'map' }), /block 2 \(Interactive map\) appears twice/);
-  await broken(page({ type: 'story', title: 'S', summary: 'x', volume: '1', page: '2', link: 'https://www.duchas.ie/x' }), /Folklore story\) \(S\) has no place where it was collected\. The licence/);
-  await broken(page({ type: 'story', title: 'S', summary: 'x', volume: '1', page: '2', school: 'A', link: 'https://example.org/' }), /needs the link to the story on dúchas\.ie/);
-  await broken(page({ type: 'button', text: 'Go', url: 'trails' }), /block 1 \(Button link\) has the link "trails", which is neither/);
-  await broken(page({ type: 'audio', file: '/assets/audio/nothing.mp3' }), /not a file on this website/);
-  await broken({ ...real.stop_1, hero: { ...real.stop_1.hero, latitude: '' } }, /position .* is not near Fermoy/, 'stop_1');
+  await broken({ ...page(), page: { description: 'x' } }, /not updated, because of the page "About" in the editor:\n  - About this page: "Page title" is empty\.\n\(site\/_data\/pages\/about\.json\)/);
+  await broken(page({ type: 'nonsense' }), /Block 1 \(unknown\) is not a kind of block the website knows/);
+  await broken(page({ type: 'text', heading: 'Fine' }, { type: 'pair', items: [{ photo: '/assets/img/stream-1800.webp', alt: 'x' }] }), /Block 2 \(Two photos side by side\) needs exactly two photos, and it has 1\. Add or remove a photo/);
+  await broken(page({ type: 'image', photo: '/assets/img/stream-1800.webp' }), /Block 1 \(Single image\) has a photo with nothing in "What the photo shows"/);
+  await broken(page({ type: 'image', photo: 'https://example.org/x.jpg', alt: 'x' }), /Block 1 \(Single image\) has a photo that is not on this website/);
+  await broken(page({ type: 'image', photo: '/assets/img/nothing-1100.webp', alt: 'x' }), /Block 1 \(Single image\) has the photo .* which is not a photograph on this website/);
+  await broken(page({ type: 'map' }), /Block 1 \(Interactive map\) belongs on the Trails page and cannot be used here/);
+  await broken(page({ type: 'map' }, { type: 'map' }), /Block 2 \(Interactive map\) is a second Interactive map; a page can have only one/, 'trails');
+  await broken(page({ type: 'story', title: 'S', summary: 'x', volume: '1', page: '2', link: 'https://www.duchas.ie/x' }), /Block 1 \(Folklore story\) \("S"\) has nothing in "Where it was collected"\. The licence/);
+  await broken(page({ type: 'story', title: 'S', summary: 'x', volume: '1', page: '2', school: 'A', link: 'https://example.org/' }), /needs "The story on dúchas\.ie"/);
+  await broken(page({ type: 'button', text: 'Go', url: 'trails' }), /Block 1 \(Button link\) has "trails" in "Link to"\. Write a page on this site/);
+  await broken(page({ type: 'audio', file: '/assets/audio/nothing.mp3' }), /Block 1 \(Recording\) refers to the recording .* not a file on this website/);
+  await broken({ ...real.stop_1, hero: { ...real.stop_1.hero, latitude: '' } }, /"Latitude" and "Longitude" are not a position near Fermoy/, 'stop_1');
+  await broken(page({ type: 'route', name: 'R', track: '/assets/uploads/none.gpx' }), /Block 1 \(Walked route\) \(R\) has the track .* not an uploaded GPX file/, 'trails');
+  assert.match(require('../site/admin/checks.js').problems('trails', page({ type: 'route', name: 'A path', track: '/assets/uploads/a.gpx' }, { type: 'route', name: 'a  path', track: '/assets/uploads/b.gpx' })).join(' '), /Block 2 \(Walked route\) has the same name as another route/);
+  // the editor's checks are the build's: every published page passes, and a stop not yet surveyed is not checked
+  const checks = require('../site/admin/checks.js');
+  for (const [k, d] of Object.entries(real)) assert.deepEqual(checks.problems(k, d), [], `${k} fails the checks`);
+  assert.deepEqual(checks.problems('stop_4', { page: { title: '', description: '' }, hero: { eyebrow: 'Stop 04', title: '' }, blocks: [] }), []);
+  assert.match(checks.problems('stop_4', { page: { title: 'X', description: 'Y' }, hero: { title: 'T' }, blocks: [] }).join(' '), /no photo.*Latitude.*Height in metres.*Facing.*Recorded/);
+  assert.match((await blocks.render('stop_4', real.stop_4, ctx('/stops/stop-4.html'))), /Not yet surveyed/);
+
+  // Uploaded routes: the walked loop survives the same cleaning unchanged; a stretch walked
+  // out and back is kept once; times and names never reach the published file
+  const gpx = require('../site/_includes/gpx.js');
+  const loopGpx = fsp.readFileSync(pth.join(__dirname, '..', 'site', 'assets', 'data', 'glenabo-loop.gpx'), 'utf8');
+  const lp = gpx.prepare(loopGpx, 'Loop', [{ n: 1, lat: 52.12752, lon: -8.29878 }]);
+  assert.equal(lp.segments.length, 1);
+  assert.equal(+(lp.length / 1000).toFixed(2), 2.27);
+  assert.equal(lp.climb5, 65);
+  assert.deepEqual(lp.marks.map((m) => m.n), [1]);
+  const pts = [];
+  for (let i = 0; i < 60; i++) pts.push([52.12 + i * 0.00009, -8.3, 60 + i / 2]);
+  for (let i = 59; i >= 0; i--) pts.push([52.12 + i * 0.00009, -8.29994, 60 + i / 2]);
+  const track = `<gpx creator="App"><metadata><author><name>A Walker</name></author></metadata><trk><name>Walk</name><trkseg>${
+    pts.map((q, i) => `<trkpt lat="${q[0]}" lon="${q[1]}"><ele>${q[2]}</ele><time>2026-01-01T10:${String(i % 60).padStart(2, '0')}:00Z</time></trkpt>`).join('')}</trkseg></trk></gpx>`;
+  const ob = gpx.prepare(track, 'Out and back');
+  assert.ok(ob.length > 550 && ob.length < 650, `out and back kept once: ${ob.length}`);
+  const pub = gpx.toGpx(ob.segments, 'Out and back', 'note');
+  assert.ok(!/<time|A Walker|creator="App"|<name>Walk</.test(pub), 'no times or names published');
+  for (const [bad, re] of [['not a track', /not a GPS track/], ['<gpx></gpx>', /no points/],
+    [track.replace(/<ele>[^<]*<\/ele>/g, ''), /no heights/], [track.replace(/lat="52/g, 'lat="53'), /not near Fermoy/]]) {
+    assert.throws(() => gpx.prepare(bad, 'x'), re);
+  }
   // a photograph from another source carries its registered credit wherever it is used
   const sp = await blocks.render('about', page({ type: 'image', photo: '/assets/img/species/bilberry-760.webp', alt: 'Bilberry' }), ctx('/about/'));
   assert.match(sp, /<figcaption><a href="https:\/\/commons\.wikimedia\.org\/wiki\/File:Vaccinium[^"]*">Lalakmus<\/a>, <a href="[^"]*by-sa\/4\.0">CC BY-SA 4\.0<\/a><\/figcaption>/);

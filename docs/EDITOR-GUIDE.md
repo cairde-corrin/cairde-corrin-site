@@ -122,7 +122,7 @@ for up to five minutes. So if the change is not there:
 2. Reload the page with a **hard refresh**: on a computer, hold **Shift** and press the
    reload button (or press **Ctrl+Shift+R**, or **Cmd+Shift+R** on a Mac); on a phone,
    close the page and open it again.
-3. If it is still not there after five minutes, see "When something looks wrong".
+3. If it is still not there after five minutes, see "When a change does not appear".
 
 Every editor meets this the first time, and it almost never means publishing failed.
 
@@ -223,8 +223,12 @@ end up giving the same figure differently, the person who looks after the websit
 warned and will check which is right. The same goes for counts: if the species page says
 "13 species" and you add a fourteenth, change the 13.
 
-**Photos.** Upload a photo you took yourself, or one you have permission to use, and say
-in one sentence what it shows. Some photos on the website, on the species and water pages,
+**Photos.** Every photo field has two buttons. **Choose a photo already on the website**
+opens a list of every photo the website already has, with a search box: pick one to reuse
+it, rather than uploading it again (its description elsewhere on the site is shown, so you
+can copy it). **Upload a new photo** is for a photo the website does not have yet: one you
+took yourself, or one you have permission to use. Either way, say in one sentence what the
+photo shows. Some photos on the website, on the species and water pages,
 are other people's, used under a licence that requires their name and the licence beneath
 the photo. That credit is attached to the photo itself: wherever you put the photo, its
 credit goes with it, and you cannot separate them. If you want to use a photo of someone
@@ -240,15 +244,38 @@ photographs, the elevation data behind the maps, the species records and the fol
 You can move them among the other entries, but not change them, and if one is removed it is
 put back at the end of the page. Everything else on the Credits page is yours to change.
 
+**The stops.** Stops 01 to 10 are all under **Pages**. A stop whose title is empty shows
+"Not yet surveyed", and search engines are kept away from it. To bring a stop to life, fill
+in the top of its page: the title, the photo and what it shows, the latitude and longitude,
+the height in metres, the direction the photo faces, and when it was recorded; and its name
+and summary under **About this page**. Publish, and the stop appears on the trails page, on
+the map and in search engines. Take the position from the photo, not from memory.
+
+**New routes on the trails page.** To add a route the group has walked, add a **Walked
+route** block to the Trails page, give it a name, and upload the walk's GPS track: export
+it from the phone app as a GPX file and press **Upload**. The website draws it on the map,
+with its own elevation profile and a download. Before the file even leaves your computer,
+the times and any names in it are removed; when the website is built, stretches walked
+twice (out to a dead end and back, or past the start) are taken out so each appears once.
+If the track cannot be used (it is not a GPX file, it has no heights in it, it is somewhere
+else, or there is too little of it), the trails page is not changed and the person who looks
+after the website is told why.
+
+**The walked loop is not replaceable here.** The Glenabo loop, its elevation profile and
+its download were cleaned from the original GPS track, checked against all three recorded
+stops and checked by hand. Its block shows that work and has nothing to fill in. If the
+loop ever needs replacing, that is a job for the person who looks after the website, not
+an upload: add a new walk as a **Walked route** instead.
+
 **Recordings and films** use files already on the website. A new recording or film is
 added by the person who looks after the website, because they first remove the phone's
 location and details from it.
 
-**If a page will not publish.** If a block is incomplete (a photo with no description, a
-"Two photos" block with one photo, a story with no source, a link that is not a web
-address), the website does not publish the change: the page stays exactly as it was, and
-the person who looks after the website sees a message naming the page and the block. Open
-the page again, fix the block, and publish again.
+**If the editor will not save a page.** When you save, the editor checks the page the way
+the website will. If something would stop the website updating (a photo with no
+description, a "Two photos" block with one photo, a story with no source, a link that is not
+a web address), it does not save, and tells you which block and what to fix. Nothing you
+typed is lost: fix it and save again. See "When a change does not appear" below.
 
 Save, set the status to Ready and publish, as for a post.
 
@@ -301,17 +328,45 @@ Changes to them go through the person who looks after the website, so that each 
 can be checked against its source first. If you spot something wrong, or have something
 to add, tell them.
 
+## When a change does not appear
+
+You published, and the website still shows the old version. There are three reasons, and
+you can tell them apart.
+
+**1. Your browser is showing the copy it saved earlier.** This is by far the most common.
+The website takes a minute or two to update after you publish, and your browser keeps
+pages for up to five minutes. Wait two minutes, then do a hard refresh (see "After you
+publish"). If the change appears, that was all it was.
+
+**2. The editor would not save the page.** You would have seen it at the time: when you
+saved, a message said "This page has not been saved" and listed what to fix, in words such
+as *Block 3 (Two photos side by side) needs exactly two photos, and it has 1.* The page at
+the top of the editor still says **Unsaved changes**. Fix what the message says, and save
+and publish again.
+
+**3. The website could not update.** The editor checks everything it can before saving,
+but a few things can only be checked when the website is built: whether an uploaded photo
+can be read, or whether a GPS track can be used. If one of those fails, the website does
+not update at all and stays exactly as it was, so nothing is broken or half-changed. You
+can tell it is this when the editor said **Changes saved** and the post or page is no
+longer in the **Workflow** tab, but ten minutes and a hard refresh later the website still
+shows the old version. The person who looks after the website is told the reason, in the
+same plain words, naming the page and the block.
+
+**Who to contact.** For 1, nobody: it sorts itself out. For 2, nobody: the message tells you
+what to fix. For 3, or whenever you are not sure, contact the person who looks after the
+website: tell them which page you changed and when you published. They can see why the
+update stopped and will tell you which block to fix, or fix it themselves.
+
 ## When something looks wrong
 
 - **Publish says it failed, straight after you saved.** The website checks every change
   before it can be published, and that takes a minute. Wait a minute and press Publish
   again.
 - **The post is not on the website after five minutes.** Do a hard refresh (see "After
-  you publish"). Then look in
-  the **Workflow** tab: if the post is still there, it has not been published; set its
-  status to **Ready** and publish it. If it is not there but still is not on the website,
-  something stopped the update. The website stays exactly as it was, so nothing is
-  broken; tell the person who looks after the website.
+  you publish"). Then look in the **Workflow** tab: if the post is still there, it has not
+  been published; set its status to **Ready** and publish it. If it is not there but still
+  is not on the website, see "When a change does not appear" above.
 - **A photo will not upload.** If the editor says it cannot read it, it is probably an
   iPhone photo in Apple's own format opened in Chrome or Firefox (see "On an iPhone"
   above). If you dragged it onto the page, use **Choose an image** instead.

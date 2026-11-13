@@ -1,0 +1,8 @@
+---
+permalink: assets/data/layers.json
+eleventyExcludeFromCollections: true
+---
+{#- What the trails map draws besides the survey data in cairde-corrin.geojson: every stop whose
+    page has content, and every route uploaded on the trails page (_includes/blocks.js, mapLayers).
+    The map fetches it with the version the trails page gives it, so a new stop or route shows at once. -#}
+{{ pages | mapLayers | safe }}

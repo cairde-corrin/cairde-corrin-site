@@ -73,7 +73,7 @@ async function forPage(key, pages, url, figures) {
   if (key === 'home') crumbs[0] = ['Home'];
   const graph = module.exports.page(crumbs)['@graph'];
   if (key === 'home') graph.push(catchment(pages, figures, false));
-  if (stop) {
+  if (stop && d.hero && d.hero.title) {
     const p = blocks.stopPlace(d.hero, title);
     const geo = { '@type': 'GeoCoordinates', latitude: num(p.lat), longitude: num(p.lon) };
     // an uploaded photo is published under its re-encoded name, not the upload's

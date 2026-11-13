@@ -25,6 +25,19 @@ const ld = require('./site/_includes/ld.js');
 // Relative prefix back to the site root: /news/x/ -> ../../, /stops/stop-1.html -> ../
 const root = (url) => '../'.repeat(url.replace(/[^/]*$/, '').split('/').filter(Boolean).length);
 
+// When a page stops the build, the last thing in the build log is a plain explanation for
+// the editor who published it: the build's own error, with its stack trace, comes above it.
+process.once('exit', (code) => {
+  const p = blocks.lastProblem();
+  if (!code || !p) return;
+  const line = '='.repeat(72);
+  console.error(`\n${line}\nTHE WEBSITE WAS NOT UPDATED. The live website has not changed.\n\n`
+    + `The page "${p.page}" in the editor needs fixing:\n${p.problems.map((x) => `  - ${x}`).join('\n')}\n\n`
+    + `To fix it: in the editor, open Contents, then Pages, then "${p.page}". Put the block right and\n`
+    + 'publish again. If you are not sure what to do, ask whoever looks after the website.\n'
+    + `(For whoever looks after the website: ${p.file.slice(1, -1)}.)\n${line}`);
+});
+
 module.exports = function (eleventyConfig) {
   eleventyConfig.setTemplateFormats(['njk', 'md']);
   // Markdown is written by editors, so it may not carry raw HTML: a <script> or an onerror
@@ -53,6 +66,13 @@ module.exports = function (eleventyConfig) {
     blocks.render(key, pages[key], { url, pages, gallery, instagram, social: social.posts(socialData), figures,
       film: key === 'home' ? fs.readFileSync(path.join(__dirname, 'site', '_includes', 'film.html'), 'utf8').trim() : '' }));
   eleventyConfig.addAsyncFilter('pageLd', (pages, key, url, figures) => ld.forPage(key, pages, url, figures));
+  eleventyConfig.addFilter('sitePhotos', (pages) => JSON.stringify(blocks.sitePhotos(pages), null, 1));
+  // The stops whose page has content, for the sitemap; what the map draws besides the survey data
+  eleventyConfig.addFilter('recordedStops', (pages) => blocks.stopList(pages).filter((s) => s.recorded));
+  eleventyConfig.addAsyncFilter('mapLayers', async (pages) => {
+    const { version, ...data } = await blocks.mapLayers(pages);
+    return JSON.stringify(data);
+  });
   // Page text from the editor (_includes/prose.js)
   eleventyConfig.addFilter('prose', prose);
   // The editor's Help page (admin/help.njk) is docs/EDITOR-GUIDE.md itself, rendered here

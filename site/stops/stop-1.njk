@@ -1,15 +1,19 @@
-{#- The page's title, summary and structured data come from its "About this page" fields
-    in the editor (site/_data/pages/stop_1.json); its content from its blocks (_includes/blocks.js). -#}
-{%- set P = pages.stop_1.page -%}{%- set T = "Stop 01 - " + P.title + " - Cáirde Corrin" -%}
+{#- Stop 01. Until the top of its page is filled in, in the editor (site/_data/pages/stop_1.json),
+    it shows "Not yet surveyed", is kept out of search engines and the sitemap, and the trails page lists
+    it as to be surveyed. Once it has content, its title, summary and structured data come from its
+    "About this page" fields and its content from its blocks (_includes/blocks.js). -#}
+{%- set D = pages.stop_1 -%}{%- set live = D.hero and D.hero.title -%}
+{%- set T = ("Stop 01 - " + D.page.title + " - Cáirde Corrin") if live else "Stop 01 - Cáirde Corrin" -%}
+{%- set DESC = D.page.description if live else "Reserved interpretation stop, not yet surveyed." -%}
 <!DOCTYPE html>
 <html lang="en-IE">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ T }}</title>
-<meta name="description" content="{{ P.description }}">
+<meta name="description" content="{{ DESC }}">
 <link rel="canonical" href="https://www.cairdecorrin.ie/stops/stop-1.html">
-<meta property="og:title" content="{{ T }}"><meta property="og:description" content="{{ P.description }}">
+<meta property="og:title" content="{{ T }}"><meta property="og:description" content="{{ DESC }}">
 <meta property="og:type" content="website"><meta property="og:url" content="https://www.cairdecorrin.ie/stops/stop-1.html">
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png"><link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
 <link rel="preload" href="../assets/fonts/ebgaramond-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -17,7 +21,10 @@
 <meta property="og:site_name" content="Cáirde Corrin"><meta property="og:locale" content="en_IE">
 <meta property="og:image" content="https://www.cairdecorrin.ie/assets/img/og-stop-1.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{{ T }}">
-<meta name="twitter:description" content="{{ P.description }}"><meta name="twitter:image" content="https://www.cairdecorrin.ie/assets/img/og-stop-1.jpg">
+<meta name="twitter:description" content="{{ DESC }}"><meta name="twitter:image" content="https://www.cairdecorrin.ie/assets/img/og-stop-1.jpg">
+{%- if not live %}
+<meta name="robots" content="noindex, follow">
+{%- endif %}
 <script type="application/ld+json">
 {{ pages | pageLd("stop_1", page.url, figures) | safe }}
 </script>
@@ -25,10 +32,9 @@
 <body>
 <a class="skip" href="#main">Skip to content</a>
 {% include "nav.njk" %}
-<main id="main" class="page-head">
+<main id="main" class="page-head{% if not live %} reading{% endif %}">
   <div class="wrap">
 {{ pages | blocks("stop_1", page.url, collections.gallery.length, instagram, social, figures) | safe }}
-    <div class="stopnav"><a href="../trails/">← All stops</a><a href="stop-2.html">Stop 02 →</a></div>
   </div>
   <div style="height:100px"></div>
 </main>

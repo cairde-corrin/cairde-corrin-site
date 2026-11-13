@@ -35,10 +35,10 @@ which commits them to `main`.
   `npm run build && python3 tools/compare_build.py` must report no differences in the
   copied files.
 - **The byte-for-byte guarantee covers the copied files, not the pages.** Every page is
-  generated. Fifteen of them (the home page, about, links, new spaces and its two
-  proposals, stops 1 to 3, water, credits, species, folklore, recordings, trails) are
-  built from the editor's blocks ("Pages built from blocks" below); privacy, terms and
-  stops 4 to 10 are templates written as they stand. `compare_build.py` lists all of them
+  generated. Twenty-two of them (the home page, about, links, new spaces and its two
+  proposals, all ten stops, water, credits, species, folklore, recordings, trails) are
+  built from the editor's blocks ("Pages built from blocks" below); privacy and terms are
+  templates written as they stand. `compare_build.py` lists all of them
   as generated rather than proving them unchanged, and
   **a change to a layout, an include or `.eleventy.js` reaches every page at once**,
   including the pages that carry the verified figures below (areas, heights, distances,
@@ -173,6 +173,7 @@ hand-written pages used, so converting them changed no page's content.
 | Species list | the species page's list |
 | Credits list | the credits page's list |
 | Interactive map, List of stops, The walked loop | the trails page's map, stop list and walked-loop section |
+| Walked route | the walked-loop section's design, for a route an editor uploads as a GPS track |
 | Posts from the group | the home page's Instagram carousel or social cards |
 
 **Where blocks go.** The top of a page is a fixed field, not a block, so the editor's own
@@ -554,18 +555,82 @@ case: it is an SVG drawn 720 units wide that scales with the page, so its labels
 too. Container queries in `site.css` step the label size with the profile's width so that
 the labels never show under 11 px; check them if you change the profile.
 
-## Adding a new stop
+## Stops
 
-1. Copy `site/stops/stop-4.njk` as the shape.
-2. Take position and bearing from the photograph EXIF. Do not estimate them. Take the
-   elevation from a GPS track of the walk and Copernicus (`tools/dem_report.py`), rounded
-   to 5 m, never from the EXIF altitude (see note 5 above).
-3. Add the point to `site/assets/data/cairde-corrin.geojson` as a Point feature with
-   `kind: "stop"`, `elevation_m`, `bearing_deg` and `recorded`.
-4. Add the name to `STOPNO` in `site/assets/js/map.js` and the photograph slug to
-   `PHOTO`. The `STOPNO` keys must match the feature names in the GeoJSON
-   character for character, punctuation included.
-5. Move the entry in `site/trails/index.njk` out of the `pending` state.
+All ten stops are editor pages (`site/_data/pages/stop_N.json`, one shared frame per stop in
+`site/stops/`). A stop whose top-of-page title is empty is reserved: it shows "Not yet
+surveyed", carries `noindex`, stays out of the sitemap and the structured data, and the
+trails page lists it as to be surveyed. Once an editor fills in the top of its page, it
+goes live everywhere at once: its own page, the trails page's list, the map
+(`/assets/data/layers.json`), the sitemap, the loop's structured data and the figure
+check's count of recorded stops. The previous and next links between stops follow the
+recorded stops.
+
+The position, height and bearing are fields on the stop's page. They should still come
+from the photograph and the walk, not from memory: position and bearing from the
+photograph's EXIF; elevation from a GPS track of the walk and Copernicus
+(`tools/dem_report.py`), rounded to 5 m, never from the EXIF altitude (see note 5 above).
+The survey data file `site/assets/data/cairde-corrin.geojson` no longer needs the stop: the
+map draws stops from their pages, and uses the GeoJSON's three stops only if the layers file
+cannot be loaded. After a stop goes live, the figure check flags every sentence that still
+gives the old count ("Three stops recorded, seven to survey" on the trails page, "Seven of
+the ten stops" in the terms); the terms page is a developer's edit.
+
+## Routes from uploaded GPS tracks
+
+Editors add a walked route to the trails page with a **Walked route** block: a name, some
+text, and a GPX file. The file is stripped twice. In the editor's browser
+(`site/admin/tracks.js`), before upload, it is rebuilt from positions and heights only, so
+no time, name, app or phone reaches the public repository; a dropped or pasted GPX is
+refused, because that path would skip the strip. At build (`site/_includes/gpx.js`) it is
+treated the way `tools/trail.py` treated the walked loop: stretches walked twice are taken
+out (any run of 30 m or more within 15 m of track already walked, so an out-and-back keeps
+its outward leg once), the line is simplified at half a pixel at the map's maximum zoom
+(Douglas-Peucker, 0.25 m), and only positions and heights are published, rounded. The page
+gets the route's section with its own elevation profile and a clean GPX download
+(`/assets/data/routes/<name>.gpx`); the map draws it as a dashed line under "Other routes".
+The cleaning was checked against the walked loop: run on its published track it removes
+nothing, and gives the same 2.27 km and 65 m of climbing.
+
+**A track the build cannot use stops the build**, like any other broken block, with a plain
+reason: the file is not GPX, it has no points or fewer than ten, fewer than four in five
+points have a height (so no profile can be drawn), part of it is not near Fermoy, or less
+than 100 m is left once the repeats are out. The live site keeps its previous version.
+
+**The walked Glenabo loop is not one of these.** It was cleaned by hand, checked against all
+three stops and published by `tools/trail.py` into `site/_includes/walked-loop.html`; its
+block has nothing to edit. Replacing it is a deliberate job: rerun `tools/trail.py` on a new
+raw track kept in `archive/`, check the result against the stops, and update `figures.json`.
+
+## Checks before publishing, and what a failure says
+
+Every check an editor can act on is in one file, `site/admin/checks.js`, in the editor's
+own words ("Block 3 (Two photos side by side) needs exactly two photos, and it has 1. Add
+or remove a photo, or use a different block."). It runs twice: in the editor when a page is
+saved (`site/admin/editor.js`, Decap's `preSave` event), so a page that would stop the
+build is not saved and its editor is told what to fix there and then; and in the build
+(`_includes/blocks.js`), so a page that reached the repository some other way cannot be
+published broken. Checks that need the site's files (does the photo exist, can the track be
+read) run in the build only. To add a check, add it to `checks.js` with a case in
+`tools/selftest.js`; the editor and the build then agree by construction.
+
+When a page stops the build, the build's error lists every problem on that page in those
+words, and the last thing in the log is a framed summary headed "THE WEBSITE WAS NOT
+UPDATED" naming the page as it appears in the editor, the problems, what to do, and the
+file. The live site keeps its previous version. Netlify's deploy log is visible only to
+members of the Netlify team, so editors cannot read it: see `MAINTENANCE.md`, "When the
+website does not update", for who is told and how.
+
+## Photos already on the site
+
+The page photo fields are a custom field (`sitephoto`, `site/admin/editor.js`) with two
+buttons. **Choose a photo already on the website** reads `/admin/site-photos.json`, built
+from every prepared set under `site/assets/img/` (`sitePhotos()` in `blocks.js`), and only
+ever writes the chosen path into the field: it uploads nothing and offers no address
+field. **Upload a new photo** opens Decap's media library inside the entry, exactly as the
+standard photo field does, with the field's 20 MB cap and the draft workflow; the top-bar
+Media button stays hidden (`site/admin/index.html`). A reused photo from another source
+keeps its credit, because the credit is keyed to the file.
 
 ## Before you push
 

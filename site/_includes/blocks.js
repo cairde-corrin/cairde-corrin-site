@@ -14,24 +14,22 @@ const path = require('node:path');
 const { prose } = require('./prose.js');
 const images = require('./images.js');
 const youtube = require('./youtube.js');
+const gpx = require('./gpx.js');
+const crypto = require('node:crypto');
 
 const SITE_DIR = path.join(__dirname, '..');
 const SITE = 'https://www.cairdecorrin.ie';
 const CREDITS = require('../_data/credits.json');
 
-// What editors see each block called, for error messages
-const LABELS = {
-  text: 'Text', figures: 'Figure box', image: 'Single image', pair: 'Two photos side by side',
-  carousel: 'Photo carousel', grid: 'Photo grid', steps: 'Numbered points', cards: 'Cards',
-  links: 'List of links', note: 'Note box', quote: 'Pull quote', button: 'Button link',
-  audio: 'Recording', recordings: 'List of recordings', films: 'Films', video: 'YouTube video',
-  story: 'Folklore story', species: 'Species list', credits: 'Credits list', map: 'Interactive map',
-  stops: 'List of stops', walked: 'The walked loop', social: 'Posts from the group',
-};
-// Blocks a page can hold only one of: each carries element ids or a page-wide role
-const SINGULAR = new Set(['map', 'stops', 'walked', 'social']);
+// What editors see each block called, which blocks a page can hold only one of, and which
+// belong to one page only: shared with the editor's own checks (site/admin/checks.js)
+const checks = require('../admin/checks.js');
+const { LABELS, ONLY_ON } = checks;
+const SINGULAR = new Set(Object.keys(checks.SINGULAR));
 
 class BlockError extends Error {}
+// The last page that stopped the build, for the plain summary at the end of the build log
+let lastProblem = null;
 const fail = (msg) => { throw new BlockError(msg); };
 
 const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -388,16 +386,19 @@ R.credits = (b, c) => {
   return `<dl class="credits${c.rv}">\n${parts.join('\n')}\n</dl>`;
 };
 
-R.map = (b, c) => {
+R.map = async (b, c) => {
   const f = c.figures;
+  const layers = await mapLayers(c.pages);
+  const routes = layers.routes.length;
   return `<div class="maprig${c.rv}">\n<div class="mapshell">\n`
-    + '<svg id="map" role="img" tabindex="0" aria-label="Interactive map of the Glenabo catchment showing relief, boundary, drainage, the walked loop and recorded stops. Arrow keys move the map, plus and minus zoom, zero resets it."></svg>\n'
+    + `<svg id="map" role="img" tabindex="0" data-layers="/assets/data/layers.json?v=${layers.version}" aria-label="Interactive map of the Glenabo catchment showing relief, boundary, drainage, the walked loop${routes ? ', other walked routes' : ''} and recorded stops. Arrow keys move the map, plus and minus zoom, zero resets it."></svg>\n`
     + '<button class="maplayers-toggle" id="mlt" aria-expanded="false" aria-controls="maplayers">Layers</button>\n<div class="maplayers" id="maplayers">\n'
     + `<label><input type="checkbox" id="L-terr" checked> Relief <i>${f.catchment.outlet_m}-${f.catchment.elev_max_m} m</i></label>\n`
     + `<label><input type="checkbox" id="L-action" checked> Action area <i>about ${f.action_area.ha} ha</i></label>\n`
     + `<label><input type="checkbox" id="L-catch" checked> Catchment <i>about ${f.catchment.area_ha} ha</i></label>\n`
     + '<label><input type="checkbox" id="L-chan" checked> Drainage <i>modelled</i></label>\n'
     + `<label><input type="checkbox" id="L-trail" checked> Walked loop <i>about ${f.loop.length_km} km</i></label>\n`
+    + (routes ? `<label><input type="checkbox" id="L-routes" checked> Other routes <i>${routes} walked</i></label>\n` : '')
     + `<label><input type="checkbox" id="L-stops" checked> Stops <i>${c.stops.filter((s) => s.recorded).length} recorded</i></label>\n</div>\n`
     + '<div class="mapctl">\n<button id="mz-in" title="Zoom in" aria-label="Zoom in">+</button>\n<button id="mz-out" title="Zoom out" aria-label="Zoom out">−</button>\n'
     + '<button id="mz-fit" title="Reset view" aria-label="Reset view">⤢</button>\n<button id="mz-loc" title="Show my position" aria-label="Show my position">◎</button>\n</div>\n'
@@ -418,6 +419,75 @@ R.stops = (b, c) => {
 
 // The walked loop's section: written by tools/trail.py from the checked track, never by hand
 R.walked = () => fs.readFileSync(path.join(__dirname, 'walked-loop.html'), 'utf8').trim();
+
+// A route an editor added by uploading its GPS track: cleaned and stripped (_includes/gpx.js),
+// drawn on the map, with its own elevation profile and a clean GPX download
+const ROUTES_OUT = path.join(SITE_DIR, '..', '_site', 'assets', 'data', 'routes');
+const GPX_NOTE = 'A record of one walk through unwaymarked woodland, published by Cáirde Corrin. It is not a surveyed '
+  + 'or waymarked route, and not for navigation. Access is not guaranteed, and tracks may be closed, felled or unsafe. '
+  + 'Read https://www.cairdecorrin.ie/terms/ before you go.';
+const prepared = new Map();
+function route(b, stops) {
+  const name = str(b.name);
+  if (!name) fail('has no name');
+  const file = str(b.track);
+  if (!file) fail(`(${name}) has no GPS track. Upload the walk's GPX file in "The GPS track"`);
+  const at = path.join(SITE_DIR, decodeURI(file).slice(1));
+  if (!file.startsWith(images.UPLOADS) || !/\.gpx$/i.test(file) || !fs.existsSync(at)) fail(`(${name}) has the track "${file}", which is not an uploaded GPX file`);
+  const xml = fs.readFileSync(at, 'utf8');
+  const key = crypto.createHash('sha1').update(xml).update(name).update(JSON.stringify(stops)).digest('hex');
+  if (!prepared.has(key)) {
+    try { prepared.set(key, gpx.prepare(xml, name, stops)); } catch (e) {
+      if (e instanceof gpx.TrackError) fail(`(${name}): the GPS track cannot be used, because ${e.message}`);
+      throw e;
+    }
+  }
+  return { name, slug: slug(name), version: key.slice(0, 10), ...prepared.get(key) };
+}
+const recordedStops = (c) => c.stops.filter((s) => s.recorded).map((s) => ({ n: s.n, lat: +s.lat, lon: +s.lon }));
+R.route = (b, c) => {
+  const r = route(b, recordedStops(c));
+  const id = `route-${r.slug}`;
+  const file = toFile(r);
+  const kb = Math.max(1, Math.round(Buffer.byteLength(file) / 1024));
+  return `<section class="walked" aria-labelledby="${id}-h">\n<h2 class="as-h3" id="${id}-h">${heading(r.name)}</h2>\n`
+    + `${paras(b.text).map((p) => `<p>${prose(p)}</p>`).join('\n')}\n<figure class="profile">\n${r.svg(id)}\n`
+    + `<figcaption>Elevation along the route, from the walked track's own GPS: about ${5 * Math.round(r.emin / 5)} to ${5 * Math.round(r.emax / 5)} m, `
+    + `with about ${r.climb5} m of climbing, over about ${(r.length / 1000).toFixed(1)} km. Like every elevation on this site, given to the nearest five metres.</figcaption>\n</figure>\n`
+    + `<p><a href="${c.r}assets/data/routes/${r.slug}.gpx?v=${r.version}" download>Download ${esc(r.name)} as GPX</a> (${kb} KB). It is a record of one walk through `
+    + `unwaymarked woodland, not a surveyed route and not for navigation: read the <a href="${c.r}terms/">terms</a> before you go.</p>\n</section>`;
+};
+// the published GPX, written once per build
+function toFile(r) {
+  const text = gpx.toGpx(r.segments, r.name, GPX_NOTE);
+  fs.mkdirSync(ROUTES_OUT, { recursive: true });
+  fs.writeFileSync(path.join(ROUTES_OUT, `${r.slug}.gpx`), text);
+  return text;
+}
+
+// What the interactive map draws besides its survey data: every stop that has a page with
+// content, and every uploaded route. Published as /assets/data/layers.json.
+async function mapLayers(pages) {
+  const stops = await Promise.all(stopList(pages).filter((s) => s.recorded).map(async (s) => {
+    const h = pages[`stop_${s.n}`].hero;
+    let photo = '';
+    const set = photoSet(str(h.photo));
+    if (set) photo = set.url(set.webp.find((w) => w >= 1100) || set.webp[set.webp.length - 1]);
+    else if (str(h.photo).startsWith(images.UPLOADS)) photo = (await images.resolve({ src: decodeURI(h.photo) })).src;
+    return { n: s.n, name: `Stop ${s.no} - ${s.name}`, lat: +s.lat, lon: +s.lon, elevation: +s.elevation, facing: str(h.facing) ? +h.facing : null, photo };
+  }));
+  const trails = (pages.trails && pages.trails.blocks) || [];
+  const marks = stops.map((s) => ({ n: s.n, lat: s.lat, lon: s.lon }));
+  const routes = trails.filter((b) => b && b.type === 'route').map((b) => {
+    try {
+      const r = route(b, marks);
+      return { name: r.name, slug: r.slug, lines: r.segments.map((seg) => seg.map(([lat, lon]) => [lon, lat])) };
+    } catch (e) { return null; }  // the trails page itself reports a track it cannot use
+  }).filter(Boolean);
+  const data = { stops, routes };
+  const version = crypto.createHash('sha1').update(JSON.stringify(data)).digest('hex').slice(0, 10);
+  return { ...data, version };
+}
 
 R.social = (b, c) => {
   const eyebrow = esc(str(b.eyebrow) || 'Elsewhere');
@@ -461,6 +531,21 @@ async function hero(h, c) {
   }
   if (str(h.intro)) parts.push(`<p class="lede${rv}">${prose(h.intro)}</p>`);
   return parts.join('\n');
+}
+
+// A stop not yet surveyed: its page waits, out of search engines and the sitemap, until the
+// top of its page is filled in
+function reserved(n, c) {
+  const no = String(n).padStart(2, '0');
+  return `<p class="eyebrow">Stop ${no} - cairdecorrin.ie/s/${+n}</p>\n<h1 class="page-title">Not yet surveyed.</h1>\n<a class="cta" href="${c.r}trails/">Back to the trail</a>`;
+}
+// Previous and next recorded stops, or back to the trail at either end
+function stopNav(n, c) {
+  const rec = c.stops.filter((s) => s.recorded);
+  const i = rec.findIndex((s) => s.n === n);
+  const prev = rec[i - 1], next = rec[i + 1];
+  return `<div class="stopnav">${prev ? `<a href="stop-${prev.n}.html">← Stop ${prev.no}</a>` : `<a href="${c.r}trails/">← All stops</a>`}`
+    + `${next ? `<a href="stop-${next.n}.html">Stop ${next.no} →</a>` : `<a href="${c.r}trails/">All stops →</a>`}</div>`;
 }
 
 // A stop's position and elevation, checked, as the trails page and structured data use them
@@ -513,14 +598,22 @@ function usage(pages) {
 // key: the page's file in site/_data/pages; data: its content; ctx: { url, pages, figures,
 // gallery, instagram, social, film }. Returns the page's main content.
 async function render(key, data, ctx) {
-  const where = `Page "${(data && data.page && data.page.title) || key}" (site/_data/pages/${key}.json)`;
+  const where = `the page "${checks.PAGES[key] || key}" in the editor`;
+  const file = `(site/_data/pages/${key}.json)`;
   const home = key === 'home';
   const stopN = /^stop_(\d+)$/.exec(key);
   const c = { key, where, home, r: root(ctx.url), rv: stopN ? '' : ' rv', figures: ctx.figures, gallery: ctx.gallery,
-    instagram: ctx.instagram, social: ctx.social, film: ctx.film, stops: stopList(ctx.pages), use: usage(ctx.pages), placed: new Set() };
+    instagram: ctx.instagram, social: ctx.social, film: ctx.film, stops: stopList(ctx.pages), use: usage(ctx.pages), placed: new Set(), pages: ctx.pages };
   try {
-    if (!data || typeof data !== 'object') fail('has no content');
-    if (!data.page || !str(data.page.title)) fail('has no page title (under "About this page")');
+    if (!data || typeof data !== 'object') fail('The page has no content.');
+    // everything an editor can fix, all at once, in the editor's words (also checked on saving)
+    const found = checks.problems(key, data);
+    if (found.length) {
+      lastProblem = { page: checks.PAGES[key] || key, problems: found, file };
+      throw new Error(`The website was not updated, because of ${where}:\n${found.map((x) => `  - ${x}`).join('\n')}\n${file}`);
+    }
+    if (stopN && !(data.hero && str(data.hero.title))) return reserved(stopN[1], c);
+    if (!data.page || !str(data.page.title)) fail(stopN ? 'has no name for the stop (under "About this page")' : 'has no page title (under "About this page")');
     if (!str(data.page.description)) fail('has no summary for search results (under "About this page")');
     if (stopN) c.stop = stopPlace(data.hero || {}, 'The top of the page');
     const top = await hero(data.hero, c);
@@ -533,6 +626,7 @@ async function render(key, data, ctx) {
       const label = `block ${i + 1} (${LABELS[b && b.type] || (b && b.type) || 'no type'})`;
       try {
         if (!b || !R[b.type]) fail('is not a kind of block the website knows');
+        if (ONLY_ON[b.type] && ONLY_ON[b.type] !== key) fail('belongs on another page and cannot be used here');
         if (SINGULAR.has(b.type)) {
           if (seen.has(b.type)) fail('appears twice; a page can have only one');
           seen.add(b.type);
@@ -551,10 +645,15 @@ async function render(key, data, ctx) {
       if (missing.length) out.push({ b: { type: 'credits' }, bc: { extra: new Set() }, html: `<dl class="credits rv">\n${missing.map((g) => requiredEntry(g, c)).join('\n')}\n</dl>` });
     }
     if (home) return homeLayout(top, out);
+    if (stopN) out.push({ html: stopNav(+stopN[1], c) });
     return [top, ...out.map((o) => (typeof o.html === 'object' ? [o.html.bleed, o.html.after, o.html.section].filter(Boolean).join('\n') : o.html))]
       .filter(Boolean).join('\n');
   } catch (e) {
-    if (e instanceof BlockError) throw new Error(`${where}: ${e.message}.`);
+    if (e instanceof BlockError) {
+      const said = e.message.replace(/^block (\d+)/, 'Block $1');
+      lastProblem = { page: checks.PAGES[key] || key, problems: [`${said}.`], file };
+      throw new Error(`The website was not updated, because of ${where}:\n  - ${said}.\n${file}`);
+    }
     throw e;
   }
 }
@@ -666,4 +765,34 @@ function counts(pages) {
   };
 }
 
-module.exports = { render, ldItems, counts, stopList, stopPlace, usage, photoSet, webpSize, creditFor, LABELS, SINGULAR, root, BlockError };
+// The photographs already on the website, for the editor's "Choose a photo already on the
+// website" picker (site/admin/editor.js): each prepared set once, with a small copy to show,
+// the description it already has where the pages use it, and its credit if it is someone
+// else's. Published as /admin/site-photos.json; the picker only reads it.
+const NOT_PHOTOS = /^(logo|favicon|apple-touch|og-|terrain|hero-poster)/;
+function sitePhotos(pages) {
+  const alts = new Map();
+  const scan = (b) => {
+    if (!b || typeof b !== 'object') return;
+    if (typeof b.photo === 'string' && str(b.alt)) { const s = photoSet(b.photo); if (s && !alts.has(s.base)) alts.set(s.base, str(b.alt)); }
+    for (const v of Object.values(b)) if (Array.isArray(v)) v.forEach(scan); else if (v && typeof v === 'object') scan(v);
+  };
+  Object.values(pages).forEach(scan);
+  const out = [];
+  (function walk(dir) {
+    for (const e of fs.readdirSync(path.join(SITE_DIR, 'assets', 'img', dir), { withFileTypes: true })) {
+      if (e.isDirectory()) { if (!/^(video|instagram|news)$/.test(e.name)) walk(dir + e.name + '/'); continue; }
+      const m = /^(.+)-(\d+)\.webp$/.exec(e.name);
+      if (!m || NOT_PHOTOS.test(m[1])) continue;
+      const set = photoSet(`/assets/img/${dir}${e.name}`);
+      if (!set || out.some((x) => x.base === set.base)) continue;
+      const largest = set.webp[set.webp.length - 1];
+      const credit = CREDITS.photos[set.base];
+      out.push({ base: set.base, path: set.url(largest), thumb: set.url(set.webp[0]), alt: alts.get(set.base) || '',
+        ...(credit && { credit: `${credit.by}, ${credit.licence}` }) });
+    }
+  })('');
+  return out.map(({ base, ...x }) => x).sort((a, b) => a.path.localeCompare(b.path));
+}
+
+module.exports = { render, ldItems, counts, mapLayers, sitePhotos, lastProblem: () => lastProblem, stopList, stopPlace, usage, photoSet, webpSize, creditFor, LABELS, SINGULAR, root, BlockError };

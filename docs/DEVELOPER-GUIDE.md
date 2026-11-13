@@ -30,7 +30,8 @@ nothing from any other site until they press play on a video.
                      pages/ (every editable page, as blocks), social.json
     site/_content/   news, gallery and articles, one Markdown file each
     site/_instagram/ the saved Instagram posts and their re-encoded pictures
-    site/admin/      the editor: index.html, config.yml, photos.js, editor.js, help.njk
+    site/admin/      the editor: index.html, config.yml, photos.js, tracks.js, checks.js,
+                     editor.js, help.njk, site-photos.njk
     .github/         the editor-content-only check and the weekly rebuild
     docs/            the documents (index: docs/README.md)
     tools/           checks and generators (index: tools/README.md); none run in the build
@@ -84,7 +85,8 @@ editor text, `_includes/prose.js`), `editLink`, `navItems`, `domain`, `socialPos
 | Articles | `site/_content/articles/*.md` | editors (Articles) | `/articles/` |
 | Social posts | `site/_data/social.json` | editors (Home page) | home page cards, `_includes/social.js`, when there is no Instagram feed |
 | Instagram posts | Behold, saved in `site/_instagram/` | the group, on Instagram | home page carousel, `_includes/instagram.js` |
-| Privacy, terms, stops 4 to 10 | the `.njk` page itself | developers only | as written |
+| Uploaded routes | a GPX file in `site/assets/uploads/` | editors (Trails, Walked route) | stripped in the browser (`site/admin/tracks.js`), cleaned at build (`_includes/gpx.js`); `/assets/data/routes/`, `/assets/data/layers.json` |
+| Privacy, terms | the `.njk` page itself | developers only | as written |
 
 An entry with `hidden: true` (the editor's "Take this off the website" tick) is added to
 Eleventy's ignore list in `.eleventy.js`, so it produces no page, no list entry and no

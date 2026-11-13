@@ -416,10 +416,10 @@ collections:
                   - &photo
                     label: "Photo"
                     name: photo
-                    widget: image
+                    widget: sitephoto
                     media_library: { config: { max_file_size: 20000000 } }
                     choose_url: false
-                    hint: "Choose or upload a photo you took yourself, or one you have permission to use. Photos straight from a phone are fine: the website makes smaller copies and removes the location and phone details."
+                    hint: "Choose a photo already on the website, or upload a new one: one you took yourself, or one you have permission to use. Photos straight from a phone are fine: the website makes smaller copies and removes the location and phone details."
                   - &alt { label: "What the photo shows", name: alt, widget: string, hint: "For people who cannot see the photo: what is in it, in one sentence." }
                   - { label: "Caption", name: caption, widget: string, required: false }
                   - *copy
@@ -497,7 +497,7 @@ collections:
                       - { label: "Small label at the top", name: kicker, widget: string, required: false }
                       - { label: "Title", name: title, widget: string }
                       - { label: "Text", name: text, widget: text, required: false }
-                      - { label: "Photo", name: photo, widget: image, required: false, media_library: { config: { max_file_size: 20000000 } }, choose_url: false, hint: "Optional." }
+                      - { label: "Photo", name: photo, widget: sitephoto, required: false, media_library: { config: { max_file_size: 20000000 } }, choose_url: false, hint: "Optional." }
                       - { label: "What the photo shows", name: alt, widget: string, required: false, hint: "Needed if there is a photo: what is in it, in one sentence." }
                       - *link_text
                       - *link
@@ -597,7 +597,7 @@ collections:
                       - { label: "Only the family is known", name: family, widget: boolean, required: false, default: false }
                       - { label: "Named by", name: authority, widget: string, required: false, hint: "Optional. The botanist's abbreviation after the name, for example L." }
                       - { label: "Note after the name", name: flag, widget: string, required: false, hint: "Optional. For example: proposed determination." }
-                      - { label: "Photo", name: photo, widget: image, required: false, media_library: { config: { max_file_size: 20000000 } }, choose_url: false, hint: "Optional." }
+                      - { label: "Photo", name: photo, widget: sitephoto, required: false, media_library: { config: { max_file_size: 20000000 } }, choose_url: false, hint: "Optional." }
                       - { label: "What the photo shows", name: alt, widget: string, required: false, hint: "Needed if there is a photo." }
                       - { label: "Description", name: description, widget: text, required: false }
                       - { label: "Its page in the BSBI Plant Atlas", name: atlas, widget: string, required: false, hint: "Optional. The full address, starting with https://" }
@@ -768,6 +768,16 @@ collections:
                   - { label: "Heading", name: heading, widget: string, default: "The stops" }
                   - { label: "Note beside the list", name: note, widget: text, required: false }
                   - { label: "Figures beside the list", name: figures, widget: list, required: false, label_singular: figure, summary: "{{fields.label}}: {{fields.value}} {{fields.unit}}", fields: *figure_fields }
+              - label: "Walked route"
+                name: route
+                widget: object
+                summary: "{{fields.name}}"
+                hint: "A route the group has walked, from its GPS track: it is drawn on the map, with its own elevation profile and a download. Stretches walked twice are taken out, and the times and names in the file are removed before it is uploaded."
+                fields:
+                  - { label: "Name of the route", name: name, widget: string, hint: "For example: The Corrin Hill path." }
+                  - { label: "About the route", name: text, widget: text, required: false, hint: "Leave an empty line between paragraphs." }
+                  - { label: "The GPS track", name: track, widget: file, choose_url: false, media_library: { config: { max_file_size: 5000000 } }, hint: "The walk exported from the phone app as a GPX file. If the website cannot use it, it says why and the trails page stays as it was." }
+                  - *copy
               - label: "The walked loop"
                 name: walked
                 widget: object
@@ -833,24 +843,32 @@ collections:
             widget: object
             collapsed: true
             fields:
-              - { label: "Name of the stop", name: title, widget: string, hint: "Shown on the trails page, in search results and on the browser tab, after the stop's number." }
-              - *page_summary
+              - { label: "Name of the stop", name: title, widget: string, required: false, hint: "Shown on the trails page, in search results and on the browser tab, after the stop's number." }
+              - { label: "Summary", name: description, widget: text, required: false, hint: "One or two sentences. Shown under the title in search results and when someone shares the page." }
           - label: "The top of the page"
             name: hero
             widget: object
+            hint: "A stop with no title shows as \"Not yet surveyed\" and is kept out of search engines. Give it a title, and fill in its name and summary above, its photo, position, height, direction and time, and it goes live: it appears on the trails page, on the map and in search engines."
             fields:
               - { label: "Small line above the title", name: eyebrow, widget: string }
-              - { label: "Title", name: title, widget: text, hint: "Press Enter to start a new line." }
-              - { label: "Photo", name: photo, widget: image, media_library: { config: { max_file_size: 20000000 } }, choose_url: false, hint: "The photo taken at the stop." }
-              - *alt
-              - { label: "Latitude", name: latitude, widget: string, hint: "Degrees north, for example 52.12752" }
-              - { label: "Longitude", name: longitude, widget: string, hint: "Degrees east, so negative here, for example -8.29878" }
-              - { label: "Height in metres", name: elevation, widget: string, hint: "Above sea level, to the nearest 5 metres, for example 60" }
-              - { label: "Facing", name: facing, widget: string, hint: "The compass direction the photo faces, in degrees, for example 159" }
-              - { label: "Recorded", name: recorded, widget: string, hint: "When, for example: 11 Apr 2026, 07:10" }
+              - { label: "Title", name: title, widget: text, required: false, hint: "Press Enter to start a new line. Leave empty until the stop is ready." }
+              - { label: "Photo", name: photo, widget: sitephoto, required: false, media_library: { config: { max_file_size: 20000000 } }, hint: "The photo taken at the stop." }
+              - { label: "What the photo shows", name: alt, widget: string, required: false, hint: "For people who cannot see the photo: what is in it, in one sentence." }
+              - { label: "Latitude", name: latitude, widget: string, required: false, hint: "Degrees north, for example 52.12752" }
+              - { label: "Longitude", name: longitude, widget: string, required: false, hint: "Degrees east, so negative here, for example -8.29878" }
+              - { label: "Height in metres", name: elevation, widget: string, required: false, hint: "Above sea level, to the nearest 5 metres, for example 60" }
+              - { label: "Facing", name: facing, widget: string, required: false, hint: "The compass direction the photo faces, in degrees, for example 159" }
+              - { label: "Recorded", name: recorded, widget: string, required: false, hint: "When, for example: 11 Apr 2026, 07:10" }
           - *blocks
       - { name: stop_2, label: "Stop 02", file: site/_data/pages/stop_2.json, fields: *stop_fields }
       - { name: stop_3, label: "Stop 03", file: site/_data/pages/stop_3.json, fields: *stop_fields }
+      - { name: stop_4, label: "Stop 04", file: site/_data/pages/stop_4.json, fields: *stop_fields }
+      - { name: stop_5, label: "Stop 05", file: site/_data/pages/stop_5.json, fields: *stop_fields }
+      - { name: stop_6, label: "Stop 06", file: site/_data/pages/stop_6.json, fields: *stop_fields }
+      - { name: stop_7, label: "Stop 07", file: site/_data/pages/stop_7.json, fields: *stop_fields }
+      - { name: stop_8, label: "Stop 08", file: site/_data/pages/stop_8.json, fields: *stop_fields }
+      - { name: stop_9, label: "Stop 09", file: site/_data/pages/stop_9.json, fields: *stop_fields }
+      - { name: stop_10, label: "Stop 10", file: site/_data/pages/stop_10.json, fields: *stop_fields }
 
   - name: articles
     label: Articles

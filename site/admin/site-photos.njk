@@ -1,0 +1,7 @@
+---
+permalink: admin/site-photos.json
+eleventyExcludeFromCollections: true
+---
+{#- The photographs already on the website, for the editor's browse-only photo picker
+    (site/admin/editor.js, _includes/blocks.js sitePhotos). Reading it uploads nothing. -#}
+{{ pages | sitePhotos | safe }}

@@ -10,9 +10,11 @@
   /* map.js and the GeoJSON change together, so they are versioned together: bump DATA_V
      and the ?v= on this script in trails/index.html whenever either changes. Without it
      a browser can pair a new script with a day-old cached data file, or the reverse. */
-  var DATA_V = '2026-11-11c';
-  var STOPNO = { 'Stop 01 - the stream': 1, 'Stop 02 - closed canopy': 2, 'Stop 03 - the mossy stand': 3 };
-  var PHOTO = { 1: 'stream', 2: 'plantation', 3: 'mossy' };
+  var DATA_V = '2026-11-13';
+  /* The stops and the routes editors add come from /assets/data/layers.json, built from the
+     stops' own pages and the trails page (site/_includes/blocks.js, mapLayers). The trails
+     page gives its address with a version that changes whenever its content does. */
+  var LAYERS = svg.getAttribute('data-layers');
 
   function MX(lo) { return lo * Rm / 180 }
   function MY(la) { return Math.log(Math.tan((90 + la) * Math.PI / 360)) / (Math.PI / 180) * Rm / 180 }
@@ -34,6 +36,8 @@
   el.catchFill = make('path', { fill: 'url(#hatch)', stroke: 'none' });
   el.catch = make('path', { fill: 'none', stroke: '#2F5219', 'stroke-width': 2.8, 'stroke-linejoin': 'round' });
   el.chan = make('path', { fill: 'none', stroke: '#009ADE', 'stroke-width': 2.1, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', filter: 'url(#glow)' });
+  el.routeCase = make('path', { fill: 'none', stroke: '#fff', 'stroke-width': 4.6, 'stroke-opacity': .85, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+  el.route = make('path', { fill: 'none', stroke: '#7A3E12', 'stroke-width': 2.2, 'stroke-dasharray': '7 5', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
   el.trailCase = make('path', { fill: 'none', stroke: '#fff', 'stroke-width': 5.6, 'stroke-opacity': .9, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
   el.trail = make('path', { fill: 'none', stroke: '#08304F', 'stroke-width': 2.6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
   el.marks = make('g', {}); el.me = make('g', {});
@@ -56,11 +60,13 @@
     el.chan.setAttribute('d', vis('L-chan') ? multi(G.channels) : '');
     var dt = vis('L-trail') && G.trail ? multi([G.trail]) : '';
     el.trailCase.setAttribute('d', dt); el.trail.setAttribute('d', dt);
+    var dr = vis('L-routes') && G.routes.length ? multi([].concat.apply([], G.routes.map(function (r) { return r.lines }))) : '';
+    el.routeCase.setAttribute('d', dr); el.route.setAttribute('d', dr);
     el.marks.textContent = '';
     if (vis('L-stops')) G.points.forEach(function (p) {
       var x = SX(p.c[0]), y = SY(p.c[1]);
       if (x < -40 || x > W + 40 || y < -40 || y > H + 40) return;
-      var no = STOPNO[p.n], g = make('g', { style: 'cursor:pointer' }, el.marks);
+      var no = p.no, g = make('g', { style: 'cursor:pointer' }, el.marks);
       g.addEventListener('click', function (e) { e.stopPropagation(); info(p, no) });
       if (p.k === 'outlet') {
         make('path', { d: 'M' + (x - 9) + ' ' + (y - 7) + 'h18l-9 15z', fill: '#487629', stroke: '#fff', 'stroke-width': 2.2, 'stroke-linejoin': 'round' }, g);
@@ -92,7 +98,7 @@
   function info(p, no) {
     var box = $('mapinfo'), b = $('mapinfobody');
     if (!box || !b) return;
-    var img = no && PHOTO[no] ? '<img src="/assets/img/' + PHOTO[no] + '-1100.webp" alt="">' : '';
+    var img = p.photo ? '<img src="' + p.photo + '" alt="">' : '';
     b.innerHTML = img + '<div class="b"><h4>' + p.n + '</h4><dl>' +
       '<dt>Position</dt><dd>' + Math.abs(p.c[1]).toFixed(5) + '°N ' + Math.abs(p.c[0]).toFixed(5) + '°W</dd>' +
       '<dt>Elevation</dt><dd>about ' + p.e + ' m OD</dd>' +
@@ -225,7 +231,7 @@
         'Location unavailable';
     }, { enableHighAccuracy: true, timeout: 9000 });
   });
-  ['L-terr', 'L-action', 'L-catch', 'L-chan', 'L-trail', 'L-stops'].forEach(function (id) {
+  ['L-terr', 'L-action', 'L-catch', 'L-chan', 'L-trail', 'L-routes', 'L-stops'].forEach(function (id) {
     var c = $(id); if (c) c.addEventListener('change', draw);
   });
   var mlt = $('mlt'), mll = $('maplayers');
@@ -248,10 +254,11 @@
     shell.appendChild(d);
   }
 
-  fetch('/assets/data/cairde-corrin.geojson?v=' + DATA_V).then(function (r) {
-    if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + r.url);
-    return r.json();
-  }).then(function (fc) {
+  function get(u) { return fetch(u).then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + r.url); return r.json() }) }
+  /* without the layers file the map still shows the survey data and its three original stops */
+  Promise.all([get('/assets/data/cairde-corrin.geojson?v=' + DATA_V),
+    LAYERS ? get(LAYERS).catch(function (e) { console.error('Cáirde Corrin map layers:', e); return null }) : null]).then(function (both) {
+    var fc = both[0], layers = both[1];
     function f(n) {
       var x = fc.features.filter(function (x) { return x.properties.name === n })[0];
       if (!x) throw new Error('feature missing from GeoJSON: ' + n);
@@ -263,8 +270,10 @@
       channels: f('Modelled channel network').geometry.coordinates,
       /* optional: a data file without the loop must not take the whole map down */
       trail: (fc.features.filter(function (x) { return x.properties.name === 'Walked loop' })[0] || { geometry: {} }).geometry.coordinates || null,
-      points: fc.features.filter(function (x) { return x.geometry.type === 'Point' })
+      points: fc.features.filter(function (x) { return x.geometry.type === 'Point' && (!layers || x.properties.kind !== 'stop') })
         .map(function (x) { return { n: x.properties.name, k: x.properties.kind, e: x.properties.elevation_m, b: x.properties.bearing_deg, c: x.geometry.coordinates } })
+        .concat(layers ? layers.stops.map(function (s) { return { n: s.name, k: 'stop', no: s.n, e: s.elevation, b: s.facing, photo: s.photo, c: [s.lon, s.lat] } }) : []),
+      routes: layers ? layers.routes : []
     };
     size(); fit();
   }).catch(function (e) {

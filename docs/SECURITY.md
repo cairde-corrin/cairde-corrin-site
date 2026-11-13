@@ -24,7 +24,11 @@ text. Titles, summaries and captions are escaped by the templates. Every block o
 editable page is written by `_includes/blocks.js`, which escapes every field and renders
 the paragraph fields as inline Markdown with raw HTML off; a block's links must be a path on
 this site or an `https://` address, and the structured data built from the page's fields
-has every `<` escaped, so no field can close its script element. The build refuses any
+has every `<` escaped, so no field can close its script element. An uploaded GPS track is
+rebuilt from positions and heights in the editor's browser before upload (`site/admin/tracks.js`)
+and again at build (`_includes/gpx.js`), so no time or name in it reaches the public
+repository or the site. The photo picker only reads a list of the site's own photos and
+writes a path; it uploads nothing and has no address field. The build refuses any
 page that would load something from another website (`_includes/images.js`) and any page
 with an inline script other than the two the site carries on purpose (`_includes/csp.js`).
 Behind that, every page carries a Content Security Policy that lets the browser run
