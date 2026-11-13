@@ -26,7 +26,7 @@ nothing from any other site until they press play on a video.
 
     site/            everything that deploys (index: README.md, "Structure")
     site/_includes/  the build's code: layouts, nav, helpers (listed below)
-    site/_data/      figures.json (measured figures), pages/ (page text), social.json
+    site/_data/      figures.json (measured values), pages/ (page text), social.json
     site/_content/   news, gallery and articles, one Markdown file each
     site/_instagram/ the saved Instagram posts and their re-encoded pictures
     site/admin/      the editor: index.html, config.yml, photos.js, editor.js, help.njk
@@ -54,17 +54,21 @@ nothing from any other site until they press play on a video.
      folklore lists from the pages' own markup;
    - `comments`: removes HTML comments from visitors' copies;
    - `csp` (`_includes/csp.js`): adds the Content Security Policy, allowing only the two
-     known inline scripts by hash, and stops the build on any other.
+     known inline scripts by hash, and stops the build on any other;
+   - `figures`: keeps a copy of each finished page for the figure consistency check
+     (`_includes/figurecheck.js`), which runs once the build is done and prints a
+     `[figures]` warning when two pages give the same figure differently. It never
+     stops a build (`CONTRIBUTING.md`, "Where the figures live").
 
-Filters worth knowing: `prose` (page text, with figure tokens, `_includes/prose.js`),
+Filters worth knowing: `prose` (page text, `_includes/prose.js`),
 `editLink`, `navItems`, `domain`, `socialPosts`, `guide` (the editor's Help page).
 
 ## The content pipeline
 
 | Content | Where it lives | Who changes it | How it reaches the page |
 |---|---|---|---|
-| Measured figures | `site/_data/figures.json` | developers only | templates read `figures.*`; page text uses `{tokens}` |
-| Page text | `site/_data/pages/*.json` | editors (Page text) | `{{ pages.x.pN \| prose \| safe }}` |
+| Measured values | `site/_data/figures.json` | developers only | the trails map key and stop structured data read `figures.*`; the figure check compares the pages with it |
+| Page text | `site/_data/pages/*.json` | editors (Page text) | `{{ pages.x.pN \| prose \| safe }}`; figures are plain words |
 | News posts | `site/_content/news/*.md` | editors (News) | `_includes/post.njk`, `/news/` |
 | Gallery photos | `site/_content/gallery/*.md` | editors (Gallery) | `/gallery/` |
 | Articles | `site/_content/articles/*.md` | editors (Articles) | `/articles/` |

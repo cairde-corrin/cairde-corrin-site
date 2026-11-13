@@ -330,10 +330,10 @@ collections:
     label: Page text
     label_singular: page
     description: >-
-      The wording of the home page, About, Links, New spaces and the stop pages. Only the
-      text: measured figures (heights, areas, distances) and the folklore sources are kept
-      elsewhere and cannot be changed here. Nothing you change appears on the website until
-      it is published.
+      The wording of the home page, About, Links, New spaces and the stop pages. Figures
+      (heights, areas, distances) are written as ordinary words. If two pages end up giving
+      the same figure differently, whoever maintains the website is warned. Nothing you
+      change appears on the website until it is published.
     editor: { preview: false }
     files:
       - name: home
@@ -351,7 +351,7 @@ collections:
           - label: "Under \"Glenabo & Corrin\""
             name: p3
             widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics. Words in {curly brackets} are measured figures that the website fills in: leave them exactly as they are."
+            hint: "Plain text. Put *asterisks* round words to set them in italics. Figures such as heights, areas and distances are ordinary words: if you change one, change it on the other pages that give it too."
           - label: "Under \"Everything that falls here ends up in the Blackwater.\""
             name: p4
             widget: text
@@ -359,11 +359,11 @@ collections:
           - label: "Under \"Same hill. Same morning.\""
             name: p5
             widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics. Words in {curly brackets} are measured figures that the website fills in: leave them exactly as they are."
+            hint: "Plain text. Put *asterisks* round words to set them in italics. Figures such as heights, areas and distances are ordinary words: if you change one, change it on the other pages that give it too."
           - label: "Under \"One point on the Blackwater .\""
             name: p6
             widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics. Words in {curly brackets} are measured figures that the website fills in: leave them exactly as they are."
+            hint: "Plain text. Put *asterisks* round words to set them in italics. Figures such as heights, areas and distances are ordinary words: if you change one, change it on the other pages that give it too."
           - label: "Under \"One point on the Blackwater .\""
             name: p7
             widget: text
@@ -395,7 +395,7 @@ collections:
           - label: "Under \"It is a small catchment. That is the good news.\""
             name: p14
             widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics. Words in {curly brackets} are measured figures that the website fills in: leave them exactly as they are."
+            hint: "Plain text. Put *asterisks* round words to set them in italics. Figures such as heights, areas and distances are ordinary words: if you change one, change it on the other pages that give it too."
       - name: about
         label: "About"
         file: site/_data/pages/about.json
@@ -455,7 +455,7 @@ collections:
           - label: "Under \"Two projects in early development.\""
             name: p1
             widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics. Words in {curly brackets} are measured figures that the website fills in: leave them exactly as they are."
+            hint: "Plain text. Put *asterisks* round words to set them in italics. Figures such as heights, areas and distances are ordinary words: if you change one, change it on the other pages that give it too."
           - label: "Under \"Corrin moorland\""
             name: p2
             widget: text
@@ -479,11 +479,11 @@ collections:
           - label: "Under \"Glenabo extension\""
             name: p7
             widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics. Words in {curly brackets} are measured figures that the website fills in: leave them exactly as they are."
+            hint: "Plain text. Put *asterisks* round words to set them in italics. Figures such as heights, areas and distances are ordinary words: if you change one, change it on the other pages that give it too."
           - label: "Under \"The full loop\""
             name: p8
             widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics. Words in {curly brackets} are measured figures that the website fills in: leave them exactly as they are."
+            hint: "Plain text. Put *asterisks* round words to set them in italics. Figures such as heights, areas and distances are ordinary words: if you change one, change it on the other pages that give it too."
           - label: "Under \"The full loop\""
             name: p9
             widget: text
@@ -519,7 +519,7 @@ collections:
           - label: "Under \"The stream at about 60 metres.\""
             name: p1
             widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics. Words in {curly brackets} are measured figures that the website fills in: leave them exactly as they are."
+            hint: "Plain text. Put *asterisks* round words to set them in italics. Figures such as heights, areas and distances are ordinary words: if you change one, change it on the other pages that give it too."
           - label: "Under \"The stream at about 60 metres.\""
             name: p2
             widget: text
@@ -535,7 +535,7 @@ collections:
           - label: "Under \"Closed canopy.\""
             name: p2
             widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics. Words in {curly brackets} are measured figures that the website fills in: leave them exactly as they are."
+            hint: "Plain text. Put *asterisks* round words to set them in italics. Figures such as heights, areas and distances are ordinary words: if you change one, change it on the other pages that give it too."
       - name: stop_3
         label: "Stop 03"
         file: site/_data/pages/stop_3.json
@@ -543,7 +543,7 @@ collections:
           - label: "Under \"The mossy stand.\""
             name: p1
             widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics. Words in {curly brackets} are measured figures that the website fills in: leave them exactly as they are."
+            hint: "Plain text. Put *asterisks* round words to set them in italics. Figures such as heights, areas and distances are ordinary words: if you change one, change it on the other pages that give it too."
           - label: "Under \"The mossy stand.\""
             name: p2
             widget: text

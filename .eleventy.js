@@ -19,6 +19,7 @@ const { nav } = require('./site/_includes/nav.js');
 const ldPages = require('./site/_includes/ld-pages.js');
 const csp = require('./site/_includes/csp.js');
 const { prose } = require('./site/_includes/prose.js');
+const figurecheck = require('./site/_includes/figurecheck.js');
 // Relative prefix back to the site root: /news/x/ -> ../../, /stops/stop-1.html -> ../
 const root = (url) => '../'.repeat(url.replace(/[^/]*$/, '').split('/').filter(Boolean).length);
 
@@ -44,7 +45,7 @@ module.exports = function (eleventyConfig) {
   // directory data file (News, the sitemap) overrides this.
   eleventyConfig.addGlobalData('permalink', () => (data) => `${data.page.filePathStem.slice(1)}.html`);
   eleventyConfig.addFilter('navItems', nav);
-  // Page text from the editor, with measured figures filled in (_includes/prose.js)
+  // Page text from the editor (_includes/prose.js)
   eleventyConfig.addFilter('prose', prose);
   // The editor's Help page (admin/help.njk) is docs/EDITOR-GUIDE.md itself, rendered here
   eleventyConfig.addFilter('guide', (file) => require('markdown-it')({ html: false })
@@ -81,6 +82,27 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addTransform('csp', function (content) {
     const out = this.page.outputPath;
     return typeof out === 'string' && out.endsWith('.html') ? csp.addCsp(content, this.page.inputPath) : content;
+  });
+  // The figure consistency check (_includes/figurecheck.js) reads every finished page once
+  // the build is done, and warns when two pages give the same figure differently. It
+  // only warns: nothing it finds, and no fault in it, can stop a build.
+  let built = [];
+  eleventyConfig.on('eleventy.before', () => { built = []; });
+  eleventyConfig.addTransform('figures', function (content) {
+    const out = this.page.outputPath;
+    if (typeof out === 'string' && out.endsWith('.html') && !this.page.url.startsWith('/admin/')) built.push({ url: this.page.url, html: content });
+    return content;
+  });
+  eleventyConfig.on('eleventy.after', () => {
+    try {
+      const reference = JSON.parse(fs.readFileSync(path.join(__dirname, 'site', '_data', 'figures.json'), 'utf8'));
+      // the number of recorded stops is however many stop pages are published for search
+      const stops = built.filter((p) => /^\/stops\/stop-\d+\.html$/.test(p.url) && !/<meta name="robots" content="noindex/.test(p.html));
+      reference.stops = { ...reference.stops, recorded: String(stops.length) };
+      for (const w of figurecheck.check(built, reference)) console.warn(`[figures] ${w}`);
+    } catch (e) {
+      console.warn(`[figures] the figure check could not run (${e.message}); the build is unaffected.`);
+    }
   });
 
   eleventyConfig.addCollection('news', (api) =>

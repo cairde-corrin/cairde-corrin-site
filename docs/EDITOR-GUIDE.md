@@ -163,11 +163,11 @@ Or press **Contents** -> **Page text** and choose the page. Each box is one para
 labelled with the heading it sits under. Type plain text. Put *asterisks* round words to
 set them in italics.
 
-**Words in {curly brackets} are measured figures,** such as `{catchment.area_ha}` for the
-catchment's area. The website fills them in from its survey data. Leave them exactly as
-they are, curly brackets and all; you can reword the sentence around them, and move them,
-but not change the figure. If one is mistyped, the website will not update until it is
-put right, and the person who looks after the site will see why.
+**Figures are ordinary words.** "About 360 hectares" is typed like the rest of the
+sentence, and you can change it. The same figure often appears on more than one page, so
+if you change one, change the others too. Nothing stops you publishing, but if two pages
+end up giving the same figure differently, the person who looks after the website is
+warned and will check which is right.
 
 **The Links page** has its list of sites in the same place, under **Links**: a name and a
 full address starting `https://` for each. Drag them to change the order.
@@ -207,9 +207,8 @@ page simply has no social section. Save and publish as usual.
 
 Some things are not in the editor at all, on purpose:
 
-- **Measured figures:** every height, distance, area, grid position and time on the site.
-  In the page text they appear as words in {curly brackets}, which the website fills in;
-  leave those as they are. You can reword the sentence around them, never the figure.
+- **The survey data behind the figures:** grid positions, the map and the elevation
+  profile. The figures in the text you can change (see "Changing the wording of a page" above).
 - **The species determinations,** which record what was identified and how.
 - **The folklore and its sources,** and the attribution to the National Folklore
   Collection on dúchas.ie.

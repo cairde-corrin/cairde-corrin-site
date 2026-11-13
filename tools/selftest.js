@@ -1,5 +1,5 @@
-// Checks for the three pieces of build code that parse what an editor types or what a
-// page contains. No network, no build needed:   node tools/selftest.js
+// Checks for the build code that parses what an editor types or what a page contains.
+// No network, no build needed:   node tools/selftest.js
 const assert = require('node:assert/strict');
 const { youtubeId } = require('../site/_includes/youtube.js');
 const social = require('../site/_includes/social.js');
@@ -60,14 +60,43 @@ assert.ok(!moor.find((g) => g.id === 'explore').current);
 assert.ok(nav('/news/some-post/', 0).find((g) => g.href === 'news/').current);
 assert.ok(nav('/', 0).every((g) => !g.current));
 
-// Page text: figures come only from figures.json, raw HTML never renders, italics keep the site's class
+// Page text: figures are ordinary words, raw HTML never renders, italics keep the site's class
 const { prose } = require('../site/_includes/prose.js');
 const figs = require('../site/_data/figures.json');
-assert.equal(prose('About {catchment.area_ha} hectares'), `About ${figs.catchment.area_ha} hectares`);
+assert.equal(prose('About 360 hectares'), 'About 360 hectares');
+assert.equal(prose('About {catchment.area_ha} hectares'), 'About {catchment.area_ha} hectares');  // no tokens any more
 assert.equal(prose('the *Munster Blackwater*'), 'the <em class="hy">Munster Blackwater</em>');
 assert.ok(!prose('<script>alert(1)</script>').includes('<script>'), 'raw HTML must not render');
-assert.throws(() => prose('{catchment.nonsense} ha'), /not a figure/);
-assert.throws(() => prose('{catchment} ha'), /not a figure/);  // a whole group is not a figure
+
+// The figure consistency check: the same quantity in different forms is found as one,
+// a disagreement between pages is reported naming both, and it never throws
+const fc = require('../site/_includes/figurecheck.js');
+const pg = (url, body) => ({ url, html: `<html><head><title>T</title></head><body><main>${body}</main></body></html>` });
+const ids = (body) => fc.mentions(fc.textOf(pg('/', body).html)).map((m) => `${m.id}=${m.value}`);
+assert.equal(fc.wordsToNumber('three hundred and sixty'), 360);
+assert.equal(fc.wordsToNumber('One hundred and thirty-six'), 136);
+assert.deepEqual(ids('<dl><dt>Catchment area</dt><dd><small>about</small>3.6<small>km²</small></dd><dt>Or, in hectares</dt><dd>about 360 ha</dd></dl>'),
+  ['catchment.area=360', 'catchment.area=360']);
+assert.deepEqual(ids('<p>About three hundred and sixty hectares drain through a single confluence.</p>'), ['catchment.area=360']);
+assert.deepEqual(ids('<p>About 370 hectares. One outlet. A catchment small enough to change.</p>'), ['catchment.area=370']);
+assert.deepEqual(ids('<p>Both sit inside the action area of about 990 hectares.</p>'), ['action.area=990']);
+assert.deepEqual(ids('<p>Everything that falls on about 320 hectares upstream of here passes this spot.</p>'), ['stop1.upstream=320']);
+assert.deepEqual(ids('<dt>Elevation range</dt><dd>21-213<small>m OD</small></dd>'), ['catchment.outlet=21', 'catchment.top=213']);
+assert.deepEqual(ids('<p>Elevation along the loop: 60-115 m, with about 65 m of climbing.</p>'), ['loop.low=60', 'loop.high=115', 'loop.climb=65']);
+assert.deepEqual(ids('<h1>Three stops recorded, seven to survey.</h1><p>Seven of the ten stops have not been surveyed. Stop 01 Stop 03</p>'), ['stops.recorded=3']);
+assert.deepEqual(ids('<p>Other delineations of the same catchment give c. 3.7 km².</p>'), []);  // someone else's figure
+assert.deepEqual(ids('<p>Photographed at about 80 m OD on 11 April 2026.</p>'), []);  // no label, not watched
+const ref = { catchment: { area_ha: '360' } };
+assert.deepEqual(fc.check([pg('/', '<p>The catchment is about 360 ha.</p>'), pg('/x/', '<p>The catchment, 3.58 km².</p>')], ref), []);
+const two = fc.check([pg('/', '<p>The catchment is about 370 hectares.</p>'), pg('/about/', '<p>The catchment is about 330 ha.</p>')], ref);
+assert.equal(two.length, 1);
+assert.match(two[0], /^Catchment area is given differently.*370 ha on \/ .*330 ha on \/about\//);
+assert.match(fc.check([pg('/', '<p>The catchment is about 370 ha.</p>')], ref)[0], /every page that gives it says 370 ha.*measured value.*is 360 ha/);
+assert.doesNotThrow(() => fc.check([{ url: '/', html: '' }, { url: '/b/', html: '<p>unclosed <b' }], {}));
+// every quantity watched has its measured value in figures.json, apart from the counted one
+for (const q of fc.WATCH.filter((w) => w.ref !== 'stops.recorded')) {
+  assert.equal(typeof q.ref.split('.').reduce((o, k) => o && o[k], figs), 'string', `figures.json has no ${q.ref}`);
+}
 
 // The editor's photo step: strip() must leave no EXIF, XMP or comment in what it uploads
 const photos = { exports: {} };

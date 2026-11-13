@@ -193,6 +193,13 @@ buttons by Decap's internal labels, which an update can rename.
   `python3 tools/linkcheck.py --external` and fix or remove what it reports.
 - **Structured data.** After changing a page's facts or layout, run
   `python3 tools/ldcheck.py`.
+- **A `[figures]` warning in a deploy log.** Editors can change any figure in the page
+  text, and the build warns when two pages then give the same quantity differently, or
+  when they all disagree with the measured value in `site/_data/figures.json`. The
+  warning names the pages. Ask the editor which is right, and either correct the page
+  in the editor or, if the measurement itself has changed, update `figures.json` with
+  its source (`CONTRIBUTING.md`, "Where the figures live"). The site stays live
+  meanwhile: the warning never stops a build.
 - **Someone asks for a change to a page with figures on it** (trails, stops, species,
   folklore). `CONTRIBUTING.md` says where every figure comes from and how to change one
   safely. Nothing gets published that cannot be traced to a source.

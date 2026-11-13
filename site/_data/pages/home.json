@@ -1,10 +1,10 @@
 {
   "p1": "An historical land where all living things can thrive in harmony with nature.",
   "p2": "Everything that falls here ends up in the Blackwater.",
-  "p3": "About {catchment.area_ha} hectares. One outlet. A catchment small enough that a community can change what comes down it.",
+  "p3": "About 360 hectares. One outlet. A catchment small enough that a community can change what comes down it.",
   "p4": "A catchment is not an opinion. It is the exact area of ground whose surface water drains to one point. Ours drains to a single confluence on the *Munster Blackwater* at the northern tip of Glenabo Wood, and it can be drawn.",
-  "p5": "{photo_pair.apart_words} metres apart on the same slope. What separates them is what was planted here, and when.",
-  "p6": "About {catchment.area_ha_words} hectares drain through a single confluence. Upstream of it, every field, track, drain and stand of trees is part of the same system. Downstream, it is somebody else's water.",
+  "p5": "One hundred and thirty-six metres apart on the same slope. What separates them is what was planted here, and when.",
+  "p6": "About three hundred and sixty hectares drain through a single confluence. Upstream of it, every field, track, drain and stand of trees is part of the same system. Downstream, it is somebody else's water.",
   "p7": "That is why we work to a catchment rather than a parish.",
   "p8": "The hydrological catchment is the scientific unit. The area we propose to work in is larger, because Corrin Hill, Corrin Wood and Knockananig Reservoir belong to the same landscape and the same walk, even where they drain elsewhere.",
   "p9": "We work to protect, restore and celebrate the environment, heritage and recreational use of our Glenabo-Corrin waterways, engaging with our local community, partnering with agencies, and taking action to ensure the rivers and their valleys flourish for future generations.",
@@ -12,5 +12,5 @@
   "p11": "Developing new local recreational and educational amenities in the Glenabo/Corrin catchment",
   "p12": "Working with other local and national community, state, voluntary, educational and outdoor activity bodies to improve the water quality and biodiversity of our target area",
   "p13": "Photographed on the Glenabo trail on 4 and 11 April 2026. Each carries the elevation and time it was taken.",
-  "p14": "About {catchment.area_ha_words} hectares is walkable in a morning and knowable in a season. Survey work, invasive species removal, recording what is here - none of it needs a specialist to start."
+  "p14": "About three hundred and sixty hectares is walkable in a morning and knowable in a season. Survey work, invasive species removal, recording what is here - none of it needs a specialist to start."
 }
