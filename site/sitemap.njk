@@ -3,9 +3,9 @@ permalink: sitemap.xml
 eleventyExcludeFromCollections: true
 ---
 {#- Generated so that news posts and the stops with content list themselves (a stop not yet
-    surveyed stays out), and News, the gallery and Articles appear once each has an entry,
-    the same rule as the navigation (_includes/nav.js). Every other line is the hand-written sitemap as it was; sample posts
-    are left out. -#}
+    surveyed stays out), and the gallery and Articles appear once each has an entry, the
+    same rule as the navigation (_includes/nav.js); News is always listed. Every other line
+    is the hand-written sitemap as it was; sample posts are left out. -#}
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://www.cairdecorrin.ie/</loc><lastmod>2026-11-11</lastmod><priority>1.0</priority></url>
@@ -15,9 +15,7 @@ eleventyExcludeFromCollections: true
   <url><loc>https://www.cairdecorrin.ie/new-spaces/</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
   <url><loc>https://www.cairdecorrin.ie/water/</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
   <url><loc>https://www.cairdecorrin.ie/recordings/</loc><lastmod>2026-08-19</lastmod><priority>0.7</priority></url>
-{%- if collections.news.length %}
-  <url><loc>https://www.cairdecorrin.ie/news/</loc><lastmod>{{ collections.news[0].date | isoDate }}</lastmod><priority>0.7</priority></url>
-{%- endif %}
+  <url><loc>https://www.cairdecorrin.ie/news/</loc><lastmod>{{ (collections.news[0].date if collections.news.length else '2026-11-11') | isoDate }}</lastmod><priority>0.7</priority></url>
 {%- for post in collections.news %}{% if not post.data.sample %}
   <url><loc>https://www.cairdecorrin.ie{{ post.url }}</loc><lastmod>{{ (post.data.updated or post.date) | isoDate }}</lastmod><priority>0.6</priority></url>
 {%- endif %}{% endfor %}

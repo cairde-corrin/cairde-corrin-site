@@ -1,14 +1,15 @@
 // The site navigation, defined once. Every page's header and footer is built from this.
 //
-// The header shows five entries (four while News is empty): two direct links and three
+// The header shows five entries: two direct links and three
 // groups that open a short list. A new page joins a group, so the header row stays the same width whether the
 // site has ten pages or twelve. Groups open on click (site.js); below the menu
 // breakpoint the whole list folds behind the Menu button, groups and all.
 //
-// News, the Gallery and Articles are sections that fill up over time, and each follows
-// one rule: it appears in the header and the footer once it has a published entry. While
-// it is empty its page is still built, so an old link still works, but it shows only its
-// empty-state message, is marked noindex (base.njk) and is left out of sitemap.xml.
+// The Gallery and Articles are optional sections, and each follows one rule: it appears
+// in the header and the footer once it has a published entry. While it is empty its page
+// is still built, so an old link still works, but it shows only its empty-state message,
+// is marked noindex (base.njk) and is left out of sitemap.xml. News is a core section and
+// is always shown, empty or not: its absence would read as missing (docs/CONTRIBUTING.md).
 const NAV = [
   { href: 'trails/', label: 'Trails' },
   { id: 'explore', label: 'Explore', items: [
@@ -22,7 +23,7 @@ const NAV = [
     { href: 'new-spaces/', label: 'New spaces' },
     { href: 'water/', label: 'Water & ecosystems' },
   ] },
-  { href: 'news/', label: 'News', section: 'news' },
+  { href: 'news/', label: 'News' },
   { id: 'about', label: 'About', items: [
     { href: 'about/', label: 'About the group' },
     { href: 'links/', label: 'Links' },

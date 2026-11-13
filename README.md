@@ -37,8 +37,8 @@ does not answer.
       news/index.njk        The News listing, ten to a page
       gallery/index.njk     The Gallery page
       articles/index.njk    Articles about the group published elsewhere, each linking out
-                            (News, Gallery and Articles appear in the navigation once each
-                            has an entry: _includes/nav.js)
+                            (Gallery and Articles appear in the navigation once each has an
+                            entry; News always does: _includes/nav.js)
       sitemap.njk           Writes sitemap.xml
       robots.txt
       _content/news/        News posts, one Markdown file each, written in the editor

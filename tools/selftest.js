@@ -47,18 +47,19 @@ for (const h of ['<a href="https://www.instagram.com/p/x/">x</a>', '<link rel="c
   assert.equal(externalLoad(h), null, h);
 }
 
-// Navigation: News, the Gallery and Articles only once each has an entry, each on its own;
-// the page's own link and its group are marked
+// Navigation: the Gallery and Articles only once each has an entry, each on its own; News
+// always, empty or not; the page's own link and its group are marked
 const { nav } = require('../site/_includes/nav.js');
 const links = (n) => n.flatMap((g) => g.items || [g]).map((i) => i.href);
 const all = { news: 1, gallery: 1, articles: 1 };
-for (const s of ['news', 'gallery', 'articles']) {
+for (const s of ['gallery', 'articles']) {
   assert.ok(!links(nav('/', { ...all, [s]: 0 })).includes(`${s}/`), `${s} hidden while empty`);
   assert.ok(links(nav('/', { ...all, [s]: 3 })).includes(`${s}/`), `${s} shown once it has an entry`);
 }
 assert.ok(links(nav('/', all)).indexOf('articles/') === links(nav('/', all)).indexOf('gallery/') + 1, 'Articles beside Gallery');
 assert.equal(nav('/', all).length, 5, 'five header entries');
-assert.equal(nav('/', {}).length, 4, 'News leaves the header while it is empty');
+assert.equal(nav('/', {}).length, 5, 'News stays in the header while it is empty');
+assert.ok(links(nav('/', {})).includes('news/'));
 const moor = nav('/new-spaces/corrin-moor.html', {});
 assert.ok(moor.find((g) => g.id === 'work').current);
 assert.ok(moor.find((g) => g.id === 'work').items.find((i) => i.href === 'new-spaces/').current);

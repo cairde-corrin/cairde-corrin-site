@@ -542,22 +542,31 @@ and **About** each open a short list. To add a page, add it to a group in `nav.j
 header row does not grow. Add a sixth top-level entry only if it is as important as
 Trails and News.
 
-**Sections that fill up over time follow one rule.** News, the Gallery and Articles each
-appear in the header and the footer once they have a published entry, and not before
-(an entry in `nav.js` with `section:`). While a section is empty its page is still built,
-so an old link or bookmark works, but it shows only its empty-state message ("No news
-yet. The first post will appear here as soon as it is published."), is marked noindex
-(`base.njk`, from the page's `section:` front matter) and is left out of `sitemap.xml`.
-The home page's posts from the group behave the same way without a page: the block shows
-the Instagram posts if there are any, otherwise the editor's social posts, otherwise
-nothing. A new section of the same kind joins this rule rather than inventing its own.
+**Optional sections that fill up over time follow one rule.** The Gallery and Articles
+each appear in the header and the footer once they have a published entry, and not
+before (an entry in `nav.js` with `section:`). While one is empty its page is still built,
+so an old link or bookmark works, but it shows only its empty-state message ("No
+photographs yet. The first will appear here as soon as it is published."), is marked
+noindex (`base.njk`, from the page's `section:` front matter) and is left out of
+`sitemap.xml`. The home page's posts from the group behave the same way without a page:
+the block shows the Instagram posts if there are any, otherwise the editor's social
+posts, otherwise nothing. A new optional section joins this rule rather than inventing
+its own.
+
+**News is the deliberate exception.** It is always in the header, the footer and the
+sitemap, and indexable, even with no posts; while empty it shows its own empty-state
+message ("No news yet. The first post will appear here as soon as it is published.").
+The Gallery and Articles are optional: an empty one is genuinely nothing to show, so it
+stays out of sight. News is a core section of the site, and a visitor who finds no News
+link reads it as missing rather than empty. Do not give News the `section:` front matter
+or the `section:` entry in `nav.js` that would make it conditional.
 
 **Every page must be reachable.** `site/_includes/reach.js` walks the built site from the
 home page, following every visible link, and compares the pages built, the pages in
 `sitemap.xml` and the pages reached. A built page no link leads to, a sitemap entry with no
 page, a reachable indexable page missing from the sitemap, or a noindexed page in the
 sitemap is a finding, unless `ALLOW` in that file names it with its reason: the editor and
-its Help page, the Netlify email templates, a stop not yet surveyed, an empty section (the
+its Help page, the Netlify email templates, a stop not yet surveyed, an empty Gallery or Articles (the
 last two only while noindexed). The build prints findings as `[reach]` warnings and carries
 on, because an editor can legitimately remove a page's only link (the New spaces cards are
 the only way to its two proposals) and that must not stop publishing. The self-test fails

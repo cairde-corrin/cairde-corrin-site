@@ -15,7 +15,7 @@ const ALLOW = [
   { url: /^\/admin\/help\/$/, reason: "the editor's Help page: opened by the Help button inside the editor" },
   { url: /^\/admin\/emails\//, reason: 'the Netlify Identity email templates: read by Netlify, never visited' },
   { url: /^\/stops\/stop-\d+\.html$/, when: 'noindex', reason: 'a stop not yet surveyed: listed on the trails page but not linked, out of search engines and the sitemap until its page has content; the sign code /s/N leads to it' },
-  { url: /^\/(news|gallery|articles)\/$/, when: 'noindex', reason: 'a section with nothing in it yet: built so that old links work, out of the navigation, search engines and the sitemap until its first entry (_includes/nav.js)' },
+  { url: /^\/(gallery|articles)\/$/, when: 'noindex', reason: 'a section with nothing in it yet: built so that old links work, out of the navigation, search engines and the sitemap until its first entry (_includes/nav.js)' },
 ];
 
 // /about/index.html and /about/ are the same page

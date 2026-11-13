@@ -35,8 +35,6 @@ or reset your password for you.
 ## Writing a news post
 
 Press **Contents** at the top, then **News** on the left, then **＋ news post**.
-News appears in the website's menu once the first post is published, as the Gallery and
-Articles do once they have something in them.
 
 Each box has a short explanation under it. The ones that matter:
 
