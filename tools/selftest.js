@@ -277,5 +277,46 @@ const webp = Buffer.concat([Buffer.from('RIFF'), Buffer.from([(webpBody.length +
   } else {
     console.log('selftest: no _site/ yet, so the built site was not checked for reachability (npm run build)');
   }
+  // Photographs from Wikimedia Commons: credited only with a clear author and a licence the
+  // site can honour; anything else refused, with the reason (no network: sample answers)
+  const cm = require('../site/admin/commons.js');
+  const answer = (meta, extra = {}) => ({ query: { pages: { 1: { imageinfo: [{ mime: 'image/jpeg', descriptionurl: 'https://commons.wikimedia.org/wiki/File:X.jpg', thumburl: 'https://upload.wikimedia.org/x.jpg',
+    extmetadata: Object.fromEntries(Object.entries(meta).map(([k, v]) => [k, { value: v }])), ...extra }] } } } });
+  const ok = cm.decide(answer({ Artist: '<a href="//commons.wikimedia.org/wiki/User:Lalakmus">Lalakmus</a>', LicenseShortName: 'CC BY-SA 4.0', LicenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0' }));
+  assert.deepEqual([ok.ok, ok.author, ok.licence, ok.licence_url], [true, 'Lalakmus', 'CC BY-SA 4.0', 'https://creativecommons.org/licenses/by-sa/4.0']);
+  for (const [lic, want] of [['CC BY 2.0', 'https://creativecommons.org/licenses/by/2.0/'], ['CC BY-SA 3.0 de', 'https://creativecommons.org/licenses/by-sa/3.0/'], ['CC0', 'https://creativecommons.org/publicdomain/zero/1.0/'], ['Public domain', 'https://creativecommons.org/publicdomain/mark/1.0/']]) {
+    assert.equal(cm.decide(answer({ Artist: 'A. Person', LicenseShortName: lic })).licence_url, want, lic);
+  }
+  for (const [meta, extra, re] of [
+    [{ Artist: '', LicenseShortName: 'CC BY 4.0' }, {}, /who made it/],
+    [{ Artist: 'Unknown author', LicenseShortName: 'Public domain' }, {}, /who made it/],
+    [{ Artist: 'A. Person', LicenseShortName: 'GFDL' }, {}, /licence \("GFDL"\) is not one/],
+    [{ Artist: 'A. Person', LicenseShortName: 'CC BY-NC-SA 2.0' }, {}, /not one this website can credit/],
+    [{ Artist: 'A. Person', LicenseShortName: 'Attribution' }, {}, /not one this website can credit/],
+    [{ Artist: 'A. Person' }, {}, /licence is not stated/],
+    [{ Artist: 'A. Person', LicenseShortName: 'CC BY 4.0', Restrictions: 'personality' }, {}, /restrictions/],
+    [{ Artist: 'A. Person', LicenseShortName: 'CC BY 4.0' }, { mime: 'image/svg+xml' }, /not a photograph/],
+  ]) assert.match(cm.decide(answer(meta, extra)).why, re);
+  assert.match(cm.decide({ query: { pages: { '-1': { missing: '' } } } }).why, /no file at that address/);
+  assert.equal(cm.title('https://commons.wikimedia.org/wiki/File:Reuzenbalsemien_(Impatiens_glandulifera)_01.JPG'), 'File:Reuzenbalsemien (Impatiens glandulifera) 01.JPG');
+  assert.ok(!cm.isCommons('https://example.org/x.jpg') && !cm.isCommons('https://upload.wikimedia.org/x.jpg'));
+  const checksC = require('../site/admin/checks.js');
+  assert.deepEqual(checksC.problems('about', page({ type: 'image', photo: 'https://commons.wikimedia.org/wiki/File:X.jpg', alt: 'x' })), []);
+
+  // Films: a YouTube address, as a news post takes one, or a film kept on the site, whose
+  // size is read from the file; nobody types pixel sizes
+  assert.deepEqual(checksC.problems('recordings', page({ type: 'films', items: [{ date: '2026-11-01', youtube: 'https://youtu.be/aqz-KE-bpKQ' }] })), []);
+  assert.match(checksC.problems('recordings', page({ type: 'films', items: [{ date: '2026-11-01', youtube: 'not a video' }] })).join(' '), /is not one\. On YouTube, press Share/);
+  assert.match(checksC.problems('recordings', page({ type: 'films', items: [{ date: '2026-11-01' }] })).join(' '), /nothing in "YouTube address"/);
+  assert.deepEqual(blocks.mp4Size(pth.join(__dirname, '..', 'site', 'assets', 'video', 'film', 'corrin-walk.mp4')), { width: 720, height: 1280 });
+  const films = await blocks.render('recordings', real.recordings, ctx('/recordings/'));
+  assert.ok(films.includes('width="1280" height="720"') && films.includes('width="478" height="850"'));
+
+  // Who took a photo: nothing for the group's own, "Photo:" and the name for anyone else's
+  const own = await blocks.render('about', page({ type: 'image', photo: '/assets/img/stream-1800.webp', alt: 'A stream' }), ctx('/about/'));
+  assert.ok(!/Photo:/.test(own));
+  const theirs = await blocks.render('about', page({ type: 'image', photo: '/assets/img/stream-1800.webp', alt: 'A stream', by: 'A. Neighbour' }), ctx('/about/'));
+  assert.match(theirs, /<figcaption>Photo: A\. Neighbour<\/figcaption>/);
+
   console.log('selftest: all checks passed');
 })().catch((e) => { console.error(e); process.exit(1); });

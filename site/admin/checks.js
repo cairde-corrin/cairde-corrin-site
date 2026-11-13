@@ -28,19 +28,23 @@
   var SINGULAR = { map: 1, stops: 1, walked: 1, social: 1 };
   // these belong to one page only
   var ONLY_ON = { map: 'trails', stops: 'trails', walked: 'trails', route: 'trails', social: 'home', credits: 'credits' };
-  var GROUPS = { elevation: 1, 'species-records': 1, 'species-photos': 1, 'invasive-photos': 1, folklore: 1 };
+  var GROUPS = { elevation: 1, 'species-records': 1, 'species-photos': 1, 'invasive-photos': 1, folklore: 1, 'commons-photos': 1 };
 
   function str(v) { return v == null ? '' : String(v).trim(); }
+  // the same test as a news post's YouTube field (site/admin/config.yml)
+  var YOUTUBE = /^\s*([A-Za-z0-9_-]{11}|https:\/\/(www\.|m\.)?(youtube\.com|youtu\.be|youtube-nocookie\.com)\/\S+)\s*$/;
+  var YOUTUBE_HOW = 'On YouTube, press Share under the video, copy the address and paste it here.';
   function list(b) { return Array.isArray(b && b.items) ? b.items : []; }
   function nth(i) { return String(i + 1); }
   var LINK = 'Write a page on this site starting with / (such as /trails/), or a full web address starting with https://';
   function badLink(v) { v = str(v); return v && !/^(\/|https:\/\/|mailto:|#)/.test(v); }
   // a photograph on this site (/assets/img/...) or one uploaded in the editor (/assets/uploads/...)
-  function badPhoto(v) { v = str(v); return v && !/^\/assets\/(img|uploads)\//.test(v); }
+  // or a photograph on Wikimedia Commons, by its file page (site/admin/commons.js)
+  function badPhoto(v) { v = str(v); return v && !/^\/assets\/(img|uploads)\//.test(v) && !/^https:\/\/commons\.(m\.)?wikimedia\.org\/wiki\/File:/i.test(v); }
 
   function photo(p, where, out, required) {
     if (!str(p.photo)) { if (required) out.push(where + ' has no photo. Choose one or upload one.'); return; }
-    if (badPhoto(p.photo)) out.push(where + ' has a photo that is not on this website. Choose one already on the website or upload it.');
+    if (badPhoto(p.photo)) out.push(where + ' has a photo that is not on this website. Choose one already on the website, upload it, or for a photo from Wikimedia Commons use "Use a photo from Wikimedia Commons".');
     if (!str(p.alt)) out.push(where + ' has a photo with nothing in "What the photo shows". Say what is in the photo, in one sentence.');
   }
   function link(words, to, where, out) {
@@ -111,12 +115,13 @@
       if (atLeast(b, 1, 'films', w, o)) list(b).forEach(function (x, i) {
         var at = w + ', film ' + nth(i) + ',';
         if (!str(x.date)) o.push(at + ' has nothing in "Filmed on".');
-        if (!(+x.width > 0 && +x.height > 0)) o.push(at + ' needs its width and height in pixels.');
-        if (!/^\/assets\/video\//.test(str(x.file))) o.push(at + ' needs a film already on the website, such as /assets/video/film/walk-april.mp4.');
+        if (str(x.youtube)) { if (!YOUTUBE.test(str(x.youtube))) o.push(at + ' has a "YouTube address" that is not one. ' + YOUTUBE_HOW); }
+        else if (!/^\/assets\/video\//.test(str(x.file))) o.push(at + ' has nothing in "YouTube address". ' + YOUTUBE_HOW);
       });
     },
     video: function (b, w, o) {
       if (!str(b.url)) o.push(w + ' has nothing in "YouTube address".');
+      else if (!YOUTUBE.test(str(b.url))) o.push(w + ' has a "YouTube address" that is not one. ' + YOUTUBE_HOW);
       if (!str(b.title)) o.push(w + ' has nothing in "Title of the video".');
     },
     story: function (b, w, o) {

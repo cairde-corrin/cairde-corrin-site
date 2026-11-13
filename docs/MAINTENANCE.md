@@ -234,7 +234,11 @@ buttons by Decap's internal labels, which an update can rename.
   must travel with it: add the prepared sizes to `site/assets/img/` and register the photo,
   with photographer, licence and file page, in `site/_data/credits.json`
   (`CONTRIBUTING.md`, "Credits a licence requires"). The editor can then place it anywhere.
-- **A new recording or film.** Strip the location and phone details first (an audio or video
+- **`[commons] fetched ... commit them` in a local build.** An editor used a new photo from
+  Wikimedia Commons. Commit `site/_commons/` and `site/assets/img/commons/` so later builds
+  do not need Commons to be reachable. On Netlify the photo is fetched each build until
+  then.
+- **A new recording, or a film kept on the site rather than on YouTube.** Strip the location and phone details first (an audio or video
   file from a phone carries them), add the file under `site/assets/audio/` or
   `site/assets/video/`, and the editor can then add it to a Recording, List of recordings or
   Films block.

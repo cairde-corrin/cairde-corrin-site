@@ -148,6 +148,7 @@ drafts, gets a deploy preview. Details and checks: `DEPLOY.md`. The domain: `DOM
 | YouTube | video stills at build, the player after a click | `_includes/youtube.js`; `site/assets/js/site.js` |
 | Behold | the group's Instagram posts, read at build | `FEED_ID` in `_includes/instagram.js`; Behold account |
 | GitHub Actions schedule | rebuilds the live site weekly through a Netlify build hook | `.github/workflows/weekly-rebuild.yml`; secret `NETLIFY_BUILD_HOOK` |
+| Wikimedia Commons | an editor's Commons photos: author, licence and the photo, read at build | `site/admin/commons.js` (rules), `site/_includes/commons.js`; saved in `site/_commons/` and `site/assets/img/commons/` |
 | GitHub Actions build check | runs the build on every push to main and opens an issue when a page's content stops it | `.github/workflows/build-check.yml`; label `website-not-updated`; the run's own token |
 | npm | Eleventy and eleventy-img at build | `package.json`, `package-lock.json` |
 | Letshost | the domain, its DNS and its email | Letshost; `DOMAIN-SETUP.md` |

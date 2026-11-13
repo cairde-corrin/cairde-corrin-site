@@ -223,12 +223,27 @@ end up giving the same figure differently, the person who looks after the websit
 warned and will check which is right. The same goes for counts: if the species page says
 "13 species" and you add a fourteenth, change the 13.
 
-**Photos.** Every photo field has two buttons. **Choose a photo already on the website**
-opens a list of every photo the website already has, with a search box: pick one to reuse
-it, rather than uploading it again (its description elsewhere on the site is shown, so you
-can copy it). **Upload a new photo** is for a photo the website does not have yet: one you
-took yourself, or one you have permission to use. Either way, say in one sentence what the
-photo shows. Some photos on the website, on the species and water pages,
+**Photos.** Every photo field has three buttons:
+
+- **Choose a photo already on the website** opens a list of every photo the website
+  already has, with a search box: pick one to reuse it, rather than uploading it again
+  (its description elsewhere on the site is shown, so you can copy it).
+- **Upload a new photo** is for a photograph the group took, or one the photographer has
+  given the group permission to publish. Never upload a picture found online: it almost
+  certainly belongs to someone who has not agreed. Fill in **Who took this photo**: it
+  says Cáirde Corrin to start with, which is right for the group's own; for anyone else's,
+  put their name, and "Photo:" and their name appear under the photo.
+- **Use a photo from Wikimedia Commons** is for a photo someone else took and shared on
+  Wikimedia Commons, which is usually the best source for a plant or animal. Open the
+  photo's own page on Commons (its address starts with
+  `https://commons.wikimedia.org/wiki/File:`), copy the address, paste it in and press
+  **Check and use this photo**. The editor reads who took it and its licence from Commons
+  there and then, and shows them. If Commons does not say clearly who took it, or the
+  licence is not one the website can credit properly, the photo is refused and the reason
+  shown: choose another. The photographer and licence appear under the photo on the
+  website and on the Credits page automatically; you never type them.
+
+Whichever you use, say in one sentence in **What the photo shows** what is in the photo. Some photos on the website, on the species and water pages,
 are other people's, used under a licence that requires their name and the licence beneath
 the photo. That credit is attached to the photo itself: wherever you put the photo, its
 credit goes with it, and you cannot separate them. If you want to use a photo of someone
@@ -267,9 +282,23 @@ stops and checked by hand. Its block shows that work and has nothing to fill in.
 loop ever needs replacing, that is a job for the person who looks after the website, not
 an upload: add a new walk as a **Walked route** instead.
 
-**Recordings and films** use files already on the website. A new recording or film is
-added by the person who looks after the website, because they first remove the phone's
-location and details from it.
+**Films** are added the way a news post's video is: put the film on the group's own
+YouTube channel, then add a film to the **Films** block and paste its address (on
+YouTube, press **Share** under the video and copy the address). The page shows a still
+from the film with a play button, and nothing loads from YouTube until a visitor presses
+play. Give it a name if you like, and the date it was filmed. The films already on the
+page are kept on the website itself and have no address; leave them as they are.
+
+**Recordings** use sound files already on the website. A new recording is added by the
+person who looks after the website, because a phone's recording carries its location and
+details, and they remove them first.
+
+**Species.** Add only a species recorded in the Glenabo-Corrin catchment on one of the
+group's own surveys: not one that is likely to be there, or was seen somewhere else. In
+the description, say in your own words how it was identified (for example with Pl@ntNet,
+and who confirmed it) and how confident the identification is, and under **Where and when
+it was recorded** say where and when. A reference photo is usually best taken from
+Wikimedia Commons, with **Use a photo from Wikimedia Commons**.
 
 **If the editor will not save a page.** When you save, the editor checks the page the way
 the website will. If something would stop the website updating (a photo with no

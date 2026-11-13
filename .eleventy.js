@@ -12,7 +12,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const SOURCES = ['!**/*.njk', '!**/*.md', '!**/*.11tydata.js', '!_includes', '!_includes/**',
-  '!_content', '!_content/**', '!_data', '!_data/**', '!assets/uploads', '!assets/uploads/**', '!_instagram', '!_instagram/**'];
+  '!_content', '!_content/**', '!_data', '!_data/**', '!assets/uploads', '!assets/uploads/**', '!_instagram', '!_instagram/**', '!_commons', '!_commons/**'];
 const images = require('./site/_includes/images.js');
 const social = require('./site/_includes/social.js');
 const { nav } = require('./site/_includes/nav.js');

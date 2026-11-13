@@ -197,9 +197,15 @@ website (`_includes/images.js`) still runs over every finished page, blocks incl
 and its siblings; the block uses every width and format on disk, as the hand-written page
 did) or an editor's upload (`/assets/uploads/`, re-encoded at build like a news photo).
 How each block writes its photos (sizes, which file is the fallback) is the `FRAMES`
-table. **Recordings and films** must already be files on the site: an editor cannot
-upload sound or video, because phone recordings carry their location, and stripping it is
-a developer's job.
+table. **Films** are YouTube addresses, handled exactly as a news post's video
+(`_includes/youtube.js`: the same pattern, the same self-hosted still, the same
+click-to-load player). The three films already kept on the site stay as files; their size
+is read from the MP4 itself (`mp4Size` in `blocks.js`), so nobody types pixel sizes.
+**Recordings** must already be files on the site: an editor cannot upload sound, because
+phone recordings carry their location and details, and stripping them is a developer's
+job. **Who took a photo** is a field on every photo (`by`, default "Cáirde Corrin"); any
+other name is shown beneath the photo as "Photo: <name>". A registered or Commons photo
+always shows its licence credit instead.
 
 **To add a block type:** a renderer in `R` and a name in `LABELS` (`blocks.js`), a type in
 the `pages` collection of `site/admin/config.yml` (once, with an `&anchor`, then by alias on
@@ -657,6 +663,35 @@ page's content stopped it, opens a `website-not-updated` issue from
 issue per failure (a fingerprint of the page and its problems); the issue closes when the
 build passes. Any other failure opens nothing. See `MAINTENANCE.md`, "When the website does
 not update".
+
+## Photographs from Wikimedia Commons
+
+An editor can use a Commons photo by its file page address (the third button on every page
+photo field). The rules are one file, `site/admin/commons.js`, used in the editor (which
+asks the Commons API when the address is pasted, and refuses there and then) and in the
+build (`site/_includes/commons.js`, which asks again). The credit comes from Commons'
+metadata for the file: the author (`Artist`) and the licence (`LicenseShortName`,
+`LicenseUrl`). **Without a clear author and an accepted licence, the photo is refused and
+the reason given; an uncredited photo is never published.**
+
+| Accepted | Refused |
+|---|---|
+| CC BY and CC BY-SA, versions 1.0 to 4.0, national ports included | GFDL and the Free Art Licence (they require the licence text to go with the photo) |
+| CC0 | Any NonCommercial or NoDerivatives licence (cropping and resizing are changes) |
+| Public domain | Plain "Attribution" templates and other bespoke terms |
+| | Any file Commons marks with restrictions (personality rights, trademarks) |
+| | A missing, unknown or anonymous author; a file that is not a photograph |
+
+Each accepted photo is credited with its author, its licence (linked) and its file page
+(linked), beneath it wherever it appears and on the credits page under "Photographs from
+Wikimedia Commons", the same binding as `site/_data/credits.json` but filled from the
+source. The build downloads the photo once, re-encodes it to WebP at 700, 1100 and 1800 px
+with no metadata, and serves it from `/assets/img/commons/`; its credit is saved in
+`site/_commons/<name>.json`. **Commit both** after a local build that fetched one (the log
+says `[commons] fetched ... commit them`), as with YouTube stills: with them in the
+repository, builds need no network for that photo. A refused photo stops the build as a
+content failure (the plain summary, and a GitHub issue); Commons being unreachable stops
+it without blaming the page, and the live site stays as it was.
 
 ## Photos already on the site
 

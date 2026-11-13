@@ -11,7 +11,8 @@ backend:
   branch: main
   # Decap checks a Netlify status page on another host before every login.
   # This points the check at a file on this site instead, so the admin area
-  # talks only to this site and to Netlify. It always reports "operational".
+  # talks only to this site and to Netlify (and, when an editor uses a photo from
+  # Wikimedia Commons, to the Commons API). It always reports "operational".
   status_endpoint: /admin/status.json
 
 # Posts are saved as drafts first and go live only when someone presses Publish.
@@ -112,10 +113,10 @@ collections:
             required: false
             choose_url: false
             hint: >-
-              Choose or upload a photo. Please use a photo you took yourself, or
-              one you have permission to use. Photos straight from a phone are
-              fine: the website makes smaller copies and removes the location
-              the phone stored in them.
+              Choose or upload a photo. Only upload photographs the group took, or
+              has the photographer's permission to publish: never pictures found
+              online. Photos straight from a phone are fine: the website makes
+              smaller copies and removes the location the phone stored in them.
           - label: Describe the photo for people who cannot see it
             name: alt
             widget: string
@@ -129,29 +130,7 @@ collections:
             widget: string
             required: false
             hint: Optional. A line of text shown under the photo.
-          - label: Width in pixels
-            name: width
-            widget: number
-            value_type: int
-            required: false
-            hint: >-
-              Leave this empty. It is worked out automatically for photos
-              uploaded here.
-          - label: Height in pixels
-            name: height
-            widget: number
-            value_type: int
-            required: false
-            hint: Leave this empty. It is worked out automatically for photos uploaded here.
-          - label: Other sizes of the same photo
-            name: srcset
-            widget: list
-            required: false
-            collapsed: true
-            hint: >-
-              Leave this empty. The smaller sizes of an uploaded photo are made
-              automatically.
-            field: { label: Size, name: size, widget: string }
+          - { label: Who took this photo, name: by, widget: string, required: false, default: "Cáirde Corrin", hint: "Who took this photo. Leave it as Cáirde Corrin for the group's own. Only upload photographs the group took, or has the photographer's permission to publish: never pictures found online. A photo from Wikimedia Commons is credited for you, so leave this as it is for one of those." }
 
       - label: More photos
         name: gallery
@@ -170,10 +149,10 @@ collections:
             media_library: { config: { max_file_size: 20000000 } }
             choose_url: false
             hint: >-
-              Choose or upload a photo. Please use a photo you took yourself, or
-              one you have permission to use. Photos straight from a phone are
-              fine: the website makes smaller copies and removes the location
-              the phone stored in them.
+              Choose or upload a photo. Only upload photographs the group took, or
+              has the photographer's permission to publish: never pictures found
+              online. Photos straight from a phone are fine: the website makes
+              smaller copies and removes the location the phone stored in them.
           - label: Describe the photo for people who cannot see it
             name: alt
             widget: string
@@ -185,18 +164,7 @@ collections:
             widget: string
             required: false
             hint: Optional. A line of text shown under the photo.
-          - label: Width in pixels
-            name: width
-            widget: number
-            value_type: int
-            required: false
-            hint: Leave this empty. It is worked out automatically for photos uploaded here.
-          - label: Height in pixels
-            name: height
-            widget: number
-            value_type: int
-            required: false
-            hint: Leave this empty. It is worked out automatically for photos uploaded here.
+          - { label: Who took this photo, name: by, widget: string, required: false, default: "Cáirde Corrin", hint: "Who took this photo. Leave it as Cáirde Corrin for the group's own. Only upload photographs the group took, or has the photographer's permission to publish: never pictures found online. A photo from Wikimedia Commons is credited for you, so leave this as it is for one of those." }
 
       - label: YouTube video
         name: youtube
@@ -251,16 +219,17 @@ collections:
         media_library: { config: { max_file_size: 20000000 } }
         choose_url: false
         hint: >-
-          Choose or upload a photo. Please use a photo you took yourself, or one
-          you have permission to use. Photos straight from a phone are fine: the
-          website makes smaller copies and removes the location the phone stored
-          in them.
+          Choose or upload a photo. Only upload photographs the group took, or has
+          the photographer's permission to publish: never pictures found online.
+          Photos straight from a phone are fine: the website makes smaller copies
+          and removes the location the phone stored in them.
       - label: Describe the photo for people who cannot see it
         name: alt
         widget: string
         hint: >-
           One sentence saying what is in the photo. Screen readers read this aloud
           to blind visitors. Do not start with "A photo of".
+      - { label: Who took this photo, name: by, widget: string, required: false, default: "Cáirde Corrin", hint: "Who took this photo. Leave it as Cáirde Corrin for the group's own. Only upload photographs the group took, or has the photographer's permission to publish: never pictures found online. A photo from Wikimedia Commons is credited for you, so leave this as it is for one of those." }
       - label: Caption
         name: caption
         widget: string
@@ -419,8 +388,9 @@ collections:
                     widget: sitephoto
                     media_library: { config: { max_file_size: 20000000 } }
                     choose_url: false
-                    hint: "Choose a photo already on the website, or upload a new one: one you took yourself, or one you have permission to use. Photos straight from a phone are fine: the website makes smaller copies and removes the location and phone details."
+                    hint: "Choose a photo already on the website, upload one the group took (or has permission to publish), or use a photo from Wikimedia Commons by its address, which brings its credit with it. Never upload a picture found online. Photos straight from a phone are fine: the website makes smaller copies and removes the location and phone details."
                   - &alt { label: "What the photo shows", name: alt, widget: string, hint: "For people who cannot see the photo: what is in it, in one sentence." }
+                  - &by { label: "Who took this photo", name: by, widget: string, required: false, default: "Cáirde Corrin", hint: "Who took this photo. Leave it as Cáirde Corrin for the group's own. Only upload photographs the group took, or has the photographer's permission to publish: never pictures found online. A photo from Wikimedia Commons is credited for you, so leave this as it is for one of those." }
                   - { label: "Caption", name: caption, widget: string, required: false }
                   - *copy
               - &b_pair
@@ -437,6 +407,7 @@ collections:
                     fields:
                       - *photo
                       - *alt
+                      - *by
                       - { label: "Small line under the photo", name: meta, widget: string, required: false, hint: "Optional. For example the height and time it was taken." }
                       - { label: "Caption", name: caption, widget: string, required: false }
                   - *copy
@@ -457,6 +428,7 @@ collections:
                     fields:
                       - *photo
                       - *alt
+                      - *by
                       - { label: "Small line under the photo", name: caption, widget: string, required: false, hint: "Optional. For example the height and time it was taken." }
                   - *copy
               - &b_grid
@@ -497,8 +469,9 @@ collections:
                       - { label: "Small label at the top", name: kicker, widget: string, required: false }
                       - { label: "Title", name: title, widget: string }
                       - { label: "Text", name: text, widget: text, required: false }
-                      - { label: "Photo", name: photo, widget: sitephoto, required: false, media_library: { config: { max_file_size: 20000000 } }, choose_url: false, hint: "Optional." }
+                      - { label: "Photo", name: photo, widget: sitephoto, required: false, media_library: { config: { max_file_size: 20000000 } }, choose_url: false, hint: "Optional. For a plant or animal, a photo from Wikimedia Commons is often best: use its address and its credit comes with it." }
                       - { label: "What the photo shows", name: alt, widget: string, required: false, hint: "Needed if there is a photo: what is in it, in one sentence." }
+                      - *by
                       - *link_text
                       - *link
                   - *copy
@@ -592,22 +565,24 @@ collections:
                     label_singular: species
                     summary: "{{fields.name}}"
                     fields:
-                      - { label: "Common name", name: name, widget: string }
-                      - { label: "Scientific name", name: scientific, widget: string, hint: "Shown in italics. If only the family is known, give the family." }
+                      - { label: "Common name", name: name, widget: string, hint: "Add only a species recorded in the Glenabo-Corrin catchment on one of the group's own surveys, not one that is merely likely to be there." }
+                      - { label: "Scientific name", name: scientific, widget: string, hint: "Shown in italics, as the identification gave it. If only the family could be identified, give the family and tick the box below." }
                       - { label: "Only the family is known", name: family, widget: boolean, required: false, default: false }
                       - { label: "Named by", name: authority, widget: string, required: false, hint: "Optional. The botanist's abbreviation after the name, for example L." }
                       - { label: "Note after the name", name: flag, widget: string, required: false, hint: "Optional. For example: proposed determination." }
-                      - { label: "Photo", name: photo, widget: sitephoto, required: false, media_library: { config: { max_file_size: 20000000 } }, choose_url: false, hint: "Optional." }
+                      - { label: "Photo", name: photo, widget: sitephoto, required: false, media_library: { config: { max_file_size: 20000000 } }, choose_url: false, hint: "Optional. A reference photo of the species, usually from Wikimedia Commons by its address (its credit comes with it), unless the group photographed this very plant." }
                       - { label: "What the photo shows", name: alt, widget: string, required: false, hint: "Needed if there is a photo." }
-                      - { label: "Description", name: description, widget: text, required: false }
+                      - *by
+                      - { label: "Description", name: description, widget: text, required: false, hint: "In your own words. Say how it was identified (for example: identified with Pl@ntNet and confirmed from photographs by ...), and whether the identification is confident. Do not copy text from other websites." }
                       - { label: "Its page in the BSBI Plant Atlas", name: atlas, widget: string, required: false, hint: "Optional. The full address, starting with https://" }
                       - label: "Where and when it was recorded"
                         name: records
                         widget: list
                         label_singular: record
                         summary: "{{fields.trail}} {{fields.date}}"
+                        hint: "Each time it was recorded: where in the catchment, and the date."
                         fields:
-                          - { label: "Trail", name: trail, widget: string }
+                          - { label: "Trail", name: trail, widget: string, hint: "Where in the catchment it was found, for example: Corrin Loop." }
                           - { label: "Date", name: date, widget: string, required: false, hint: "For example: 15 August 2026." }
                   - *copy
               - &b_recordings
@@ -639,12 +614,17 @@ collections:
                     label_singular: film
                     summary: "{{fields.date}}"
                     fields:
+                      - label: "YouTube address"
+                        name: youtube
+                        widget: string
+                        required: false
+                        pattern: ['^\s*([A-Za-z0-9_-]{11}|https://(www\.|m\.)?(youtube\.com|youtu\.be|youtube-nocookie\.com)/\S+)\s*$', 'Paste the address of the video on YouTube, starting https://, or just the 11 letters and numbers after "watch?v=".']
+                        hint: "Only for films Cáirde Corrin made and put on its own YouTube channel. On YouTube, press Share under the video, copy the address and paste it here. The page shows a still from the film with a play button; nothing loads from YouTube until a visitor presses play. (The films already on this page are kept on the website itself, and have no address here.)"
+                      - { label: "What the film is called", name: title, widget: string, required: false, hint: "Optional. Read out on the play button. Without it, the film is called by its date." }
                       - { label: "Filmed on", name: date, widget: datetime, format: "YYYY-MM-DD", date_format: "D MMMM YYYY", time_format: false }
-                      - { label: "Length", name: duration, widget: string, hint: "Minutes and seconds, for example 0:23" }
-                      - { label: "The film", name: file, widget: string, hint: "A film already on the website, such as /assets/video/film/walk-april.mp4. New films are added by whoever looks after the website, who first removes the phone's location and details from them." }
-                      - { label: "Its still picture", name: poster, widget: string, required: false }
-                      - { label: "Width in pixels", name: width, widget: number, value_type: int }
-                      - { label: "Height in pixels", name: height, widget: number, value_type: int }
+                      - { label: "Length", name: duration, widget: string, required: false, hint: "Optional. Minutes and seconds, for example 0:23" }
+                      - { label: "Film kept on the website", name: file, widget: hidden, required: false }
+                      - { label: "Its still picture", name: poster, widget: hidden, required: false }
                   - *copy
               - label: "Posts from the group"
                 name: social
@@ -831,6 +811,7 @@ collections:
                               - { label: "Species reference photographs", value: species-photos }
                               - { label: "Invasive species photographs", value: invasive-photos }
                               - { label: "Folklore", value: folklore }
+                              - { label: "Photographs from Wikimedia Commons", value: commons-photos }
                   - *copy
               - *b_text
               - *b_note
@@ -852,8 +833,9 @@ collections:
             fields:
               - { label: "Small line above the title", name: eyebrow, widget: string }
               - { label: "Title", name: title, widget: text, required: false, hint: "Press Enter to start a new line. Leave empty until the stop is ready." }
-              - { label: "Photo", name: photo, widget: sitephoto, required: false, media_library: { config: { max_file_size: 20000000 } }, hint: "The photo taken at the stop." }
+              - { label: "Photo", name: photo, widget: sitephoto, required: false, media_library: { config: { max_file_size: 20000000 } }, hint: "The photo taken at the stop, by the group." }
               - { label: "What the photo shows", name: alt, widget: string, required: false, hint: "For people who cannot see the photo: what is in it, in one sentence." }
+              - *by
               - { label: "Latitude", name: latitude, widget: string, required: false, hint: "Degrees north, for example 52.12752" }
               - { label: "Longitude", name: longitude, widget: string, required: false, hint: "Degrees east, so negative here, for example -8.29878" }
               - { label: "Height in metres", name: elevation, widget: string, required: false, hint: "Above sea level, to the nearest 5 metres, for example 60" }

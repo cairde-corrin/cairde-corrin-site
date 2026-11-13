@@ -15,6 +15,7 @@ const { prose } = require('./prose.js');
 const images = require('./images.js');
 const youtube = require('./youtube.js');
 const gpx = require('./gpx.js');
+const commons = require('./commons.js');
 const crypto = require('node:crypto');
 
 const SITE_DIR = path.join(__dirname, '..');
@@ -98,7 +99,8 @@ const FRAMES = {
 
 // <picture> (or <img>) for a photo field, relative to the page
 async function picture(photo, alt, frame, r) {
-  const p = str(photo);
+  // a Commons photo is served from this site, from the sizes saved for it (commons.ensure)
+  const p = commons.isCommons(str(photo)) ? commons.sitePath(str(photo)) : str(photo);
   if (!p) fail('has no photo');
   if (alt == null || !str(alt)) fail(`has a photo (${p}) with no description for people who cannot see it`);
   const f = FRAMES[frame];
@@ -125,9 +127,21 @@ async function picture(photo, alt, frame, r) {
 // The registered credit for a photograph from another source, or null
 function creditFor(photo) {
   const set = photoSet(str(photo));
-  return set && CREDITS.photos[set.base] ? CREDITS.photos[set.base] : null;
+  if (set && CREDITS.photos[set.base]) return CREDITS.photos[set.base];
+  return commons.creditOf(photo);  // a photo from Wikimedia Commons, credited from Commons itself
 }
 const creditLine = (c) => `<a href="${esc(c.file_url)}">${esc(c.by)}</a>, <a href="${esc(c.licence_url)}">${esc(c.licence)}</a>`;
+// The line beneath a photo saying whose it is: a photo from another source always carries
+// its registered credit; one the group did not take carries "Photo:" and who took it
+// (the editor's "Who took this photo" field); the group's own carry nothing, as the
+// footer says photography is by Cáirde Corrin
+const GROUP = 'Cáirde Corrin';
+function photoCredit(p) {
+  const registered = creditFor(p.photo);
+  if (registered) return creditLine(registered);
+  const by = str(p.by);
+  return by && by !== GROUP ? `Photo: ${esc(by)}` : '';
+}
 
 // ---------- the blocks ----------
 
@@ -163,8 +177,7 @@ R.figures = (b, c) => {
 };
 
 async function figure(b, c, cls, frame) {
-  const credit = creditFor(b.photo);
-  const cap = [str(b.caption) && prose(b.caption), credit && creditLine(credit)].filter(Boolean).join(' ');
+  const cap = [str(b.caption) && prose(b.caption), photoCredit(b)].filter(Boolean).join(' ');
   return `<figure class="${cls}">${await picture(b.photo, b.alt, frame, c.r)}${cap ? `<figcaption>${cap}</figcaption>` : ''}</figure>`;
 }
 
@@ -175,10 +188,10 @@ R.pair = async (b, c) => {
   if (list.length !== 2) fail(`needs exactly two photos; it has ${list.length}`);
   c.extra.add('compare');
   const one = async (p) => {
-    const credit = creditFor(p.photo);
+    const credit = photoCredit(p);
     return `<figure class="pair-item${c.rv}">${await picture(p.photo, p.alt, 'pair', c.r)}<figcaption>`
       + `${str(p.meta) ? `<span class="pair-meta">${esc(p.meta)}</span>` : ''}${str(p.caption) ? `<span class="pair-line">${prose(p.caption)}</span>` : ''}`
-      + `${credit ? `<span class="pair-line">${creditLine(credit)}</span>` : ''}</figcaption></figure>`;
+      + `${credit ? `<span class="pair-line">${credit}</span>` : ''}</figcaption></figure>`;
   };
   return `<div class="pair">\n${(await Promise.all(list.map(one))).join('\n')}\n</div>`;
 };
@@ -188,8 +201,7 @@ R.carousel = async (b, c) => {
   c.extra.add('gallery');
   const label = str(b.label) || 'Photographs';
   const lis = await Promise.all(list.map(async (p) => {
-    const credit = creditFor(p.photo);
-    const cap = [str(p.caption) && `<span class="car-meta">${esc(p.caption)}</span>`, credit && creditLine(credit)].filter(Boolean).join(' ');
+    const cap = [str(p.caption) && `<span class="car-meta">${esc(p.caption)}</span>`, photoCredit(p)].filter(Boolean).join(' ');
     return `<li class="car-item"><figure>${await picture(p.photo, p.alt, 'carousel', c.r)}${cap ? `<figcaption>${cap}</figcaption>` : ''}</figure></li>`;
   }));
   const html = `<div class="carousel${c.rv}">\n<div class="car-head">\n<button class="car-btn car-prev" type="button" aria-label="Scroll photographs left">←</button>\n`
@@ -203,8 +215,7 @@ R.carousel = async (b, c) => {
 R.grid = async (b, c) => {
   const list = items(b, 1, 'photos');
   const figs = await Promise.all(list.map(async (p) => {
-    const credit = creditFor(p.photo);
-    const cap = [str(p.caption) && esc(p.caption), credit && creditLine(credit)].filter(Boolean).join(' ');
+    const cap = [str(p.caption) && esc(p.caption), photoCredit(p)].filter(Boolean).join(' ');
     return `<figure>${await picture(p.photo, p.alt, 'grid', c.r)}${cap ? `<figcaption>${cap}</figcaption>` : ''}</figure>`;
   }));
   return `<div class="watershots${c.rv}">\n${figs.join('\n')}\n</div>`;
@@ -302,27 +313,51 @@ const isoDay = (d, what) => {
   if (!str(d) || Number.isNaN(+t)) fail(`${what} has no date`);
   return t.toISOString().slice(0, 10);
 };
-R.films = (b, c) => {
-  const list = items(b, 1, 'films');
-  return `<ul class="reclist${c.rv}">\n${list.map((x, i) => {
-    const file = c.r + mediaFile(x.file, 'video').slice(1);
-    const poster = str(x.poster) ? c.r + str(x.poster).slice(1) : '';
-    const w = +x.width, h = +x.height;
-    if (!(w > 0 && h > 0)) fail(`film ${i + 1} needs its width and height`);
-    return `<li class="rec rec-film">\n<div class="rec-head">\n<span class="rec-time">${longDate(isoDay(x.date, `film ${i + 1}`))}</span>\n<span class="rec-dur">${esc(x.duration)}</span>\n</div>\n`
-      + `<video controls preload="none" playsinline width="${w}" height="${h}"${poster ? `\n poster="${poster}"` : ''}>\n<source src="${file}" type="video/mp4">\n</video>\n</li>`;
-  }).join('\n')}\n</ul>`;
-};
+// Width and height of an MP4 film, read from its video track header (tkhd), turned if the
+// track is stored rotated: nobody types pixel sizes into a form
+function mp4Size(file) {
+  const b = fs.readFileSync(file);
+  let found = null;
+  for (let i = b.indexOf('tkhd'); i >= 4; i = b.indexOf('tkhd', i + 1)) {
+    const o = i - 4, v1 = b[i + 4] === 1;
+    const w = b.readUInt32BE(o + (v1 ? 96 : 84)) / 65536, h = b.readUInt32BE(o + (v1 ? 100 : 88)) / 65536;
+    const turned = Math.abs(b.readInt32BE(o + (v1 ? 60 : 48))) < 0x100;  // matrix a = 0: a quarter turn
+    if (w > 0 && h > 0) found = { width: Math.round(turned ? h : w), height: Math.round(turned ? w : h) };
+  }
+  if (!found) throw new Error(`${file}: no video track size found`);
+  return found;
+}
 
-R.video = async (b, c) => {
-  if (!str(b.url)) fail('has no YouTube address');
-  if (!str(b.title)) fail('has no title');
+// A YouTube video as a news post shows one: a self-hosted still with a play button, and
+// nothing loaded from YouTube until it is pressed (_includes/youtube.js, post.njk)
+async function youtubeFacade(url, title, c) {
   let v;
-  try { v = await youtube.resolve(str(b.url), c.where); } catch (e) { fail(`has a YouTube address that cannot be read: ${e.message}`); }
+  try { v = await youtube.resolve(str(url), c.where); } catch (e) { fail(`has a YouTube address that cannot be read: ${e.message}`); }
   const rel = (u) => c.r + u.slice(1);
   const img = v.src ? `<img src="${rel(v.src)}" srcset="${v.srcset.map(rel).join(', ')}" sizes="(min-width:900px) 760px, calc(100vw - 64px)" width="${v.width}" height="${v.height}" alt="" loading="lazy" decoding="async">` : '';
-  return `<figure class="mapfig yt${c.rv}"><a class="yt-play" href="https://www.youtube.com/watch?v=${v.id}" data-yt="${v.id}" data-title="${esc(b.title)}" aria-label="Play the video: ${esc(b.title)}">${img}<span class="yt-btn" aria-hidden="true"></span></a>`
+  return `<figure class="mapfig yt${c.rv}"><a class="yt-play" href="https://www.youtube.com/watch?v=${v.id}" data-yt="${v.id}" data-title="${esc(title)}" aria-label="Play the video: ${esc(title)}">${img}<span class="yt-btn" aria-hidden="true"></span></a>`
     + `<figcaption>Plays from YouTube. Nothing is loaded from YouTube until you press play. <a href="${c.r}privacy/">Privacy</a></figcaption></figure>`;
+}
+
+R.films = async (b, c) => {
+  const list = items(b, 1, 'films');
+  const lis = await Promise.all(list.map(async (x, i) => {
+    const when = longDate(isoDay(x.date, `film ${i + 1}`));
+    const head = `<div class="rec-head">\n<span class="rec-time">${when}</span>\n<span class="rec-dur">${esc(x.duration)}</span>\n</div>`;
+    if (str(x.youtube)) return `<li class="rec rec-film">\n${head}\n${await youtubeFacade(x.youtube, str(x.title) || `Film, ${when}`, c)}\n</li>`;
+    const file = mediaFile(x.file, 'video');
+    const d = mp4Size(path.join(SITE_DIR, file.slice(1)));
+    const poster = str(x.poster) ? c.r + str(x.poster).slice(1) : '';
+    return `<li class="rec rec-film">\n${head}\n<video controls preload="none" playsinline width="${d.width}" height="${d.height}"${poster ? `\n poster="${poster}"` : ''}>\n`
+      + `<source src="${c.r + file.slice(1)}" type="video/mp4">\n</video>\n</li>`;
+  }));
+  return `<ul class="reclist${c.rv}">\n${lis.join('\n')}\n</ul>`;
+};
+
+R.video = (b, c) => {
+  if (!str(b.url)) fail('has no YouTube address');
+  if (!str(b.title)) fail('has no title');
+  return youtubeFacade(b.url, str(b.title), c);
 };
 
 const slug = (s) => str(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -527,7 +562,8 @@ async function hero(h, c) {
     parts.push(`<div class="stophero">${await picture(h.photo, h.alt, 'stophero', c.r)}</div>`);
     const s = c.stop;
     parts.push(`<div class="stopmeta">\n<div><span>Position</span>${s.lat}°N ${s.lonAbs}°W</div>\n<div><span>Elevation</span>about ${s.elevation} m OD</div>\n`
-      + `<div><span>Facing</span>${esc(h.facing)}°</div>\n<div><span>Recorded</span>${esc(h.recorded)}</div>\n</div>`);
+      + `<div><span>Facing</span>${esc(h.facing)}°</div>\n<div><span>Recorded</span>${esc(h.recorded)}</div>\n`
+      + `${photoCredit(h) ? `<div><span>Photo</span>${photoCredit(h).replace(/^Photo: /, '')}</div>\n` : ''}</div>`);
   }
   if (str(h.intro)) parts.push(`<p class="lede${rv}">${prose(h.intro)}</p>`);
   return parts.join('\n');
@@ -573,18 +609,28 @@ function usage(pages) {
     if (!b || typeof b !== 'object') return;
     if (b.type) types.add(b.type);
     if (b.type === 'story') stories.push(b);
-    if (typeof b.photo === 'string') { const s = photoSet(b.photo); if (s) photos.set(s.base, true); }
+    if (typeof b.photo === 'string') {
+      const s = photoSet(b.photo);
+      if (s) photos.set(s.base, true);
+      else if (commons.isCommons(b.photo)) photos.set(commons.base(b.photo), true);
+    }
     for (const v of Object.values(b)) if (Array.isArray(v)) v.forEach(scan);
   };
   for (const d of Object.values(pages)) { if (d && typeof d === 'object') { scan(d.hero || {}); (d.blocks || []).forEach(scan); } }
   const groups = new Set();
   for (const [key, g] of Object.entries(CREDITS.groups)) {
     const byPhoto = Object.entries(CREDITS.photos).some(([base, p]) => p.group === key && photos.has(base));
-    if (byPhoto || (g.for_photos || []).some((b) => photos.has(b)) || (g.for_blocks || []).some((t) => types.has(t))) groups.add(key);
+    const fromCommons = key === 'commons-photos' && [...photos.keys()].some((b) => b.startsWith('/assets/img/commons/') && commons.creditOf(b));
+    if (byPhoto || fromCommons || (g.for_photos || []).some((b) => photos.has(b)) || (g.for_blocks || []).some((t) => types.has(t))) groups.add(key);
   }
   const lines = (key) => {
     if (key === 'folklore') {
       return stories.map((s) => `${esc(s.title)} - Volume ${esc(s.volume)}, ${/-/.test(s.page) ? 'Pages' : 'Page'} ${esc(s.page)}, ${esc(s.school)}${str(s.collector) ? `, collected by ${esc(s.collector)}` : ''}`);
+    }
+    if (key === 'commons-photos') {
+      return [...photos.keys()].filter((b) => b.startsWith('/assets/img/commons/')).map((b) => commons.creditOf(b)).filter(Boolean)
+        .sort((a, b) => a.file.localeCompare(b.file, 'en'))
+        .map((p) => `${esc(p.by)}, <a href="${esc(p.licence_url)}" rel="noopener">${esc(p.licence)}</a>, <a href="${esc(p.file_url)}" rel="noopener">${esc(p.file)}</a>`);
     }
     return Object.entries(CREDITS.photos).filter(([base, p]) => p.group === key && photos.has(base))
       .sort((a, b) => a[1].subject.localeCompare(b[1].subject, 'en'))
@@ -597,7 +643,26 @@ function usage(pages) {
 
 // key: the page's file in site/_data/pages; data: its content; ctx: { url, pages, figures,
 // gallery, instagram, social, film }. Returns the page's main content.
+// Every Commons photo anywhere on the site, fetched once before any page is drawn, so the
+// credits page lists them whichever page happens to be built first. Failures are left for
+// the page that uses the photo to report.
+const prefetched = new WeakMap();
+function prefetchCommons(pages) {
+  if (!prefetched.has(pages)) {
+    const urls = new Set();
+    const scan = (x) => {
+      if (!x || typeof x !== 'object') return;
+      if (commons.isCommons(x.photo)) urls.add(str(x.photo));
+      for (const v of Object.values(x)) if (Array.isArray(v)) v.forEach(scan); else if (v && typeof v === 'object') scan(v);
+    };
+    Object.values(pages).forEach(scan);
+    prefetched.set(pages, Promise.all([...urls].map((u) => commons.ensure(u).catch(() => null))));
+  }
+  return prefetched.get(pages);
+}
+
 async function render(key, data, ctx) {
+  await prefetchCommons(ctx.pages);
   const where = `the page "${checks.PAGES[key] || key}" in the editor`;
   const file = `(site/_data/pages/${key}.json)`;
   const home = key === 'home';
@@ -616,6 +681,7 @@ async function render(key, data, ctx) {
     if (!data.page || !str(data.page.title)) fail(stopN ? 'has no name for the stop (under "About this page")' : 'has no page title (under "About this page")');
     if (!str(data.page.description)) fail('has no summary for search results (under "About this page")');
     if (stopN) c.stop = stopPlace(data.hero || {}, 'The top of the page');
+    await commonsPhotos(data.hero, 'The top of the page');
     const top = await hero(data.hero, c);
     const blocks = Array.isArray(data.blocks) ? data.blocks : [];
     const seen = new Set();
@@ -631,6 +697,7 @@ async function render(key, data, ctx) {
           if (seen.has(b.type)) fail('appears twice; a page can have only one');
           seen.add(b.type);
         }
+        await commonsPhotos(b, '');
         if (home && b.type === 'text') background = b.background || 'light';
         const bc = Object.assign(Object.create(c), { prev: blocks[i - 1], extra: new Set(), dark: home && background === 'dark' });
         out.push({ b, bc, html: await R[b.type](b, bc) });
@@ -655,6 +722,25 @@ async function render(key, data, ctx) {
       throw new Error(`The website was not updated, because of ${where}:\n  - ${said}.\n${file}`);
     }
     throw e;
+  }
+}
+
+// Every photo from Wikimedia Commons in a block (or the top of a page), fetched, checked
+// and saved before the block is drawn. Refused: the page stops, saying why. Unreachable: the
+// build stops without blaming the page, since nothing is wrong with what the editor did.
+async function commonsPhotos(b, where) {
+  const urls = [];
+  const scan = (x) => {
+    if (!x || typeof x !== 'object') return;
+    if (commons.isCommons(x.photo)) urls.push(str(x.photo));
+    for (const v of Object.values(x)) if (Array.isArray(v)) v.forEach(scan);
+  };
+  scan(b);
+  for (const u of urls) {
+    try { await commons.ensure(u); } catch (e) {
+      if (e instanceof commons.CommonsRefusal) fail(`${where ? `${where} ` : ''}has a photo from Wikimedia Commons (${e.title}) that cannot be used, because ${e.why}`);
+      throw new Error(`[commons] ${e.message}, so the photo ${u} could not be checked. This is not a problem with the page; build again later.`);
+    }
   }
 }
 
@@ -736,8 +822,18 @@ function ldItems(data, url) {
       duration: duration(x.duration), uploadDate: str(b.date) || undefined, contentUrl: SITE + str(x.file), encodingFormat: 'audio/mpeg', isPartOf: { '@id': `${SITE}/#website` } }));
   }
   for (const b of of('films')) {
-    (b.items || []).forEach((x) => nodes.push({ '@type': 'VideoObject', name: `Film, ${str(x.date)}`, duration: duration(x.duration), uploadDate: str(x.date),
-      ...(str(x.poster) && { thumbnailUrl: SITE + str(x.poster) }), contentUrl: SITE + str(x.file), encodingFormat: 'video/mp4', isPartOf: { '@id': `${SITE}/#website` } }));
+    (b.items || []).forEach((x) => {
+      if (str(x.youtube)) {
+        let id = '';
+        try { id = youtube.youtubeId(str(x.youtube)); } catch (e) { return; }
+        const still = youtube.cached(id).pop();
+        nodes.push({ '@type': 'VideoObject', name: str(x.title) || `Film, ${str(x.date)}`, duration: duration(x.duration), uploadDate: str(x.date),
+          ...(still && { thumbnailUrl: `${SITE}/assets/img/video/${still.file}` }), embedUrl: `https://www.youtube-nocookie.com/embed/${id}`, isPartOf: { '@id': `${SITE}/#website` } });
+        return;
+      }
+      nodes.push({ '@type': 'VideoObject', name: `Film, ${str(x.date)}`, duration: duration(x.duration), uploadDate: str(x.date),
+        ...(str(x.poster) && { thumbnailUrl: SITE + str(x.poster) }), contentUrl: SITE + str(x.file), encodingFormat: 'video/mp4', isPartOf: { '@id': `${SITE}/#website` } });
+    });
   }
   return JSON.parse(JSON.stringify(nodes));  // drops fields left undefined
 }
@@ -787,7 +883,7 @@ function sitePhotos(pages) {
       const set = photoSet(`/assets/img/${dir}${e.name}`);
       if (!set || out.some((x) => x.base === set.base)) continue;
       const largest = set.webp[set.webp.length - 1];
-      const credit = CREDITS.photos[set.base];
+      const credit = CREDITS.photos[set.base] || commons.creditOf(set.base);
       out.push({ base: set.base, path: set.url(largest), thumb: set.url(set.webp[0]), alt: alts.get(set.base) || '',
         ...(credit && { credit: `${credit.by}, ${credit.licence}` }) });
     }
@@ -803,4 +899,4 @@ function unsurveyedSentence(pages) {
   return n === 0 ? '' : ` ${word} of the ten stops ${n === 1 ? 'has' : 'have'} not been surveyed at all.`;
 }
 
-module.exports = { render, ldItems, counts, unsurveyedSentence, mapLayers, sitePhotos, lastProblem: () => lastProblem, stopList, stopPlace, usage, photoSet, webpSize, creditFor, LABELS, SINGULAR, root, BlockError };
+module.exports = { mp4Size, render, ldItems, counts, unsurveyedSentence, mapLayers, sitePhotos, lastProblem: () => lastProblem, stopList, stopPlace, usage, photoSet, webpSize, creditFor, LABELS, SINGULAR, root, BlockError };

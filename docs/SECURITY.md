@@ -82,7 +82,12 @@ by the build (`CONTRIBUTING.md`, "Uploaded photos").
 
 - **The editor's policy is looser than the public site's.** Decap needs `'unsafe-eval'`
   (its settings validator compiles code at runtime) and inline styles. Only logged-in
-  editors use that page, and it still loads nothing from any other site.
+  editors use that page. It loads nothing from any other site, with one exception: when an
+  editor pastes the address of a photo on Wikimedia Commons, the page asks the Commons API
+  (`commons.wikimedia.org`) for its author and licence and shows a preview from Commons'
+  image servers (`upload.wikimedia.org`, `thumb.wikimedia.org`). Those three hosts are the
+  only ones its policy adds, and only on the editor's page. The public site still loads
+  nothing from Wikimedia: the build downloads and re-encodes the photo and serves it itself.
 - **Inline styles are allowed on public pages.** The pages use `style` attributes; style
   injection cannot run code, and raw HTML is switched off anyway.
 - **Draft previews run the build on editor content.** A draft becomes a pull request with

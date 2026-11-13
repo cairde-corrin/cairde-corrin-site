@@ -40,6 +40,7 @@ const iso = (d) => new Date(d).toISOString().slice(0, 10);
 // the page says it is.
 const blocks = require('./blocks.js');
 const images = require('./images.js');
+const commons = require('./commons.js');
 const CRUMBS = {
   home: [], about: ['About'], links: ['Links'], new_spaces: ['New spaces'], water: ['Water and ecosystems'],
   credits: ['Credits and sources'], species: ['Species'], folklore: ['Folklore'], recordings: ['Recordings'], trails: ['Trails'],
@@ -77,7 +78,8 @@ async function forPage(key, pages, url, figures) {
     const p = blocks.stopPlace(d.hero, title);
     const geo = { '@type': 'GeoCoordinates', latitude: num(p.lat), longitude: num(p.lon) };
     // an uploaded photo is published under its re-encoded name, not the upload's
-    const photo = d.hero.photo.startsWith(images.UPLOADS) ? (await images.resolve({ src: decodeURI(d.hero.photo) })).src : d.hero.photo;
+    const photo = d.hero.photo.startsWith(images.UPLOADS) ? (await images.resolve({ src: decodeURI(d.hero.photo) })).src
+      : commons.isCommons(d.hero.photo) ? commons.sitePath(d.hero.photo) : d.hero.photo;
     graph.push({ '@type': 'TouristAttraction', '@id': `${stopUrl(stop[1])}#place`, name: `Stop ${stop[1].padStart(2, '0')} - ${title}`,
       url: stopUrl(stop[1]), geo: { ...geo, elevation: num(p.elevation) },
       photo: { '@type': 'ImageObject', url: SITE + photo, contentLocation: { '@type': 'Place', geo } },

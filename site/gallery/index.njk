@@ -14,7 +14,7 @@ description: Photographs from the Glenabo-Corrin catchment, added by Cáirde Cor
 {%- else %}
     <div class="cards">
 {%- for item in collections.gallery %}{% set p = item.data.photo %}
-      <figure class="card rv">{% if item.data.taken %}<p class="k"><time datetime="{{ item.data.taken | isoDate }}">{{ item.data.taken | longDate }}</time></p>{% endif %}<div class="card-fig"><picture><img src="{{ p.srcset[0].split(' ')[0] | rel(r) }}" srcset="{% for s in p.srcset %}{{ s | rel(r) }}{% if not loop.last %}, {% endif %}{% endfor %}" sizes="(min-width:1100px) 340px, (min-width:640px) 45vw, calc(100vw - 96px)" width="{{ p.width }}" height="{{ p.height }}" alt="{{ p.alt }}" loading="lazy" decoding="async"></picture></div><figcaption><p>{{ item.data.caption }}</p></figcaption></figure>
+      <figure class="card rv">{% if item.data.taken %}<p class="k"><time datetime="{{ item.data.taken | isoDate }}">{{ item.data.taken | longDate }}</time></p>{% endif %}<div class="card-fig"><picture><img src="{{ p.srcset[0].split(' ')[0] | rel(r) }}" srcset="{% for s in p.srcset %}{{ s | rel(r) }}{% if not loop.last %}, {% endif %}{% endfor %}" sizes="(min-width:1100px) 340px, (min-width:640px) 45vw, calc(100vw - 96px)" width="{{ p.width }}" height="{{ p.height }}" alt="{{ p.alt }}" loading="lazy" decoding="async"></picture></div><figcaption><p>{{ item.data.caption }}</p>{% if item.data.by and item.data.by != 'Cáirde Corrin' %}<p>Photo: {{ item.data.by }}</p>{% endif %}</figcaption></figure>
 {%- endfor %}
     </div>
 {%- endif %}

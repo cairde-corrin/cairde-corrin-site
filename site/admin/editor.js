@@ -80,7 +80,7 @@
     var Control = window.createClass({
       getInitialState: function () {
         this.controlID = 'sitephoto-' + Math.random().toString(36).slice(2);
-        return { open: false, photos: null, q: '' };
+        return { open: false, photos: null, q: '', commons: false, address: '', checking: false, found: null };
       },
       componentDidMount: function () { var self = this; load().then(function (photos) { self.setState({ photos: photos }); }); },
       componentDidUpdate: function () {
@@ -97,6 +97,24 @@
         load().then(function (photos) { self.setState({ photos: photos }); });
       },
       pick: function (p) { this.props.onChange(p.path); this.setState({ open: false }); },
+      // A photo from Wikimedia Commons: its author and licence are read from Commons now,
+      // with the same rules the build applies (site/admin/commons.js). Refused: nothing is
+      // put in the field, and the reason is shown. Nothing is uploaded either way.
+      fromCommons: function () {
+        var self = this, C = window.CairdeCommons, url = this.state.address.trim();
+        if (!C || !C.isCommons(url)) {
+          this.setState({ found: { ok: false, why: 'That is not the address of a file on Wikimedia Commons. Open the photo\'s own page on Commons and copy its address: it starts with https://commons.wikimedia.org/wiki/File:' } });
+          return;
+        }
+        this.setState({ checking: true, found: null });
+        fetch(C.apiUrl(url)).then(function (r) { return r.json(); }).then(function (j) {
+          var d = C.decide(j);
+          self.setState({ checking: false, found: d });
+          if (d.ok) self.props.onChange(C.normal(url));
+        }, function () {
+          self.setState({ checking: false, found: { ok: false, why: 'Wikimedia Commons could not be reached just now. Try again in a minute.' } });
+        });
+      },
       upload: function () {
         var f = this.props.field, cfg = f && f.getIn && f.getIn(['media_library', 'config']);
         this.props.onOpenMediaLibrary({ controlID: this.controlID, forImage: true, privateUpload: false, value: this.props.value,
@@ -105,11 +123,12 @@
       render: function () {
         var self = this, v = this.props.value || '', s = this.state;
         var onSite = /^\/assets\/img\//.test(v);
+        var fromC = window.CairdeCommons && window.CairdeCommons.isCommons(v);
         var known = onSite && s.photos ? s.photos.filter(function (p) { return p.path === v; })[0] : null;
         var current = v
           ? h('div', { style: css('display:flex;gap:12px;align-items:center;margin-bottom:8px') },
             onSite ? h('img', { src: v, alt: '', style: css('width:120px;height:80px;object-fit:cover;border-radius:4px') }) : null,
-            h('div', { style: css('font:14px/1.4 system-ui,sans-serif') }, h('div', null, onSite ? 'A photo already on the website' : 'A photo you uploaded: ' + v.split('/').pop()),
+            h('div', { style: css('font:14px/1.4 system-ui,sans-serif') }, h('div', null, onSite ? 'A photo already on the website' : fromC ? 'A photo from Wikimedia Commons: ' + window.CairdeCommons.title(v).replace(/^File:/, '') + ' (its credit is shown beneath it on the website)' : 'A photo you uploaded: ' + v.split('/').pop()),
               known && known.alt ? h('div', { style: css('color:#555') }, 'Its description elsewhere on the site: "' + known.alt + '"') : null))
           : h('div', { style: css('font:14px system-ui,sans-serif;color:#555;margin-bottom:8px') }, 'No photo chosen yet.');
         var q = s.q.toLowerCase();
@@ -129,6 +148,18 @@
           current,
           h('button', { type: 'button', style: css(btn), onClick: this.browse, 'aria-expanded': s.open ? 'true' : 'false' }, s.open ? 'Close the list of photos' : 'Choose a photo already on the website'),
           h('button', { type: 'button', style: css(btn), onClick: this.upload }, 'Upload a new photo'),
+          h('button', { type: 'button', style: css(btn), 'aria-expanded': s.commons ? 'true' : 'false', onClick: function () { self.setState({ commons: !s.commons, found: null }); } }, 'Use a photo from Wikimedia Commons'),
+          s.commons ? h('div', { style: css(box) },
+            h('label', { style: css('display:block;font:600 13px system-ui,sans-serif;margin-bottom:6px') }, 'The address of the photo\'s page on Wikimedia Commons',
+              h('input', { type: 'url', value: s.address, placeholder: 'https://commons.wikimedia.org/wiki/File:...', onChange: function (e) { self.setState({ address: e.target.value, found: null }); },
+                style: css('display:block;width:100%;margin-top:4px;padding:6px 8px;font:14px system-ui,sans-serif;border:1px solid #9aa3ad;border-radius:4px;background:#fff') })),
+            h('p', { style: css('font:13px/1.45 system-ui,sans-serif;color:#555;margin:6px 0 8px') }, 'The website reads who took the photo and its licence from Commons, and shows them beneath it. A photo without a clear author and a licence the website can credit is refused.'),
+            h('button', { type: 'button', style: css(btn), disabled: s.checking, onClick: this.fromCommons }, s.checking ? 'Checking...' : 'Check and use this photo'),
+            s.found ? (s.found.ok
+              ? h('div', { role: 'status', style: css('font:14px/1.45 system-ui,sans-serif;color:#24451A') },
+                s.found.image ? h('img', { src: s.found.image, alt: '', style: css('display:block;max-width:240px;max-height:160px;margin:6px 0;border-radius:4px') }) : null,
+                'Used. Credit: ' + s.found.author + ', ' + s.found.licence + '. Now say in "What the photo shows" what is in it.')
+              : h('div', { role: 'alert', style: css('font:14px/1.45 system-ui,sans-serif;color:#9b1c1c') }, 'Not used: ' + s.found.why.replace(/^it /, 'the photo ').replace(/^its /, 'the photo\'s '))) : null) : null,
           v && this.props.field && this.props.field.get && this.props.field.get('required') === false
             ? h('button', { type: 'button', style: css(btn), onClick: function () { self.props.onChange(''); } }, 'Remove the photo') : null,
           grid);

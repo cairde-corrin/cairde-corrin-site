@@ -9,7 +9,7 @@ layout: base.njk
     <h1 class="rv page-title">{{ title }}</h1>
     <p class="lede rv">{{ summary }}</p>
 {%- if hero and hero.src %}
-    <figure class="mapfig rv"><img src="{{ hero.src | rel(r) }}"{% if hero.srcset %} srcset="{% for s in hero.srcset %}{{ s | rel(r) }}{% if not loop.last %}, {% endif %}{% endfor %}" sizes="(min-width:900px) 760px, calc(100vw - 64px)"{% endif %}{% if hero.width and hero.height %} width="{{ hero.width }}" height="{{ hero.height }}"{% endif %} alt="{{ hero.alt }}" fetchpriority="high" decoding="async">{% if hero.caption %}<figcaption>{{ hero.caption }}</figcaption>{% endif %}</figure>
+    <figure class="mapfig rv"><img src="{{ hero.src | rel(r) }}"{% if hero.srcset %} srcset="{% for s in hero.srcset %}{{ s | rel(r) }}{% if not loop.last %}, {% endif %}{% endfor %}" sizes="(min-width:900px) 760px, calc(100vw - 64px)"{% endif %}{% if hero.width and hero.height %} width="{{ hero.width }}" height="{{ hero.height }}"{% endif %} alt="{{ hero.alt }}" fetchpriority="high" decoding="async">{% set by = hero.by if hero.by and hero.by != 'Cáirde Corrin' else '' %}{% if hero.caption or by %}<figcaption>{{ hero.caption }}{% if by %}{% if hero.caption %} {% endif %}Photo: {{ by }}{% endif %}</figcaption>{% endif %}</figure>
 {%- endif %}
     <div class="post-body rv">
 {{ content | safe }}
@@ -20,7 +20,7 @@ layout: base.njk
 {%- if gallery and gallery.length %}
     <div class="post-gallery rv">
 {%- for g in gallery %}
-      <figure class="card-fig"><img src="{{ g.src | rel(r) }}"{% if g.srcset %} srcset="{% for s in g.srcset %}{{ s | rel(r) }}{% if not loop.last %}, {% endif %}{% endfor %}" sizes="(min-width:900px) 380px, calc(100vw - 64px)"{% endif %}{% if g.width and g.height %} width="{{ g.width }}" height="{{ g.height }}"{% endif %} alt="{{ g.alt }}" loading="lazy" decoding="async">{% if g.caption %}<figcaption>{{ g.caption }}</figcaption>{% endif %}</figure>
+      <figure class="card-fig"><img src="{{ g.src | rel(r) }}"{% if g.srcset %} srcset="{% for s in g.srcset %}{{ s | rel(r) }}{% if not loop.last %}, {% endif %}{% endfor %}" sizes="(min-width:900px) 380px, calc(100vw - 64px)"{% endif %}{% if g.width and g.height %} width="{{ g.width }}" height="{{ g.height }}"{% endif %} alt="{{ g.alt }}" loading="lazy" decoding="async">{% set by = g.by if g.by and g.by != 'Cáirde Corrin' else '' %}{% if g.caption or by %}<figcaption>{{ g.caption }}{% if by %}{% if g.caption %} {% endif %}Photo: {{ by }}{% endif %}</figcaption>{% endif %}</figure>
 {%- endfor %}
     </div>
 {%- endif %}

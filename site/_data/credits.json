@@ -50,6 +50,13 @@
    "for_blocks": [
     "story"
    ]
+  },
+  "commons-photos": {
+   "heading": "Photographs from Wikimedia Commons",
+   "credits": "the photographs chosen from Wikimedia Commons in the editor",
+   "entries": [
+    "Photographs from <a href=\"https://commons.wikimedia.org/\" rel=\"noopener\">Wikimedia Commons</a>, chosen in the website's editor, resized for this site and served from this site rather than hotlinked. The photographer and licence of each are read from Commons itself and shown beneath the photograph wherever it appears."
+   ]
   }
  },
  "photos": {

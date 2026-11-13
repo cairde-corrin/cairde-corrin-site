@@ -86,4 +86,4 @@ async function resolve(value, where) {
     srcset: stills.map((s) => `${URL_PATH}${s.file} ${s.width}w`) };
 }
 
-module.exports = { resolve, youtubeId };
+module.exports = { resolve, youtubeId, cached };

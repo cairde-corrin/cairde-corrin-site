@@ -163,25 +163,19 @@
           "date": "2026-04-04",
           "duration": "0:23",
           "file": "/assets/video/film/walk-april.mp4",
-          "poster": "/assets/img/film/walk-april.webp",
-          "width": 1280,
-          "height": 720
+          "poster": "/assets/img/film/walk-april.webp"
         },
         {
           "date": "2026-06-02",
           "duration": "0:17",
           "file": "/assets/video/film/corrin-walk.mp4",
-          "poster": "/assets/img/film/corrin-walk.webp",
-          "width": 720,
-          "height": 1280
+          "poster": "/assets/img/film/corrin-walk.webp"
         },
         {
           "date": "2026-07-14",
           "duration": "0:05",
           "file": "/assets/video/film/bird-survey.mp4",
-          "poster": "/assets/img/film/bird-survey.webp",
-          "width": 478,
-          "height": 850
+          "poster": "/assets/img/film/bird-survey.webp"
         }
       ]
     }
