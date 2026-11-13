@@ -8,6 +8,11 @@ Last reviewed 11 November 2026.
 
 ## Needs a decision
 
+**First: switch on the GitHub protections in `SECURITY.md`** (a machine account for Git
+Gateway, the `CMS_GITHUB_USER` variable, branch protection on `main`, Identity roles).
+Until then an editor's session can still write code into the build.
+
+
 1. **What to do if Netlify's free allowance runs out.** On the credit-based free plan,
    each editor publish costs 15 of 300 monthly credits and visitors' bandwidth costs more,
    so a busy month could pause the site until the next (`MAINTENANCE.md`). Options if it
@@ -78,12 +83,18 @@ Last reviewed 11 November 2026.
   and shared links show no picture.
 - The handover: `HANDOVER.md`. Several parts currently sit with the developer's personal
   accounts.
+- The Instagram feed: a Behold account connected to the group's Instagram, and its feed
+  ID in `site/_includes/instagram.js` (`MAINTENANCE.md`, "The Instagram feed"). Until
+  then the home page shows the editor's social cards, if any. The carousel has only been
+  tested with made-up posts.
+- The weekly rebuild's build hook and the `NETLIFY_BUILD_HOOK` secret
+  (`MAINTENANCE.md`, "The weekly rebuild"). Until then the workflow runs and does nothing.
 
 **Tests that need a real person or a real device**
 
 - The editor end to end, by a committee member: accept an invitation, write a post with a
-  photo in the text, save it, check it is not live, publish, check it on the site, delete
-  it. The invitation itself has only been tested with made-up codes.
+  photo in the text, save it, check it is not live, publish, check it on the site, take it
+  off the website with its tick. The invitation itself has only been tested with made-up codes.
 - Photos chosen on a real iPhone, from Photo Library and through **Choose File**. The
   browser-side shrink, which also converts iPhone HEIC, was tested in Safari's engine,
   Chrome and Firefox on a computer, not on a phone.

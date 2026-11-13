@@ -1,7 +1,9 @@
 # How to post news on the Cáirde Corrin website
 
-This guide is for committee members who write news, add photos to the gallery or
-change the social media posts on the home page. You do not need to know anything about
+This guide is for committee members who write news, add photos to the gallery, change
+the wording of the website's pages, list articles about the group, or change the social
+media posts on the home page. The same guide opens from the **Help** button in the
+corner of every editor screen. You do not need to know anything about
 websites to follow it. Keep it open the first few times; after that it takes a few
 minutes.
 
@@ -10,7 +12,8 @@ minutes.
 1. Go to the editor and log in.
 2. Press **＋ news post**, fill in the boxes and press **Save**. Nothing is public yet.
 3. When it is right, set **Status** to **Ready**, then **Publish** -> **Publish now**.
-4. About two minutes later the post is on the website.
+4. A few minutes later the post is on the website. If it is not there yet, see "After you
+   publish" below before assuming anything went wrong.
 
 ## Getting in
 
@@ -109,6 +112,20 @@ The website updates itself. Give it about two minutes, then open the News page a
 refresh it. If the post is not there after five minutes, see "When something looks
 wrong" below.
 
+## After you publish
+
+The website rebuilds itself after every publish, which takes a minute or two. After that,
+your browser may still be showing the copy of the page it saved earlier: pages are kept
+for up to five minutes. So if the change is not there:
+
+1. Wait two minutes.
+2. Reload the page with a **hard refresh**: on a computer, hold **Shift** and press the
+   reload button (or press **Ctrl+Shift+R**, or **Cmd+Shift+R** on a Mac); on a phone,
+   close the page and open it again.
+3. If it is still not there after five minutes, see "When something looks wrong".
+
+Every editor meets this the first time, and it almost never means publishing failed.
+
 **Status** also offers **Draft** and **In review**. They change nothing on the website;
 use them if you want someone else to read a post before it goes out. The **Workflow** tab
 at the top shows every post that is not yet published, sorted into those three columns.
@@ -120,9 +137,56 @@ Click a post there to carry on with it.
 **Save**, then set **Status** to **Ready** and **Publish** -> **Publish now** again. The
 website shows the old version until you publish the new one.
 
-**To remove a post** from the website, open it and use the delete button at the top. To
-throw away a draft that was never published, use **Delete unpublished entry**. Deleting
-cannot be undone from the editor, so be sure.
+**To take a post off the website,** open it, tick **Take this off the website** at the
+bottom, press **Save**, then publish it as usual. Once the site has rebuilt, the post has
+no page and appears in no list. It stays in the editor, so you can put it back the same
+way: untick, save, publish. Photos in the Gallery and Articles have the same tick. Use it
+for anything published by mistake.
+
+There is no button to delete a published post: the editor's own delete cannot work with
+the protection that keeps the website safe. If something must go for good, for example a
+photo someone has asked to have removed, take it off the website first, then ask the
+person who looks after the website to delete it completely.
+
+To throw away a draft that was never published, use **Delete unpublished entry**.
+
+## Changing the wording of a page
+
+You can change the text of the home page, About (including how to get involved), Links,
+New spaces and its two proposals, and the stop pages.
+
+The quickest way: while logged in to the editor, open the page on the website itself. A
+green **Edit this page** button appears in the bottom corner (only you can see it, because
+you are logged in); press it and the editor opens at that page's text.
+
+Or press **Contents** -> **Page text** and choose the page. Each box is one paragraph,
+labelled with the heading it sits under. Type plain text. Put *asterisks* round words to
+set them in italics.
+
+**Words in {curly brackets} are measured figures,** such as `{catchment.area_ha}` for the
+catchment's area. The website fills them in from its survey data. Leave them exactly as
+they are, curly brackets and all; you can reword the sentence around them, and move them,
+but not change the figure. If one is mistyped, the website will not update until it is
+put right, and the person who looks after the site will see why.
+
+**The Links page** has its list of sites in the same place, under **Links**: a name and a
+full address starting `https://` for each. Drag them to change the order.
+
+Save, set the status to Ready and publish, as for a post.
+
+## Listing an article about the group
+
+When a newspaper, magazine or another website writes about Cáirde Corrin or the
+catchment, press **Contents** -> **Articles** -> **＋ article** and fill in its headline,
+where it was published, who wrote it, its date and its address.
+
+Then write **a summary in your own words**: two or three sentences saying what it is
+about. Do not copy text from the article; it belongs to the publication. You may add **one
+short line** quoted exactly from it, which the website shows in quotation marks with the
+publication's name. Never more than that.
+
+The Articles page, and its link in the menu, appear once the first article is published.
+Each card links to the original.
 
 ## The gallery and the home page's social posts
 
@@ -141,21 +205,33 @@ page simply has no social section. Save and publish as usual.
 
 ## What you cannot change here, and why
 
-The trails, the stop pages, the species list and the folklore are not in the editor, and
-that is deliberate. Every figure on those pages, every height, distance, area, grid
-position, species name and story, was checked against a source: a GPS track, an
-elevation survey, a botanical record, the National Folklore Collection. The website
-exists partly to be read by landowners and people who know the ground, and those pages
-are what it will be judged on. Changing them goes through the person who looks after the
-website, so that each change can be checked against its source first.
+Some things are not in the editor at all, on purpose:
 
-If you spot something wrong on one of those pages, or have something to add (a new stop,
-a species record, a recording), tell that person. The same goes for the About page, the
-privacy and terms pages, and anything about the look of the site.
+- **Measured figures:** every height, distance, area, grid position and time on the site.
+  In the page text they appear as words in {curly brackets}, which the website fills in;
+  leave those as they are. You can reword the sentence around them, never the figure.
+- **The species determinations,** which record what was identified and how.
+- **The folklore and its sources,** and the attribution to the National Folklore
+  Collection on dúchas.ie.
+- **The credits and licences,** which are legal conditions of using other people's
+  photographs and maps.
+- **The privacy and terms pages,** which are the group's commitments to visitors.
+- **The trails page,** whose map, profile and figures come from the survey data.
+
+Each of these was checked against a source: a GPS track, an elevation survey, a botanical
+record, the National Folklore Collection, a licence. The website exists partly to be read
+by landowners and people who know the ground, and those are what it will be judged on.
+Changes to them go through the person who looks after the website, so that each change
+can be checked against its source first. If you spot something wrong, or have something
+to add, tell them.
 
 ## When something looks wrong
 
-- **The post is not on the website after five minutes.** Refresh the page. Then look in
+- **Publish says it failed, straight after you saved.** The website checks every change
+  before it can be published, and that takes a minute. Wait a minute and press Publish
+  again.
+- **The post is not on the website after five minutes.** Do a hard refresh (see "After
+  you publish"). Then look in
   the **Workflow** tab: if the post is still there, it has not been published; set its
   status to **Ready** and publish it. If it is not there but still is not on the website,
   something stopped the update. The website stays exactly as it was, so nothing is

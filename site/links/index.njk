@@ -78,15 +78,9 @@
   <div class="wrap">
     <p class="eyebrow rv">Related sites and links</p>
     <h1 class="rv page-title">Where to go next.</h1>
-    <p class="lede rv">Recording, reporting and reference. If you only use one of these, make it the biodiversity recording site.</p>
-    <div class="linklist rv">
-      <a href="https://rathcormacgameandwildlifeclub.ie/nature-reserve/" target="_blank" rel="noopener"><span>Corrin Nature Reserve</span><span class="u">rathcormacgameandwildlifeclub.ie</span></a>
-      <a href="https://biodiversityireland.ie" target="_blank" rel="noopener"><span>National Biodiversity Data Centre</span><span class="u">biodiversityireland.ie</span></a>
-      <a href="https://invasives.ie" target="_blank" rel="noopener"><span>Invasive Species Ireland</span><span class="u">invasives.ie</span></a>
-      <a href="https://leavenotraceireland.org" target="_blank" rel="noopener"><span>Leave No Trace Ireland</span><span class="u">leavenotraceireland.org</span></a>
-      <a href="https://www.coillte.ie" target="_blank" rel="noopener"><span>Coillte</span><span class="u">coillte.ie</span></a>
-      <a href="https://www.treecouncil.ie" target="_blank" rel="noopener"><span>Tree Council of Ireland</span><span class="u">treecouncil.ie</span></a>
-      <a href="https://www.catchments.ie" target="_blank" rel="noopener"><span>Catchments.ie</span><span class="u">catchments.ie</span></a>
+    <p class="lede rv">{{ pages.links.p1 | prose | safe }}</p>
+    <div class="linklist rv">{% for l in pages.links.sites %}
+      <a href="{{ l.url }}" target="_blank" rel="noopener"><span>{{ l.name }}</span><span class="u">{{ l.url | domain }}</span></a>{% endfor %}
     </div>
   </div>
   <div style="height:100px"></div>

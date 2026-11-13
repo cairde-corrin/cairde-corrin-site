@@ -17,12 +17,17 @@ own ground and points to the others rather than repeating them.
   how the editor is wired up, caching, and the checks after a deploy.
 - **`DOMAIN-SETUP.md`** - the complete procedure for connecting cairdecorrin.ie, written
   to be followed cold.
+- **`SECURITY.md`** - the threat model, what protects the site and the editor, revoking an
+  editor, recovering from a compromise, and the GitHub settings that complete it.
 - **`HANDOVER.md`** - what the group needs to own the site outright, and the order to
   transfer it in.
 - **`CMS-MIGRATION.md`** - what to do if Netlify's Git Gateway, which the editor uses to
   save, stops working.
 
 ## If you change the site itself
+
+- **`DEVELOPER-GUIDE.md`** - how the whole thing works, with a diagram: the build, the
+  content and image pipelines, the editor and Git Gateway, deploying, every integration.
 
 - **`CONTRIBUTING.md`** - the rules (nothing invented, the sign addresses never change,
   everything borrowed is credited), the verified figures and where each comes from, how

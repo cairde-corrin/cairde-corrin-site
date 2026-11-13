@@ -16,6 +16,8 @@ document covers the few things that do come up.
 | Editor logins | Netlify Identity, on the same project | Invite only |
 | Saving editor changes to GitHub | Netlify Git Gateway | Deprecated by Netlify but working; see `CMS-MIGRATION.md` |
 | The domain and its email | Letshost | Registration runs to 17 June 2027 |
+| The home page's Instagram posts | Behold (behold.so), read at build time | Free plan; see "The Instagram feed" |
+| The weekly rebuild | GitHub Actions, `.github/workflows/weekly-rebuild.yml` | Calls a Netlify build hook |
 
 ## Netlify usage and what it costs
 
@@ -27,7 +29,7 @@ team's **Usage & billing**.
 
 | What uses credits | Cost |
 |---|---|
-| A production deploy: every push to `main`, which includes **every Publish in the editor** | 15 credits |
+| A production deploy: every push to `main`, which includes **every Publish in the editor**, and every weekly rebuild | 15 credits |
 | Bandwidth served to visitors | 20 credits per GB |
 | Web requests | 2 credits per 10,000 |
 | Branch previews, draft previews, failed deploys | free |
@@ -37,6 +39,11 @@ other pages far less, so a gigabyte is a few hundred first visits. Ten publishes
 gigabytes in a month is 250 credits, close to the limit. Busy months, or a long run of
 small corrections each published separately, can use it up. Encourage editors to get a
 post right in draft and publish once.
+
+The weekly rebuild adds four or five production builds a month, 60 to 75 credits, on
+top of whatever editors publish. That leaves room for about fifteen publishes in a month
+with a few gigabytes of traffic. If credits run short, make the rebuild less frequent
+(below) before asking editors to publish less.
 
 **Legacy Free plan** (older accounts): 300 build minutes and 100 GB of bandwidth a
 month. A build here takes about a minute, so bandwidth is the limit that matters.
@@ -78,7 +85,8 @@ their email. They get Netlify's standard invitation email; `EDITOR-GUIDE.md` tel
 what to do with it. Send them that guide.
 
 **Removing someone.** **Identity**, click the person, **Delete user**. They can no longer
-log in. What they published stays on the site, and their name and email stay in the
+log in, though a session already open keeps working for up to an hour (`SECURITY.md`,
+"Revoking an editor"). What they published stays on the site, and their name and email stay in the
 repository's change history.
 
 **If someone's invitation link opens the home page and stops there.** Netlify's default
@@ -88,6 +96,59 @@ address and use **Forgot password?**. `DEPLOY.md` explains the mechanism.
 
 Editors log in with email and password only; registration is closed, so nobody can sign
 themselves up.
+
+## The weekly rebuild
+
+The home page's Instagram posts are fetched when the site is built, so without new
+builds they would only change when someone publishes. `.github/workflows/weekly-rebuild.yml`
+asks Netlify to rebuild the live site every Monday at 06:00 UTC.
+
+- **Setting it up (once, needs an owner):** Netlify: the project -> **Project
+  configuration -> Build & deploy -> Continuous deployment -> Build hooks -> Add build
+  hook**, name it "Weekly rebuild", branch `main`, and copy the address it gives. Then
+  GitHub: the repository -> **Settings -> Secrets and variables -> Actions -> New
+  repository secret**, name `NETLIFY_BUILD_HOOK`, value that address. Until the secret
+  exists the workflow does nothing and says so. Test it from the **Actions** tab:
+  **Weekly rebuild -> Run workflow**, then watch a new deploy start in Netlify.
+- **Changing how often:** edit the one `cron:` line in the workflow on `build` and
+  release it. `'0 6 * * 1'` is Mondays; `'0 6 1,15 * *'` is the 1st and 15th of each
+  month; the comment in the file has more.
+- **Keep the hook address secret.** Anyone who has it can start builds, and each costs
+  15 credits. If it leaks, delete the hook in Netlify, make a new one and update the
+  secret.
+- **GitHub pauses schedules** in a public repository after 60 days without any commit.
+  It emails the repository's admins first. If the posts stop changing, open **Actions ->
+  Weekly rebuild** and press **Enable workflow**; any publish from the editor also counts
+  as activity.
+
+## The Instagram feed
+
+The home page shows the group's six latest Instagram posts in a carousel, when the feed
+is set up. Behold (behold.so) holds a read-only connection to the group's Instagram
+account and turns its posts into a feed; the build reads that feed and copies the
+pictures onto this site, so visitors never contact Behold or Instagram. The free plan
+is enough: it counts requests for the feed, and only builds make them.
+
+**Setting it up (once):**
+
+1. Whoever runs the group's Instagram account makes a free account at behold.so and
+   connects the Instagram account to it. Behold says if the account needs to be a
+   professional one; switching is free in Instagram's settings.
+2. In Behold, add a feed for that account and choose **JSON** as its type. Its address
+   looks like `https://feeds.behold.so/<ID>`. The part after the last `/` is the feed ID.
+3. A developer puts the ID in `site/_includes/instagram.js` (`const FEED_ID = '...'`) on
+   `build`, runs `npm run build`, commits the new `site/_instagram/` folder, and releases.
+   The ID is not secret (it only gives the public posts), but it is configuration, not
+   content: the editor cannot see or change it.
+
+**Changing or removing it:** change or empty `FEED_ID` the same way. With it empty the
+carousel goes, and the editor's own social cards (**Home page -> Social media posts**)
+show instead, if there are any. Posts saved from an old feed ID are never shown under a
+new one.
+
+**When Behold is down,** builds carry on with the posts saved in the repository and the
+build log says "could not refresh the posts from Behold". A post deleted on Instagram
+leaves the site at the next build that reaches Behold.
 
 ## When a video post is published
 

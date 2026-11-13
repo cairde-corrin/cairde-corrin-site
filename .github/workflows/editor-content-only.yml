@@ -1,0 +1,45 @@
+# Keeps the editor to content. Git Gateway lets an editor's session write anywhere in the
+# repository, including the files the build runs, so a stolen session could otherwise put
+# code into the next production build. This check fails any pull request into main that
+# comes from the editor and changes anything other than editor content. Made a required
+# check on main, with main protected, it means the editor can only ever publish content.
+# docs/SECURITY.md has the GitHub settings that make it binding.
+#
+# pull_request_target runs this file as it is on main, so a pull request cannot rewrite
+# its own check. The pull request's code is never checked out or run: only its list of
+# changed files is read.
+name: Editor content only
+on:
+  pull_request_target:
+    branches: [main]
+permissions:
+  contents: read
+  pull-requests: read
+jobs:
+  content-only:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Every file the editor changed is editor content
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          HEAD: ${{ github.event.pull_request.head.ref }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          # The GitHub account whose token Git Gateway uses (a repository variable)
+          CMS_USER: ${{ vars.CMS_GITHUB_USER }}
+        run: |
+          case "$HEAD" in cms/*) editor=1 ;; *) editor=0 ;; esac
+          if [ -n "$CMS_USER" ] && [ "$AUTHOR" = "$CMS_USER" ]; then editor=1; fi
+          if [ "$editor" = 0 ]; then echo "Not an editor change ($AUTHOR, $HEAD): no path limit."; exit 0; fi
+          # Every path the change touches: added, changed or deleted files, and for a
+          # renamed file its old path too, so moving a build file into a content folder
+          # counts as removing the build file. Deleting content is allowed.
+          files=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[] | .filename, (.previous_filename // empty)')
+          bad=$(printf '%s\n' "$files" | grep -v -E '^site/(_content/(news|gallery|articles)/[^/]+\.md|_data/social\.json|_data/pages/[^/]+\.json|assets/uploads/[^/]+)$' || true)
+          if [ -n "$bad" ]; then
+            echo "::error::This editor change touches files outside editor content:"
+            printf '%s\n' "$bad"
+            exit 1
+          fi
+          echo "All changed files are editor content."

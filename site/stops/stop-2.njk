@@ -81,8 +81,8 @@
    "geo": {
     "@type": "GeoCoordinates",
     "latitude": 52.1224,
-    "longitude": -8.30604,
-    "elevation": 110
+    "longitude": {{ figures.stops.s2.lon }},
+    "elevation": {{ figures.stops.s2.elevation_m }}
    },
    "photo": {
     "@type": "ImageObject",
@@ -92,7 +92,7 @@
      "geo": {
       "@type": "GeoCoordinates",
       "latitude": 52.1224,
-      "longitude": -8.30604
+      "longitude": {{ figures.stops.s2.lon }}
      }
     }
    },
@@ -118,13 +118,13 @@
     <h1 class="page-title">Closed canopy.</h1>
     <div class="stophero"><picture><source type="image/avif" srcset="../assets/img/plantation-700.avif 700w, ../assets/img/plantation-1100.avif 1100w, ../assets/img/plantation-1800.avif 1800w" sizes="(min-width:1200px) 1100px, (min-width:901px) calc(100vw - 64px), calc(100vw - 44px)"><source type="image/webp" srcset="../assets/img/plantation-700.webp 700w, ../assets/img/plantation-1100.webp 1100w, ../assets/img/plantation-1800.webp 1800w" sizes="(min-width:1200px) 1100px, (min-width:901px) calc(100vw - 64px), calc(100vw - 44px)"><img src="../assets/img/plantation-1100.webp" width="1800" height="2397" decoding="async" alt="Tall closely spaced conifers with bare lower trunks and no ground vegetation"></picture></div>
     <div class="stopmeta">
-      <div><span>Position</span>52.12240°N 8.30604°W</div>
-      <div><span>Elevation</span>about 110 m OD</div>
-      <div><span>Facing</span>292°</div>
-      <div><span>Recorded</span>11 Apr 2026, 08:48</div>
+      <div><span>Position</span>{{ figures.stops.s2.lat }}°N {{ figures.stops.s2.lon_abs }}°W</div>
+      <div><span>Elevation</span>about {{ figures.stops.s2.elevation_m }} m OD</div>
+      <div><span>Facing</span>{{ figures.stops.s2.bearing }}°</div>
+      <div><span>Recorded</span>{{ figures.stops.s2.recorded }}</div>
     </div>
-<p>Even-aged conifer, planted close together. The lower trunks are bare and the floor is bare needle litter. This is a working crop, and it is doing the job it was planted for.</p>
-<p>The nearest channel is twenty-three metres away.</p>
+<p>{{ pages.stop_2.p1 | prose | safe }}</p>
+<p>{{ pages.stop_2.p2 | prose | safe }}</p>
     <div class="note folknote">
       <h2 class="as-h4">The name of this glen</h2>
       <p>An account written down at Adair school in the 1930s explains how Glenabo got its name. It names the glen, not this particular spot.</p>

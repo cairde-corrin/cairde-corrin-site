@@ -103,7 +103,9 @@ but no certificate has appeared after an hour, use the option there to verify th
 configuration or provision the certificate. There is no CAA record on the domain, so
 nothing blocks Let's Encrypt.
 
-Do not add an HSTS header yet. It is hard to undo, and nothing here needs it.
+The site already sends `Strict-Transport-Security` for a year, for the exact host only:
+no `includeSubDomains` and no preload, so it cannot affect the domain's mail or any other
+name. Do not add either of those without understanding that they are hard to undo.
 
 ### 7. Point the news editor at the domain
 

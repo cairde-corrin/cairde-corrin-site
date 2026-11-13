@@ -86,7 +86,10 @@
 
     <h2 class="rv as-h3">Links out</h2>
     <p class="rv">Several pages link to other sites: Coillte, d&#250;chas.ie, the National Biodiversity Data Centre, Wikimedia Commons, Invasive Species Ireland, catchments.ie and others. Those are ordinary links. Nothing loads from them until you choose to follow one, and once you do you are on their site under their privacy policy, not this one.</p>
-    <p class="rv">The home page can show a few of the group&#8217;s Instagram and Facebook posts. Each is a card with a caption written by the group and an ordinary link to the post. Nothing is loaded from Instagram, Facebook or Meta to show them, and there is no Meta script or pixel on any page.</p>
+{% if instagram.posts.length %}    <p class="rv">The home page shows the group&#8217;s latest Instagram posts. To get them, the group uses Behold (behold.so), a service that holds a read-only connection to the group&#8217;s own Instagram account: it can read what the group has posted, and nothing else. When the site is rebuilt, about once a week, the build fetches the latest posts from Behold, makes its own copies of the pictures and publishes them here as ordinary files.</p>
+    <p class="rv">Your browser contacts neither Behold nor Instagram, Facebook or Meta when you open the home page: the pictures and captions come from this site. Each post is an ordinary link to Instagram, and nothing loads from there until you follow it. There is no Meta script or pixel on any page.</p>
+{% else %}    <p class="rv">The home page can show a few of the group&#8217;s Instagram and Facebook posts. Each is a card with a caption written by the group and an ordinary link to the post. Nothing is loaded from Instagram, Facebook or Meta to show them, and there is no Meta script or pixel on any page.</p>
+{% endif %}
 
     <h2 class="rv as-h3">Videos</h2>
     <p class="rv">Some news posts include a video. Until you press play, the post shows a still image and a play button, both served from this site: nothing is loaded from YouTube or Google, and nothing about your visit is recorded by them.</p>

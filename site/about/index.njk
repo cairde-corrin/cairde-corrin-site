@@ -78,22 +78,22 @@
   <div class="wrap">
     <p class="eyebrow rv">About us</p>
     <h1 class="rv page-title">A community group<br>working to a catchment.</h1>
-    <p class="lede rv">Cáirde Corrin is a voluntary group in Fermoy, Co. Cork. We work on the Glenabo and Corrin woodlands and the waterways that run through them.</p>
+    <p class="lede rv">{{ pages.about.p1 | prose | safe }}</p>
 
     <h2 style="margin-top:58px" class="rv as-h3">Our vision</h2>
-    <p class="rv">Glenabo-Corrin is an historical land where all living things can thrive in harmony with nature.</p>
+    <p class="rv">{{ pages.about.p2 | prose | safe }}</p>
     <h2 style="margin-top:36px" class="rv as-h3">Our mission</h2>
-    <p class="rv">We work to protect, restore and celebrate the environment, heritage and recreational use of our Glenabo-Corrin waterways, engaging with our local community, partnering with agencies, and taking action to ensure the rivers and their valleys flourish for future generations.</p>
+    <p class="rv">{{ pages.about.p3 | prose | safe }}</p>
 
     <h2 style="margin-top:58px" class="rv as-h3">Who we work with</h2>
     <div class="cards">
-      <div class="card rv"><p class="k">Landowner</p><h3 class="as-h4">Coillte</h3><p>Owner and manager of Glenabo and Corrin woods. All works on their land are subject to their consent and assessment procedures.</p></div>
-      <div class="card rv"><p class="k">Recording</p><h3 class="as-h4">National Biodiversity Data Centre</h3><p>Where sightings and survey records are submitted.</p></div>
-      <div class="card rv"><p class="k">Local authority</p><h3 class="as-h4">The local authority</h3><p>Riverside and roadside sections of the proposed loop route.</p></div>
+      <div class="card rv"><p class="k">Landowner</p><h3 class="as-h4">Coillte</h3><p>{{ pages.about.p4 | prose | safe }}</p></div>
+      <div class="card rv"><p class="k">Recording</p><h3 class="as-h4">National Biodiversity Data Centre</h3><p>{{ pages.about.p5 | prose | safe }}</p></div>
+      <div class="card rv"><p class="k">Local authority</p><h3 class="as-h4">The local authority</h3><p>{{ pages.about.p6 | prose | safe }}</p></div>
     </div>
 
     <h2 style="margin-top:36px" class="rv as-h3">How to get involved</h2>
-    <p class="rv">You do not need to be an ecologist. Most of what needs doing is walking, looking, recording and turning up. Get in touch and we will tell you what is happening next.</p>
+    <p class="rv">{{ pages.about.p7 | prose | safe }}</p>
     <a class="cta rv" href="mailto:hello@cairdecorrin.ie">Get in touch</a>
   </div>
   <div style="height:100px"></div>

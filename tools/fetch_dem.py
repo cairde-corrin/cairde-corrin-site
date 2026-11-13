@@ -40,7 +40,7 @@ Image.MAX_IMAGE_PIXELS = None  # the global geoid grid is 37 Mpx; trusted source
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.environ.get('DEM_CACHE', os.path.expanduser('~/.cache/cairde-corrin-dem'))
 GEOJSON = os.path.join(ROOT, 'site', 'assets', 'data', 'cairde-corrin.geojson')
-GPX = os.path.join(ROOT, 'source-data', '2026-08-29_glenabo_loop.gpx')
+GPX = os.path.join(ROOT, 'archive', 'source-data', '2026-08-29_glenabo_loop.gpx')
 
 COP = 'https://copernicus-dem-30m.s3.amazonaws.com/{n}/{n}.tif'
 FABDEM = 'https://data.bris.ac.uk/datasets/s5hqmjcdj8yo2ibzi9b4ew3sn/'

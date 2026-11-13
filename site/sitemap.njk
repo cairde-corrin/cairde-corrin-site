@@ -17,6 +17,9 @@ eleventyExcludeFromCollections: true
 {%- for post in collections.news %}{% if not post.data.sample %}
   <url><loc>https://www.cairdecorrin.ie{{ post.url }}</loc><lastmod>{{ (post.data.updated or post.date) | isoDate }}</lastmod><priority>0.6</priority></url>
 {%- endif %}{% endfor %}
+{%- if collections.articles.length %}
+  <url><loc>https://www.cairdecorrin.ie/articles/</loc><lastmod>{{ collections.articles[0].date | isoDate }}</lastmod><priority>0.5</priority></url>
+{%- endif %}
   <url><loc>https://www.cairdecorrin.ie/about/</loc><lastmod>2026-08-18</lastmod><priority>0.8</priority></url>
   <url><loc>https://www.cairdecorrin.ie/links/</loc><lastmod>2026-08-18</lastmod><priority>0.7</priority></url>
   <url><loc>https://www.cairdecorrin.ie/stops/stop-1.html</loc><lastmod>2026-11-11</lastmod><priority>0.6</priority></url>

@@ -314,8 +314,8 @@ a.navtoggle{text-decoration:none;align-items:center}
   background:rgba(255,255,255,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   box-shadow:0 2px 14px rgba(8,48,79,.18);
   transition:background .2s,color .2s,border-color .2s,opacity .2s}
-#car-prev{left:max(14px,calc((100vw - 1200px)/2 + 6px))}
-#car-next{right:max(14px,calc((100vw - 1200px)/2 + 6px))}
+.car-prev{left:max(14px,calc((100vw - 1200px)/2 + 6px))}
+.car-next{right:max(14px,calc((100vw - 1200px)/2 + 6px))}
 .car-btn:hover:not(:disabled){background:#fff;border-color:var(--blue-dk);color:var(--blue-dk)}
 .car-btn:focus-visible{outline:2px solid var(--blue-dk);outline-offset:3px}
 .car-btn:disabled{opacity:0;pointer-events:none}
@@ -340,6 +340,15 @@ a.navtoggle{text-decoration:none;align-items:center}
 .car-item img{width:100%;aspect-ratio:3/4;object-fit:cover}
 .car-meta{display:block;margin-top:12px;font-family:var(--data);font-size:11px;
   letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft)}
+/* The Instagram posts: square pictures, each card a link with the post's caption */
+.ig .car-btn{top:calc(var(--card) / 2)}
+.ig::before,.ig::after{height:var(--card)}
+.ig .car-item img{aspect-ratio:1}
+.ig-post{display:block;color:inherit;text-decoration:none}
+.ig-post:focus-visible{outline:2px solid var(--blue-dk);outline-offset:4px;border-radius:var(--r-lg)}
+.ig-cap{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden;
+  margin-top:6px;font-size:15px;line-height:1.45;color:var(--ink)}
+.ig-post:hover .ig-cap{text-decoration:underline}
 @media (max-width:900px){
   .carousel{--gutter:22px}
 }
@@ -525,6 +534,16 @@ figure{margin:0}
 .src-note{font-family:var(--data);font-size:12px;line-height:1.7;color:var(--ink-soft);margin:-6px 0 20px;max-width:none}
 .post-body{margin-top:32px}
 .post-body h2{font-size:1.42rem;line-height:1.3;margin:36px 0 8px}
+.editlink{position:fixed;right:18px;bottom:18px;z-index:90;display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--data);font-size:12px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;
+  color:#fff;background:var(--grad-accent);padding:12px 18px;border-radius:var(--r-pill);box-shadow:var(--shadow)}
+.editlink::before{content:"\270E";font-size:15px;letter-spacing:0}
+.editlink[hidden]{display:none}
+.editlink:hover{filter:brightness(1.1)}
+.card .byline{font-size:14px;margin:4px 0 0}
+.card .quote{margin:14px 0 0;padding-left:14px;border-left:2px solid var(--glass-lt-line)}
+.card .quote p{font-family:var(--display);font-style:italic;margin:0}
+.card .quote footer{font-family:var(--data);font-size:11px;color:var(--ink-soft);margin-top:4px}
 .post-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:40px}
 /* Click-to-load video: a self-hosted still with a play button, swapped for the player on
    click (site.js). 16:9 throughout, so the swap does not move the page. */

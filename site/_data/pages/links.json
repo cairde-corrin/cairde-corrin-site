@@ -1,0 +1,33 @@
+{
+  "p1": "Recording, reporting and reference. If you only use one of these, make it the biodiversity recording site.",
+  "sites": [
+    {
+      "name": "Corrin Nature Reserve",
+      "url": "https://rathcormacgameandwildlifeclub.ie/nature-reserve/"
+    },
+    {
+      "name": "National Biodiversity Data Centre",
+      "url": "https://biodiversityireland.ie"
+    },
+    {
+      "name": "Invasive Species Ireland",
+      "url": "https://invasives.ie"
+    },
+    {
+      "name": "Leave No Trace Ireland",
+      "url": "https://leavenotraceireland.org"
+    },
+    {
+      "name": "Coillte",
+      "url": "https://www.coillte.ie"
+    },
+    {
+      "name": "Tree Council of Ireland",
+      "url": "https://www.treecouncil.ie"
+    },
+    {
+      "name": "Catchments.ie",
+      "url": "https://www.catchments.ie"
+    }
+  ]
+}

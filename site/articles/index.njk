@@ -1,0 +1,19 @@
+---
+layout: base.njk
+title: Articles
+description: Articles about Cáirde Corrin and the Glenabo-Corrin catchment published elsewhere.
+---
+{%- set r = page.url | root -%}
+    <p class="eyebrow rv">Articles</p>
+    <h1 class="rv page-title">Written elsewhere.</h1>
+    <p class="lede rv">Articles about the group and the catchment in other publications. Each links to the original.</p>
+{%- if not collections.articles.length %}
+    <p class="rv">Nothing listed yet. Articles will appear here as soon as the first is added.</p>
+    <a class="cta rv" href="{{ r }}news/">Read the group's news</a>
+{%- else %}
+    <div class="cards">
+{%- for a in collections.articles %}
+      <article class="card rv"><p class="k">{{ a.data.publication }} · <time datetime="{{ a.date | isoDate }}">{{ a.date | longDate }}</time></p><h2 class="as-h3"><a href="{{ a.data.url }}" rel="noopener">{{ a.data.title }}</a></h2>{% if a.data.author %}<p class="byline">By {{ a.data.author }}</p>{% endif %}<p>{{ a.data.summary }}</p>{% if a.data.quote %}<blockquote class="quote"><p>“{{ a.data.quote }}”</p><footer>{{ a.data.publication }}</footer></blockquote>{% endif %}<a class="card-link" href="{{ a.data.url }}" rel="noopener" aria-label="Read {{ a.data.title }} in {{ a.data.publication }}">Read it in {{ a.data.publication }} ({{ a.data.url | domain }})</a></article>
+{%- endfor %}
+    </div>
+{%- endif %}
