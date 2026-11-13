@@ -350,13 +350,26 @@ can be read, or whether a GPS track can be used. If one of those fails, the webs
 not update at all and stays exactly as it was, so nothing is broken or half-changed. You
 can tell it is this when the editor said **Changes saved** and the post or page is no
 longer in the **Workflow** tab, but ten minutes and a hard refresh later the website still
-shows the old version. The person who looks after the website is told the reason, in the
-same plain words, naming the page and the block.
+shows the old version.
+
+Nobody is told about this automatically: noticing that your change has not appeared is
+the signal, and you are the first to know. So when it happens:
+
+1. **Do not publish the same change again.** It will stop in the same place each time.
+   Nothing else you or anyone else publishes will appear either until it is fixed.
+2. **Think about what you added that the editor could not check: a new photo you
+   uploaded, or a GPS track.** That is almost always the cause. If you can, open the page,
+   remove that photo or that Walked route block (or choose a photo already on the
+   website instead), save and publish. If the website then updates, that file was the
+   problem: keep it aside and tell the person who looks after the website.
+3. **Tell the person who looks after the website,** the same day, whether or not step 2
+   worked. Say which page you changed, roughly what you changed, and the time you
+   published. They can read the reason the website gives, in plain words naming the page
+   and the block, and will tell you what to fix or fix it themselves.
 
 **Who to contact.** For 1, nobody: it sorts itself out. For 2, nobody: the message tells you
-what to fix. For 3, or whenever you are not sure, contact the person who looks after the
-website: tell them which page you changed and when you published. They can see why the
-update stopped and will tell you which block to fix, or fix it themselves.
+what to fix. For 3, or whenever you are not sure, the person who looks after the website,
+as above.
 
 ## When something looks wrong
 

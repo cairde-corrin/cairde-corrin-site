@@ -198,14 +198,20 @@ buttons by Decap's internal labels, which an update can rename.
   (`CONTRIBUTING.md`, "Checks before publishing"). What is left are things only the build
   can check (an unreadable photo or GPS track). The build then stops, the live site keeps
   its previous version, and the end of the deploy log says, in plain words, which page and
-  block and what to fix. Editors cannot open Netlify's deploy log, so whoever looks after
-  the site must be told: in Netlify, **Project configuration** -> **Notifications** ->
-  **Deploy notifications** -> **Add notification** -> **Email notification**, event
-  **Deploy failed**, with that person's address. Netlify's documentation lists email
-  notifications for the Pro and Enterprise plans; on the free plan, use the **HTTP POST
-  request** or Slack notification for the same event instead, or check the Deploys page
-  after an editor publishes. The email's own text is Netlify's, not the build's; the plain
-  explanation is at the end of the log it links to.
+  block and what to fix. **Nobody is notified automatically.** On the free plan,
+  Netlify's email and Slack deploy notifications are not available (both carry a Pro tag
+  in the Netlify UI), and no other route has been set up. Editors cannot open Netlify's
+  deploy log; they are told, in the editor guide ("When a change does not appear"), to
+  tell you when a change has not appeared. So whoever looks after the site checks for
+  failed deploys themselves:
+  - **When an editor says a change has not appeared, and once a week otherwise** (after
+    the Monday rebuild is a good moment), open Netlify -> the project -> **Deploys**.
+  - A failed deploy is marked **Failed** in red. Open it and scroll to the very end of
+    its log: the box headed **THE WEBSITE WAS NOT UPDATED** names the page as editors see
+    it, each problem, and the file.
+  - Fix it in the editor (or tell the editor which block), and publish. The next deploy
+    should be green. While a deploy fails, nothing anyone publishes reaches the site.
+  If a notification route is set up later, describe it here and in the editor guide.
 - **A publish that did not appear, with a failed deploy.** If an editor publishes a page
   with a broken or incomplete block, the build stops and Netlify keeps the previous
   version live. The deploy log names the page file and the block, for example
