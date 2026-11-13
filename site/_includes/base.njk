@@ -12,6 +12,9 @@
 <meta name="description" content="{{ description }}">
 {%- if sample %}
 <meta name="robots" content="noindex">
+{%- elif section and not collections[section].length %}
+{#- a section with nothing in it yet: built, so old links work, but not for search engines (_includes/nav.js) #}
+<meta name="robots" content="noindex, follow">
 {%- endif %}
 <link rel="canonical" href="{{ site }}{{ page.url }}">
 <meta property="og:title" content="{{ fullTitle }}"><meta property="og:description" content="{{ description }}">

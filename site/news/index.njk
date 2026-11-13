@@ -1,5 +1,6 @@
 ---
 layout: base.njk
+section: news
 title: News
 description: News from Cáirde Corrin, newest first.
 pagination:
@@ -15,7 +16,7 @@ permalink: "news/{% if pagination.pageNumber > 0 %}page/{{ pagination.pageNumber
     <h1 class="rv page-title">News.</h1>
     <p class="lede rv">Updates from Cáirde Corrin, newest first.</p>
 {%- if not posts.length %}
-    <p class="rv">Nothing posted yet. The first update will appear here as soon as it is published.</p>
+    <p class="rv">No news yet. The first post will appear here as soon as it is published.</p>
     <a class="cta rv" href="{{ r }}trails/">Explore the trail</a>
 {%- else %}
     <div class="cards">

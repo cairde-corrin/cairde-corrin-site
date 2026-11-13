@@ -100,7 +100,8 @@ From the repository root, after `npm run build`:
     python3 tools/compare_build.py          # every copied file identical to its source
     python3 tools/linkcheck.py --external   # dead links, inside and out
     python3 tools/ldcheck.py                # structured data against schema.org
-    node tools/selftest.js                  # the build's own parsers and checks
+    node tools/selftest.js                  # the build's own parsers and checks, and reachability
+    node tools/reachcheck.js                # every page reachable; sitemap.xml agrees (full report)
 
 Use `tools/serve.py`, not `python3 -m http.server`: the built-in server does not answer
 Range requests, so the home page film refuses to seek and looks broken locally while

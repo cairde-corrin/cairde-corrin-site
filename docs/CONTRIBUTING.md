@@ -542,6 +542,28 @@ and **About** each open a short list. To add a page, add it to a group in `nav.j
 header row does not grow. Add a sixth top-level entry only if it is as important as
 Trails and News.
 
+**Sections that fill up over time follow one rule.** News, the Gallery and Articles each
+appear in the header and the footer once they have a published entry, and not before
+(an entry in `nav.js` with `section:`). While a section is empty its page is still built,
+so an old link or bookmark works, but it shows only its empty-state message ("No news
+yet. The first post will appear here as soon as it is published."), is marked noindex
+(`base.njk`, from the page's `section:` front matter) and is left out of `sitemap.xml`.
+The home page's posts from the group behave the same way without a page: the block shows
+the Instagram posts if there are any, otherwise the editor's social posts, otherwise
+nothing. A new section of the same kind joins this rule rather than inventing its own.
+
+**Every page must be reachable.** `site/_includes/reach.js` walks the built site from the
+home page, following every visible link, and compares the pages built, the pages in
+`sitemap.xml` and the pages reached. A built page no link leads to, a sitemap entry with no
+page, a reachable indexable page missing from the sitemap, or a noindexed page in the
+sitemap is a finding, unless `ALLOW` in that file names it with its reason: the editor and
+its Help page, the Netlify email templates, a stop not yet surveyed, an empty section (the
+last two only while noindexed). The build prints findings as `[reach]` warnings and carries
+on, because an editor can legitimately remove a page's only link (the New spaces cards are
+the only way to its two proposals) and that must not stop publishing. The self-test fails
+on any finding, so a developer cannot add a page with no way to reach it.
+`node tools/reachcheck.js` prints the full report.
+
 **The menu breakpoint is measured, not guessed.** The logo and the five entries need
 566 px at the current 12 px nav type. At 680 px that leaves 114 px, 20%, spare, so the
 row shows from 680 px up and folds behind **Menu** at 679 px and below. If you change the
@@ -640,7 +662,8 @@ keeps its credit, because the credit is keyed to the file.
 
 ## Before you push
 
-Build, then run the checks listed in `DEPLOY.md` ("Checks before you deploy"), and also:
+Build, then run the checks listed in `DEPLOY.md` ("Checks before you deploy"; the
+self-test includes the reachability check, so build first), and also:
 
     python3 tools/linkcheck.py --reveal
 

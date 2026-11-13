@@ -3,10 +3,12 @@
 Every document about the Cáirde Corrin website, and who it is for. Each one covers its
 own ground and points to the others rather than repeating them.
 
-## If you write news for the site
+## If you write for the site
 
-- **`EDITOR-GUIDE.md`** - logging in, writing a post, photos, video, publishing, and
-  what to do when something looks wrong. Nothing else here is needed.
+- **`EDITOR-GUIDE.md`** - logging in, writing a post, changing a page and its blocks,
+  photos, stops and walked routes, publishing, what to do when a change does not appear,
+  and when something looks wrong. Nothing else here is needed. The same guide opens from
+  the Help button inside the editor.
 
 ## If you look after the site
 
@@ -28,10 +30,11 @@ own ground and points to the others rather than repeating them.
 
 - **`DEVELOPER-GUIDE.md`** - how the whole thing works, with a diagram: the build, the
   content and image pipelines, the editor and Git Gateway, deploying, every integration.
-
 - **`CONTRIBUTING.md`** - the rules (nothing invented, the sign addresses never change,
-  everything borrowed is credited), the verified figures and where each comes from, how
-  to add media, news by hand, stops and pages, and how changes are checked and released.
+  everything borrowed is credited), where the figures live and the check that watches
+  them, pages built from blocks, structured data, licence credits, stops and uploaded
+  routes, the checks before publishing, how to add media and news by hand, and how
+  changes are checked and released.
 - **`../tools/README.md`** - what each helper script does.
 
 ## About the project

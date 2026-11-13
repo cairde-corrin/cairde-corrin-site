@@ -22,6 +22,7 @@ const { prose } = require('./site/_includes/prose.js');
 const figurecheck = require('./site/_includes/figurecheck.js');
 const blocks = require('./site/_includes/blocks.js');
 const ld = require('./site/_includes/ld.js');
+const reach = require('./site/_includes/reach.js');
 // Relative prefix back to the site root: /news/x/ -> ../../, /stops/stop-1.html -> ../
 const root = (url) => '../'.repeat(url.replace(/[^/]*$/, '').split('/').filter(Boolean).length);
 
@@ -129,12 +130,26 @@ module.exports = function (eleventyConfig) {
   // The figure consistency check (_includes/figurecheck.js) reads every finished page once
   // the build is done, and warns when two pages give the same figure differently. It
   // only warns: nothing it finds, and no fault in it, can stop a build.
-  let built = [];
-  eleventyConfig.on('eleventy.before', () => { built = []; });
+  let built = [], everyPage = [], sitemap = '';
+  eleventyConfig.on('eleventy.before', () => { built = []; everyPage = []; sitemap = ''; });
   eleventyConfig.addTransform('figures', function (content) {
     const out = this.page.outputPath;
     if (typeof out === 'string' && out.endsWith('.html') && !this.page.url.startsWith('/admin/')) built.push({ url: this.page.url, html: content });
+    if (typeof out === 'string' && out.endsWith('.html')) everyPage.push({ url: this.page.url, html: content });
+    if (typeof out === 'string' && out.endsWith('sitemap.xml')) sitemap = content;
     return content;
+  });
+  // Every page must be reachable from the home page, and sitemap.xml must list exactly the
+  // reachable, indexable pages (_includes/reach.js). The build only warns: an editor removing
+  // a link (the New spaces cards are the only way to its two proposals) must not stop
+  // publishing. tools/selftest.js fails on the same findings, so a developer cannot add a
+  // page with no way to it.
+  eleventyConfig.on('eleventy.after', () => {
+    try {
+      for (const f of reach.check(everyPage, sitemap).findings) console.warn(`[reach] ${f}`);
+    } catch (e) {
+      console.warn(`[reach] the reachability check could not run (${e.message}); the build is unaffected.`);
+    }
   });
   eleventyConfig.on('eleventy.after', () => {
     try {

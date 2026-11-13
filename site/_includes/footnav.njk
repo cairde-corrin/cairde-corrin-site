@@ -1,5 +1,5 @@
 {#- The footer's site links, from _includes/nav.js. Included by every page. -#}
 {%- set r = page.url | root -%}
 <nav class="footnav" id="site-links" aria-label="Site"><a href="{{ r or './' }}">Home</a>
-{%- for g in page.url | navItems(collections.gallery.length, collections.articles.length) %}{% for i in (g.items or [g]) %}<a href="{{ r }}{{ i.href }}">{{ i.label }}</a>{% endfor %}{% endfor -%}
+{%- for g in page.url | navItems({ news: collections.news.length, gallery: collections.gallery.length, articles: collections.articles.length }) %}{% for i in (g.items or [g]) %}<a href="{{ r }}{{ i.href }}">{{ i.label }}</a>{% endfor %}{% endfor -%}
 <a href="{{ r }}credits/">Credits</a><a href="{{ r }}privacy/">Privacy</a><a href="{{ r }}terms/">Terms</a></nav>

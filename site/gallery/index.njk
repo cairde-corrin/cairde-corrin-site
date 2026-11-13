@@ -1,5 +1,6 @@
 ---
 layout: base.njk
+section: gallery
 title: Gallery
 description: Photographs from the Glenabo-Corrin catchment, added by Cáirde Corrin.
 ---
@@ -8,7 +9,7 @@ description: Photographs from the Glenabo-Corrin catchment, added by Cáirde Cor
     <h1 class="rv page-title">Gallery.</h1>
     <p class="lede rv">Photographs from the catchment, newest first.</p>
 {%- if not collections.gallery.length %}
-    <p class="rv">No photographs here yet. They will appear here as soon as the first are added.</p>
+    <p class="rv">No photographs yet. The first will appear here as soon as it is published.</p>
     <a class="cta rv" href="{{ r }}trails/">Explore the trail</a>
 {%- else %}
     <div class="cards">

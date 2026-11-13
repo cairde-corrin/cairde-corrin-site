@@ -238,6 +238,10 @@ buttons by Decap's internal labels, which an update can rename.
   file from a phone carries them), add the file under `site/assets/audio/` or
   `site/assets/video/`, and the editor can then add it to a Recording, List of recordings or
   Films block.
+- **A `[reach]` warning in a deploy log.** A page that no link leads to any more, or a
+  sitemap that disagrees with the pages. It is usually an editor removing a page's only
+  link, such as the New spaces cards that lead to its two proposals: put the link back,
+  or agree the page should go. The site is live meanwhile; the warning never stops a build.
 - **A `[figures]` warning in a deploy log.** Editors can change any figure in the page
   text, and the build warns when two pages then give the same quantity differently, or
   when they all disagree with the measured value in `site/_data/figures.json`. The

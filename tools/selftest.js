@@ -47,18 +47,24 @@ for (const h of ['<a href="https://www.instagram.com/p/x/">x</a>', '<link rel="c
   assert.equal(externalLoad(h), null, h);
 }
 
-// Navigation: Gallery only once it has a photo; the page's own link and its group are marked
+// Navigation: News, the Gallery and Articles only once each has an entry, each on its own;
+// the page's own link and its group are marked
 const { nav } = require('../site/_includes/nav.js');
 const links = (n) => n.flatMap((g) => g.items || [g]).map((i) => i.href);
-assert.ok(!links(nav('/', 0)).includes('gallery/'));
-assert.ok(links(nav('/', 3)).includes('gallery/'));
-assert.equal(nav('/', 0).length, 5, 'five header entries');
-const moor = nav('/new-spaces/corrin-moor.html', 0);
+const all = { news: 1, gallery: 1, articles: 1 };
+for (const s of ['news', 'gallery', 'articles']) {
+  assert.ok(!links(nav('/', { ...all, [s]: 0 })).includes(`${s}/`), `${s} hidden while empty`);
+  assert.ok(links(nav('/', { ...all, [s]: 3 })).includes(`${s}/`), `${s} shown once it has an entry`);
+}
+assert.ok(links(nav('/', all)).indexOf('articles/') === links(nav('/', all)).indexOf('gallery/') + 1, 'Articles beside Gallery');
+assert.equal(nav('/', all).length, 5, 'five header entries');
+assert.equal(nav('/', {}).length, 4, 'News leaves the header while it is empty');
+const moor = nav('/new-spaces/corrin-moor.html', {});
 assert.ok(moor.find((g) => g.id === 'work').current);
 assert.ok(moor.find((g) => g.id === 'work').items.find((i) => i.href === 'new-spaces/').current);
 assert.ok(!moor.find((g) => g.id === 'explore').current);
-assert.ok(nav('/news/some-post/', 0).find((g) => g.href === 'news/').current);
-assert.ok(nav('/', 0).every((g) => !g.current));
+assert.ok(nav('/news/some-post/', all).find((g) => g.href === 'news/').current);
+assert.ok(nav('/', all).every((g) => !g.current));
 
 // Page text: figures are ordinary words, raw HTML never renders, italics keep the site's class
 const { prose } = require('../site/_includes/prose.js');
@@ -241,5 +247,34 @@ const webp = Buffer.concat([Buffer.from('RIFF'), Buffer.from([(webpBody.length +
   const n = blocks.counts(real);
   assert.equal(n.species, real.species.blocks.find((b) => b.type === 'species').items.length);
   assert.equal(n.stops_recorded + n.stops_unsurveyed, 10);
+  // Reachability: a page no link leads to, a sitemap entry with no page, a reachable page
+  // missing from the sitemap, are all found; a deliberate exception is not a finding
+  const reach = require('../site/_includes/reach.js');
+  const hp = (url, links, extra = '') => ({ url, html: `<html><head>${extra}</head><body>${links.map((l) => `<a href="${l}">x</a>`).join('')}</body></html>` });
+  const map = (...u) => u.map((x) => `<url><loc>https://www.cairdecorrin.ie${x}</loc></url>`).join('');
+  const NOIDX = '<meta name="robots" content="noindex, follow">';
+  let rr = reach.check([hp('/', ['about/', 'https://www.cairdecorrin.ie/trails/', 'https://example.org/']), hp('/about/', ['../']), hp('/trails/', []), hp('/lost/', [])],
+    map('/', '/about/', '/trails/', '/gone/'));
+  assert.deepEqual(rr.findings, ['/lost/ is built but no link leads to it from the home page.', '/gone/ is in sitemap.xml but no such page is built.']);
+  rr = reach.check([hp('/', ['about/']), hp('/about/', [])], map('/'));
+  assert.deepEqual(rr.findings, ['/about/ can be reached and indexed but is not in sitemap.xml.']);
+  rr = reach.check([hp('/', []), hp('/gallery/', [], NOIDX), hp('/stops/stop-7.html', [], NOIDX), hp('/admin/', [])], map('/'));
+  assert.deepEqual(rr.findings, []);
+  assert.equal(rr.excused.length, 3);
+  rr = reach.check([hp('/', []), hp('/gallery/', [])], map('/'));
+  assert.match(rr.findings[0], /^\/gallery\/ is built but no link/, 'an empty section is excused only while it is noindexed');
+  rr = reach.check([hp('/', ['admin/']), hp('/x/', [], NOIDX)], map('/', '/x/'));
+  assert.ok(rr.findings.includes('/x/ is in sitemap.xml but is marked noindex.'));
+  assert.ok(!reach.linksOf('<a class="editlink" href="admin/" hidden>Edit</a>', '/').size, 'a hidden link is no way in');
+  // ...and the site as last built has no findings (build first: npm run build)
+  const site = pth.join(__dirname, '..', '_site');
+  if (fsp.existsSync(pth.join(site, 'sitemap.xml'))) {
+    const { fromSite } = require('./reachcheck.js');
+    const s = fromSite(site);
+    const found = reach.check(s.pages, s.sitemap).findings;
+    assert.deepEqual(found, [], `the built site has pages that cannot be reached, or a sitemap that disagrees (run npm run build first if you have changed pages since): ${found.join(' ')}`);
+  } else {
+    console.log('selftest: no _site/ yet, so the built site was not checked for reachability (npm run build)');
+  }
   console.log('selftest: all checks passed');
 })().catch((e) => { console.error(e); process.exit(1); });

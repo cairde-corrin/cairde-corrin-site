@@ -66,7 +66,9 @@ nothing from any other site until they press play on a video.
    - `figures`: keeps a copy of each finished page for the figure consistency check
      (`_includes/figurecheck.js`), which runs once the build is done and prints a
      `[figures]` warning when two pages give the same figure differently. It never
-     stops a build (`CONTRIBUTING.md`, "Where the figures live").
+     stops a build (`CONTRIBUTING.md`, "Where the figures live"). The same pages, with
+     sitemap.xml, go through the reachability check (`_includes/reach.js`), which prints
+     a `[reach]` warning for any page no link leads to (`CONTRIBUTING.md`, "The navigation").
 
 Filters worth knowing: `blocks` and `pageLd` (the editable pages), `prose` (one piece of
 editor text, `_includes/prose.js`), `editLink`, `navItems`, `domain`, `socialPosts`,

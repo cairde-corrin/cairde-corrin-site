@@ -1,5 +1,6 @@
 ---
 layout: base.njk
+section: articles
 title: Articles
 description: Articles about Cáirde Corrin and the Glenabo-Corrin catchment published elsewhere.
 ---
@@ -8,7 +9,7 @@ description: Articles about Cáirde Corrin and the Glenabo-Corrin catchment publ
     <h1 class="rv page-title">Written elsewhere.</h1>
     <p class="lede rv">Articles about the group and the catchment in other publications. Each links to the original.</p>
 {%- if not collections.articles.length %}
-    <p class="rv">Nothing listed yet. Articles will appear here as soon as the first is added.</p>
+    <p class="rv">No articles yet. The first will appear here as soon as it is published.</p>
     <a class="cta rv" href="{{ r }}news/">Read the group's news</a>
 {%- else %}
     <div class="cards">
