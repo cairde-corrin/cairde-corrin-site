@@ -4,6 +4,8 @@
 // quantities it gives (in digits or in words, in hectares or km², and so on), and warns
 // when two pages give the same quantity differently, naming both. It also warns when the
 // pages agree with each other but not with the measured value in site/_data/figures.json.
+// Counts of things that exist ("13 species", "Nineteen recordings", "Five stories") are
+// compared with how many the website actually has.
 // It only ever warns: a build is never stopped or held back by it. It is a signal for
 // whoever maintains the site, not a gate for editors.
 //
@@ -38,7 +40,18 @@ const WATCH = [
   { id: 'route.length', label: 'Length of the proposed loop route', unit: 'km', form: 'one', before: /\broute\b/i, ref: 'proposal.loop_km' },
   { id: 'route.extension', label: 'New trail in the Glenabo extension', unit: 'm', form: 'one', after: /^of new trail\b/i, ref: 'proposal.extension_m' },
   { id: 'pair.apart', label: 'Distance between the two photographs', unit: 'm', form: 'one', after: /^apart\b/i, ref: 'photo_pair.apart_m' },
-  { id: 'stops.recorded', label: 'Number of recorded stops', unit: 'stops', form: 'one', ref: 'stops.recorded' },
+  // Counts of things that exist on the website, compared with how many there actually are
+  { id: 'stops.recorded', label: 'Number of recorded stops', unit: 'stops', form: 'one', ref: 'counts.stops_recorded', counted: 'recorded stops' },
+  { id: 'stops.unsurveyed', label: 'Number of stops still to survey', unit: 'unsurveyed', form: 'one', ref: 'counts.stops_unsurveyed', counted: 'stops still to survey' },
+  { id: 'count.species', label: 'Number of species', unit: 'species', form: 'one', ref: 'counts.species', counted: 'species in the species list' },
+  { id: 'count.recordings', label: 'Number of recordings', unit: 'recordings', form: 'one', ref: 'counts.recordings', counted: 'recordings in the list of recordings' },
+  { id: 'count.films', label: 'Number of films', unit: 'films', form: 'one', ref: 'counts.films', counted: 'films' },
+  { id: 'count.stories', label: 'Number of folklore stories', unit: 'stories', form: 'one', ref: 'counts.stories', counted: 'folklore stories' },
+  { id: 'count.strands', label: 'Number of strands of work', unit: 'strands', form: 'one', ref: 'counts.strands', counted: 'points labelled Strand' },
+  { id: 'count.phases', label: 'Number of phases', unit: 'phases', form: 'one', ref: 'counts.phases', counted: 'points labelled Phase' },
+  { id: 'count.projects', label: 'Number of new-space projects', unit: 'projects', form: 'one', ref: 'counts.projects', counted: 'cards linking to a new-space page' },
+  { id: 'count.species_photos', label: 'Number of species reference photographs', unit: 'photographs', form: 'one', before: /\bspecies reference\b/i, ref: 'counts.species_photos', counted: 'species reference photographs from other sources on the website' },
+  { id: 'count.invasive_photos', label: 'Number of invasive species photographs', unit: 'photographs', form: 'one', before: /\binvasive\b/i, ref: 'counts.invasive_photos', counted: 'invasive species photographs from other sources on the website' },
 ];
 
 // Sentences that report someone else's figure, which may rightly differ from ours
@@ -49,7 +62,16 @@ const UNITS = [
   { re: /^(?:hectares?|ha)(?![a-z])/i, unit: 'area', scale: 1 },
   { re: /^(?:km|kilomet(?:re|er)s?)(?![a-z²])/i, unit: 'km', scale: 1 },
   { re: /^(?:m|metres?|meters?)(?![a-z²])/i, unit: 'm', scale: 1 },
-  { re: /^(?:recorded stops?|stops? recorded|recorded)\b/i, unit: 'stops', scale: 1 },
+  { re: /^(?:recorded stops?|stops? recorded|recorded)\b/i, unit: 'stops', scale: 1, count: true },
+  { re: /^(?:to survey\b|of the (?:\w+ )?stops have not been surveyed)/i, unit: 'unsurveyed', scale: 1, count: true },
+  { re: /^(?:plant )?species\b/i, unit: 'species', scale: 1, count: true },
+  { re: /^(?:field )?recordings\b/i, unit: 'recordings', scale: 1, count: true },
+  { re: /^(?:short )?films\b/i, unit: 'films', scale: 1, count: true },
+  { re: /^stories\b/i, unit: 'stories', scale: 1, count: true },
+  { re: /^strands\b/i, unit: 'strands', scale: 1, count: true },
+  { re: /^phases\b/i, unit: 'phases', scale: 1, count: true },
+  { re: /^projects\b/i, unit: 'projects', scale: 1, count: true },
+  { re: /^photographs\b/i, unit: 'photographs', scale: 1, count: true },
 ];
 
 // Numbers written as words, as the site does at the start of a sentence or in prose
@@ -147,8 +169,8 @@ function mentions(blocks) {
           const q = classify(u.unit, form, before, afterUnit, ahead);
           if (!q) continue;
           const value = +text * u.scale;
-          found.push({ id: q.id, label: q.label, ref: q.ref, unit: u.unit, value,
-            precision: precision(text, +text) * u.scale, quote: sentence.length > 90 ? sentence.slice(0, 87) + '...' : sentence });
+          found.push({ id: q.id, label: q.label, ref: q.ref, counted: q.counted, unit: u.unit, value,
+            precision: u.count ? 1 : precision(text, +text) * u.scale, quote: sentence.length > 90 ? sentence.slice(0, 87) + '...' : sentence });
         }
       }
     }
@@ -162,7 +184,8 @@ function classify(unit, form, before, after, ahead = '') {
   const fits = WATCH.filter((q) => q.unit === unit && q.form === form);
   const close = fits.find((q) => q.after && q.after.test(after));
   if (close) return close;
-  if (unit === 'stops') return fits[0];
+  // a count with only one meaning needs no label
+  if (fits.length === 1 && !fits[0].before && !fits[0].after) return fits[0];
   let best = null, bestAt = -1;
   for (const q of fits) {
     if (!q.before) continue;
@@ -185,10 +208,11 @@ function agree(a, b) {
   return Math.abs(a.value - b.value) < Math.max(a.precision, b.precision) / 2 + 1e-9;
 }
 
-const UNIT_TEXT = { area: 'ha', m: 'm', km: 'km', stops: '' };
+const UNIT_TEXT = { area: 'ha', m: 'm', km: 'km' };
 const show = (v, unit) => `${+v.toFixed(2)}${UNIT_TEXT[unit] ? ' ' + UNIT_TEXT[unit] : ''}`;
 
-// pages: [{ url, html }]. reference: figures.json. Returns the warnings, one per quantity.
+// pages: [{ url, html }]. reference: figures.json, plus counts: how many of each thing the
+// website actually has (_includes/blocks.js, counts). Returns the warnings, one per quantity.
 function check(pages, reference = {}) {
   const byId = new Map();
   for (const p of pages) {
@@ -215,10 +239,12 @@ function check(pages, reference = {}) {
     }
     const measured = String(list[0].ref).split('.').reduce((o, k) => (o == null ? undefined : o[k]), reference);
     if (measured != null && measured !== '') {
-      const ref = { value: +measured, precision: precision(String(measured), +measured) };
+      const counted = list[0].counted;
+      const ref = { value: +measured, precision: counted ? 1 : precision(String(measured), +measured) };
       if (!agree(ref, list[0])) {
         warnings.push(`${label}: every page that gives it says ${show(list[0].value, list[0].unit)} (${where(list)}), `
-          + `but the measured value in site/_data/figures.json is ${show(ref.value, list[0].unit)}.`);
+          + (counted ? `but the website has ${ref.value} ${counted}.`
+            : `but the measured value in site/_data/figures.json is ${show(ref.value, list[0].unit)}.`));
       }
     }
   }

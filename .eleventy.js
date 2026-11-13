@@ -20,6 +20,8 @@ const ldPages = require('./site/_includes/ld-pages.js');
 const csp = require('./site/_includes/csp.js');
 const { prose } = require('./site/_includes/prose.js');
 const figurecheck = require('./site/_includes/figurecheck.js');
+const blocks = require('./site/_includes/blocks.js');
+const ld = require('./site/_includes/ld.js');
 // Relative prefix back to the site root: /news/x/ -> ../../, /stops/stop-1.html -> ../
 const root = (url) => '../'.repeat(url.replace(/[^/]*$/, '').split('/').filter(Boolean).length);
 
@@ -45,6 +47,12 @@ module.exports = function (eleventyConfig) {
   // directory data file (News, the sitemap) overrides this.
   eleventyConfig.addGlobalData('permalink', () => (data) => `${data.page.filePathStem.slice(1)}.html`);
   eleventyConfig.addFilter('navItems', nav);
+  // The editable pages: their blocks (_includes/blocks.js) and their structured data
+  // (_includes/ld.js), both from site/_data/pages/<key>.json. A broken block stops the build.
+  eleventyConfig.addAsyncFilter('blocks', (pages, key, url, gallery, instagram, socialData, figures) =>
+    blocks.render(key, pages[key], { url, pages, gallery, instagram, social: social.posts(socialData), figures,
+      film: key === 'home' ? fs.readFileSync(path.join(__dirname, 'site', '_includes', 'film.html'), 'utf8').trim() : '' }));
+  eleventyConfig.addAsyncFilter('pageLd', (pages, key, url, figures) => ld.forPage(key, pages, url, figures));
   // Page text from the editor (_includes/prose.js)
   eleventyConfig.addFilter('prose', prose);
   // The editor's Help page (admin/help.njk) is docs/EDITOR-GUIDE.md itself, rendered here
@@ -95,10 +103,12 @@ module.exports = function (eleventyConfig) {
   });
   eleventyConfig.on('eleventy.after', () => {
     try {
-      const reference = JSON.parse(fs.readFileSync(path.join(__dirname, 'site', '_data', 'figures.json'), 'utf8'));
-      // the number of recorded stops is however many stop pages are published for search
-      const stops = built.filter((p) => /^\/stops\/stop-\d+\.html$/.test(p.url) && !/<meta name="robots" content="noindex/.test(p.html));
-      reference.stops = { ...reference.stops, recorded: String(stops.length) };
+      const read = (f) => JSON.parse(fs.readFileSync(f, 'utf8'));
+      const reference = read(path.join(__dirname, 'site', '_data', 'figures.json'));
+      // how many species, recordings, stories, recorded stops ... the website actually has
+      const dir = path.join(__dirname, 'site', '_data', 'pages');
+      const pages = Object.fromEntries(fs.readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => [f.slice(0, -5), read(path.join(dir, f))]));
+      reference.counts = blocks.counts(pages);
       for (const w of figurecheck.check(built, reference)) console.warn(`[figures] ${w}`);
     } catch (e) {
       console.warn(`[figures] the figure check could not run (${e.message}); the build is unaffected.`);
@@ -120,6 +130,8 @@ module.exports = function (eleventyConfig) {
     '/new-spaces/': 'pages/entries/new_spaces', '/new-spaces/corrin-moor.html': 'pages/entries/corrin_moor',
     '/new-spaces/corrin-wetlands.html': 'pages/entries/corrin_wetlands', '/stops/stop-1.html': 'pages/entries/stop_1',
     '/stops/stop-2.html': 'pages/entries/stop_2', '/stops/stop-3.html': 'pages/entries/stop_3',
+    '/water/': 'pages/entries/water', '/credits/': 'pages/entries/credits', '/species/': 'pages/entries/species',
+    '/folklore/': 'pages/entries/folklore', '/recordings/': 'pages/entries/recordings', '/trails/': 'pages/entries/trails',
     '/news/': 'news', '/gallery/': 'gallery', '/articles/': 'articles' };
   eleventyConfig.addFilter('editLink', (page) => {
     if (/\/_content\/news\/[^/]+\.md$/.test(page.inputPath)) return `collections/news/entries/${page.inputPath.split('/').pop().slice(0, -3)}`;

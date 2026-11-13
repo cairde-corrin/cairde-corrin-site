@@ -1,4 +1,30 @@
 {
-  "p1": "One hundred and twenty-four metres from Stop 02, and a few metres lower. The difference is not the hill. It is what was planted, and when.",
-  "p2": "Moss runs along every limb, there is structure at three different heights, and light reaches the ground."
+  "page": {
+    "title": "The mossy stand",
+    "description": "The mossy stand. Recorded at about 105 m in the Glenabo catchment, Fermoy, Co. Cork."
+  },
+  "hero": {
+    "eyebrow": "Stop 03 - cairdecorrin.ie/s/3",
+    "title": "The mossy stand.",
+    "photo": "/assets/img/mossy-1800.webp",
+    "alt": "Moss-covered branches of broadleaf trees coming into leaf, light reaching the woodland floor",
+    "latitude": "52.12344",
+    "longitude": "-8.30538",
+    "elevation": "105",
+    "facing": "106",
+    "recorded": "11 Apr 2026, 08:54"
+  },
+  "blocks": [
+    {
+      "type": "text",
+      "text": "One hundred and twenty-four metres from Stop 02, and a few metres lower. The difference is not the hill. It is what was planted, and when.\n\nMoss runs along every limb, there is structure at three different heights, and light reaches the ground."
+    },
+    {
+      "type": "note",
+      "heading": "The name of this glen",
+      "text": "An account written down at Adair school in the 1930s explains how Glenabo got its name. It names the glen, not this particular spot.",
+      "link_text": "Read the summary and the source →",
+      "link": "/folklore/#glenabo"
+    }
+  ]
 }

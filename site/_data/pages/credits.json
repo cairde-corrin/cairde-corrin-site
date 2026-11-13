@@ -1,0 +1,72 @@
+{
+  "page": {
+    "title": "Credits and sources",
+    "description": "Where the photographs, footage, mapping, species records, folklore and recordings on this site come from."
+  },
+  "hero": {
+    "eyebrow": "Credits and sources",
+    "title": "Where everything\non this site comes from."
+  },
+  "blocks": [
+    {
+      "type": "credits",
+      "items": [
+        {
+          "type": "credit",
+          "heading": "Photography",
+          "text": "Photographed in the Glenabo catchment on 11 April 2026 and 4 April 2026."
+        },
+        {
+          "type": "credit",
+          "heading": "Hero footage",
+          "text": "Composite. Photographed in the Glenabo catchment on 11 April 2026, with wildlife added digitally."
+        },
+        {
+          "type": "credit",
+          "heading": "Mapping",
+          "text": "The catchment boundary is flow-routed on the Copernicus GLO-30 elevation model from the Glenabo's confluence with the Munster Blackwater, by priority-flood depression filling and D8 flow routing. It is good to about one 30 metre grid cell. The action area is a drawn proposal, recovered from the group's map by georeferencing and raster tracing, and accurate to approximately 10-20 metres. Both are indicative, and not a substitute for field survey.\n\nBase mapping © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors, ODbL.\n\nThe channel network is modelled from elevation data, not walked, and is partial.\n\nThe walked loop on the trails map, its elevation profile and the GPX download are the group's own GPS track of the trail, walked on 29 August 2026. Where the walk doubled back on itself, the repeat has been taken out. Positions are phone GPS, good to roughly 10-20 metres, and the profile uses the track's own elevations, given to the nearest 5 metres."
+        },
+        {
+          "type": "required",
+          "group": "elevation"
+        },
+        {
+          "type": "credit",
+          "heading": "Water level",
+          "text": "Office of Public Works, hydrometric station 18124 Fermoy U/S Rowing, [waterlevel.ie](https://waterlevel.ie/0000018124/). Levels relative to Malin Head Ordnance Datum (OSGM15), licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The outlet elevation, and the low end of the elevation range, are the river level at this gauge, 1.4 km downstream of the confluence."
+        },
+        {
+          "type": "credit",
+          "heading": "Catchment area, compared",
+          "text": "Our figure of about 360 hectares is the area of the boundary on the map, 3.58 km². Other delineations of the same catchment give c. 3.7 km² (Roughan & O'Donovan Consulting Engineers, *Glenabo Stream Feasibility Study, Phase 1: Scoping Report*, Final, January 2021, ref. 20.132) and c. 3.92 km² (*Phase 2: Feasibility Report*, April 2022, ref. 20.132). Both reports were prepared for Avondhu Blackwater Partnership on behalf of Fermoy Forum and funded by the Department of Rural and Community Development. Flow routing on [FABDEM V1-2](https://doi.org/10.5523/bris.s5hqmjcdj8yo2ibzi9b4ew3sn) (Jeffrey Neal and Laurence Hawker, University of Bristol, 2023, [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)), used here only as a check, gives 3.75 km². Delineations differ with the elevation data and method each uses."
+        },
+        {
+          "type": "required",
+          "group": "species-records"
+        },
+        {
+          "type": "required",
+          "group": "species-photos"
+        },
+        {
+          "type": "required",
+          "group": "invasive-photos"
+        },
+        {
+          "type": "required",
+          "group": "folklore"
+        },
+        {
+          "type": "credit",
+          "heading": "Audio and film",
+          "text": "Recorded by Cáirde Corrin in the Glenabo catchment."
+        },
+        {
+          "type": "credit",
+          "heading": "Type",
+          "text": "EB Garamond, Inter and IBM Plex Mono, served from this site."
+        }
+      ]
+    }
+  ]
+}

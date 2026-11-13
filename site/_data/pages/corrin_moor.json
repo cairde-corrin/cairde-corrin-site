@@ -1,4 +1,23 @@
 {
-  "p1": "Upland habitat on the Corrin side of the action area, outside the Glenabo catchment but part of the same walk and the same landscape.",
-  "p2": "In development."
+  "page": {
+    "title": "Corrin moorland",
+    "description": "Corrin moorland. - a proposal in early development within the Cáirde Corrin action area. No content yet."
+  },
+  "hero": {
+    "eyebrow": "Strand 2 - New spaces",
+    "title": "Corrin moorland.",
+    "intro": "Upland habitat on the Corrin side of the action area, outside the Glenabo catchment but part of the same walk and the same landscape."
+  },
+  "blocks": [
+    {
+      "type": "text",
+      "text": "In development.",
+      "style": "label"
+    },
+    {
+      "type": "button",
+      "text": "Back to new spaces",
+      "url": "/new-spaces/"
+    }
+  ]
 }

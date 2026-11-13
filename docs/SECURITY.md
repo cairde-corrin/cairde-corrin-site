@@ -20,7 +20,11 @@ Visitors give it nothing, so there is little to steal from it. What matters is:
 **Someone injects script into a page through the editor.** Raw HTML in a post's text
 would run in every visitor's browser. *Mitigated:* Markdown is built with raw HTML
 switched off (`.eleventy.js`), so `<script>` or an `onerror` attribute in a post appears as
-text. Titles, summaries and captions are escaped by the templates. The build refuses any
+text. Titles, summaries and captions are escaped by the templates. Every block of an
+editable page is written by `_includes/blocks.js`, which escapes every field and renders
+the paragraph fields as inline Markdown with raw HTML off; a block's links must be a path on
+this site or an `https://` address, and the structured data built from the page's fields
+has every `<` escaped, so no field can close its script element. The build refuses any
 page that would load something from another website (`_includes/images.js`) and any page
 with an inline script other than the two the site carries on purpose (`_includes/csp.js`).
 Behind that, every page carries a Content Security Policy that lets the browser run

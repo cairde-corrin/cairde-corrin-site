@@ -1,74 +1,25 @@
+{#- The page's title, summary and structured data come from its "About this page" fields
+    in the editor (site/_data/pages/water.json); its content from its blocks (_includes/blocks.js). -#}
+{%- set P = pages.water.page -%}{%- set T = P.title + " - Cáirde Corrin" -%}
 <!DOCTYPE html>
 <html lang="en-IE">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Water and ecosystems - Cáirde Corrin</title>
-<meta name="description" content="Invasive species in the Glenabo-Corrin catchment, why they matter, and what one person can do.">
+<title>{{ T }}</title>
+<meta name="description" content="{{ P.description }}">
 <link rel="canonical" href="https://www.cairdecorrin.ie/water/">
-<meta property="og:title" content="Water and ecosystems - Cáirde Corrin"><meta property="og:description" content="Invasive species in the Glenabo-Corrin catchment, why they matter, and what one person can do.">
+<meta property="og:title" content="{{ T }}"><meta property="og:description" content="{{ P.description }}">
 <meta property="og:type" content="website"><meta property="og:url" content="https://www.cairdecorrin.ie/water/">
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png"><link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
 <link rel="preload" href="../assets/fonts/ebgaramond-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/css/site.css">
 <meta property="og:site_name" content="Cáirde Corrin"><meta property="og:locale" content="en_IE">
 <meta property="og:image" content="https://www.cairdecorrin.ie/assets/img/og-default.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Water and ecosystems - Cáirde Corrin">
-<meta name="twitter:description" content="Invasive species in the Glenabo-Corrin catchment, why they matter, and what one person can do."><meta name="twitter:image" content="https://www.cairdecorrin.ie/assets/img/og-default.jpg">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{{ T }}">
+<meta name="twitter:description" content="{{ P.description }}"><meta name="twitter:image" content="https://www.cairdecorrin.ie/assets/img/og-default.jpg">
 <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@graph": [
-  {
-   "@type": "NGO",
-   "@id": "https://www.cairdecorrin.ie/#organisation",
-   "name": "Cáirde Corrin",
-   "url": "https://www.cairdecorrin.ie/",
-   "logo": {
-    "@type": "ImageObject",
-    "url": "https://www.cairdecorrin.ie/assets/img/logo.webp",
-    "width": 400,
-    "height": 144
-   },
-   "areaServed": {
-    "@type": "Place",
-    "name": "Fermoy, County Cork, Ireland",
-    "address": {
-     "@type": "PostalAddress",
-     "addressLocality": "Fermoy",
-     "addressRegion": "County Cork",
-     "addressCountry": "IE"
-    }
-   }
-  },
-  {
-   "@type": "WebSite",
-   "@id": "https://www.cairdecorrin.ie/#website",
-   "name": "Cáirde Corrin",
-   "url": "https://www.cairdecorrin.ie/",
-   "inLanguage": "en-IE",
-   "publisher": {
-    "@id": "https://www.cairdecorrin.ie/#organisation"
-   }
-  },
-  {
-   "@type": "BreadcrumbList",
-   "itemListElement": [
-    {
-     "@type": "ListItem",
-     "position": 1,
-     "name": "Home",
-     "item": "https://www.cairdecorrin.ie/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 2,
-     "name": "Water and ecosystems"
-    }
-   ]
-  }
- ]
-}
+{{ pages | pageLd("water", page.url, figures) | safe }}
 </script>
 </head>
 <body>
@@ -76,76 +27,7 @@
 {% include "nav.njk" %}
 <main id="main" class="page-head">
   <div class="wrap">
-    <p class="eyebrow rv">Strand 3 - Improving water and ecosystems</p>
-    <h1 class="rv page-title">Invasive species,<br>and why they matter here.</h1>
-    <p class="lede rv">An invasive species is one that arrived from elsewhere and spreads without the checks that held it in balance at home.</p>
-
-    <h2 style="margin-top:60px" class="rv as-h3">Plants to know</h2>
-    <p class="rv src-note">Descriptions after <a href="https://invasives.ie/">Invasive Species Ireland</a>.</p>
-    <div class="cards">
-      <div class="card rv"><p class="k">Plant</p><figure class="card-fig"><picture><source type="image/avif" srcset="../assets/img/invasive/cherry-laurel-380.avif 380w, ../assets/img/invasive/cherry-laurel-760.avif 760w" sizes="(min-width:1100px) 300px, (min-width:640px) 40vw, calc(100vw - 88px)"><source type="image/webp" srcset="../assets/img/invasive/cherry-laurel-380.webp 380w, ../assets/img/invasive/cherry-laurel-760.webp 760w" sizes="(min-width:1100px) 300px, (min-width:640px) 40vw, calc(100vw - 88px)"><img src="../assets/img/invasive/cherry-laurel-380.webp" width="380" height="253" loading="lazy" decoding="async" alt="Dense glossy dark green evergreen leaves of cherry laurel"></picture><figcaption><a href="https://commons.wikimedia.org/wiki/File:Prunus_laurocerasus_-_%D0%91%D0%BE%D1%82%D0%B0%D0%BD%D0%B8%D1%87%D0%BA%D0%B0_%D0%B3%D1%80%D0%B0%D0%B4%D0%B8%D0%BD%D0%B0_%D0%A1%D0%BA%D0%BE%D0%BF%D1%98%D0%B5_03.jpg">Dandarmkd</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a></figcaption></figure><h3 class="as-h4">Cherry laurel</h3><p>Evergreen, dense, and casts shade so deep that nothing grows beneath it. Spreads readily from garden plantings into woodland.</p></div>
-      <div class="card rv"><p class="k">Plant</p><figure class="card-fig"><picture><source type="image/avif" srcset="../assets/img/invasive/rhododendron-380.avif 380w, ../assets/img/invasive/rhododendron-760.avif 760w" sizes="(min-width:1100px) 300px, (min-width:640px) 40vw, calc(100vw - 88px)"><source type="image/webp" srcset="../assets/img/invasive/rhododendron-380.webp 380w, ../assets/img/invasive/rhododendron-760.webp 760w" sizes="(min-width:1100px) 300px, (min-width:640px) 40vw, calc(100vw - 88px)"><img src="../assets/img/invasive/rhododendron-380.webp" width="380" height="253" loading="lazy" decoding="async" alt="A truss of pale lilac rhododendron flowers above dark leathery leaves"></picture><figcaption><a href="https://commons.wikimedia.org/wiki/File:Rhododendron_ponticum_actm_04.jpg">Agnes Monkelbaan</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a></figcaption></figure><h3 class="as-h4">Rhododendron</h3><p>Forms impenetrable thickets, prevents woodland regenerating, and is difficult and expensive to remove once established.</p></div>
-      <div class="card rv"><p class="k">Plant</p><figure class="card-fig"><picture><source type="image/avif" srcset="../assets/img/invasive/japanese-knotweed-380.avif 380w, ../assets/img/invasive/japanese-knotweed-760.avif 760w" sizes="(min-width:1100px) 300px, (min-width:640px) 40vw, calc(100vw - 88px)"><source type="image/webp" srcset="../assets/img/invasive/japanese-knotweed-380.webp 380w, ../assets/img/invasive/japanese-knotweed-760.webp 760w" sizes="(min-width:1100px) 300px, (min-width:640px) 40vw, calc(100vw - 88px)"><img src="../assets/img/invasive/japanese-knotweed-380.webp" width="380" height="253" loading="lazy" decoding="async" alt="Broad shovel-shaped knotweed leaves on red-flecked stems, backlit"></picture><figcaption><a href="https://commons.wikimedia.org/wiki/File:20180616_Reynoutria_japonica.jpg">Flocci Nivis</a>, <a href="https://creativecommons.org/licenses/by/4.0">CC BY 4.0</a></figcaption></figure><h3 class="as-h4">Japanese knotweed</h3><p>Spreads from small fragments of root or stem. Cutting or moving soil makes it worse. Report it - do not attempt to clear it yourself.</p></div>
-    </div>
-
-    <h2 style="margin-top:60px" class="rv as-h3">Animals to know</h2>
-    <p class="rv src-note">Descriptions after <a href="https://invasives.ie/">Invasive Species Ireland</a>.</p>
-    <div class="cards">
-      <div class="card rv"><p class="k">Animal</p><figure class="card-fig"><picture><source type="image/avif" srcset="../assets/img/invasive/grey-squirrel-380.avif 380w, ../assets/img/invasive/grey-squirrel-760.avif 760w" sizes="(min-width:1100px) 300px, (min-width:640px) 40vw, calc(100vw - 88px)"><source type="image/webp" srcset="../assets/img/invasive/grey-squirrel-380.webp 380w, ../assets/img/invasive/grey-squirrel-760.webp 760w" sizes="(min-width:1100px) 300px, (min-width:640px) 40vw, calc(100vw - 88px)"><img src="../assets/img/invasive/grey-squirrel-380.webp" width="380" height="253" loading="lazy" decoding="async" alt="A grey squirrel crouched along a branch, tail curved over its back"></picture><figcaption><a href="https://commons.wikimedia.org/wiki/File:Eastern_Grey_Squirrel.jpg">Tom Friedel</a>, <a href="https://creativecommons.org/licenses/by/3.0">CC BY 3.0</a></figcaption></figure><h3 class="as-h4">Grey squirrel</h3><p>Displaces the native red squirrel and strips bark from young broadleaf trees.</p></div>
-      <div class="card rv"><p class="k">Animal</p><figure class="card-fig"><picture><source type="image/avif" srcset="../assets/img/invasive/american-mink-380.avif 380w, ../assets/img/invasive/american-mink-760.avif 760w" sizes="(min-width:1100px) 300px, (min-width:640px) 40vw, calc(100vw - 88px)"><source type="image/webp" srcset="../assets/img/invasive/american-mink-380.webp 380w, ../assets/img/invasive/american-mink-760.webp 760w" sizes="(min-width:1100px) 300px, (min-width:640px) 40vw, calc(100vw - 88px)"><img src="../assets/img/invasive/american-mink-380.webp" width="380" height="253" loading="lazy" decoding="async" alt="A dark brown mink standing side-on, low body and long tail"></picture><figcaption><a href="https://commons.wikimedia.org/wiki/File:American_Mink.jpg">Patrick Reijnders</a>, <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a></figcaption></figure><h3 class="as-h4">American mink</h3><p>Predates ground-nesting birds and fish along watercourses.</p></div>
-      <div class="card rv"><p class="k">Animal</p><figure class="card-fig"><picture><source type="image/avif" srcset="../assets/img/invasive/asian-hornet-380.avif 380w, ../assets/img/invasive/asian-hornet-760.avif 760w" sizes="(min-width:1100px) 300px, (min-width:640px) 40vw, calc(100vw - 88px)"><source type="image/webp" srcset="../assets/img/invasive/asian-hornet-380.webp 380w, ../assets/img/invasive/asian-hornet-760.webp 760w" sizes="(min-width:1100px) 300px, (min-width:640px) 40vw, calc(100vw - 88px)"><img src="../assets/img/invasive/asian-hornet-380.webp" width="380" height="253" loading="lazy" decoding="async" alt="An Asian hornet feeding on a white umbel, dark thorax and orange-banded abdomen"></picture><figcaption><a href="https://commons.wikimedia.org/wiki/File:Asian_hornet_(Vespa_velutina).jpg">Charles J. Sharp</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a></figcaption></figure><h3 class="as-h4">Asian hornet</h3><p>A serious threat to honeybees and other pollinators. Any suspected sighting should be reported immediately.</p></div>
-    </div>
-
-    <p class="eyebrow rv" style="margin-top:64px">1% Changes you can make</p>
-    <h2 class="rv as-h3">What to do</h2>
-    <div class="strands">
-      <div class="strand rv"><div class="strand-n">01</div><div><h3 class="as-h4">Check your own garden</h3>
-        <p>Laurel and rhododendron spread into woodland from garden plantings.</p></div></div>
-      <div class="strand rv"><div class="strand-n">02</div><div><h3 class="as-h4">Clean your boots between sites</h3>
-        <p>Seeds and fragments travel in mud. A brush down at the car park is enough.</p></div></div>
-      <div class="strand rv"><div class="strand-n">03</div><div><h3 class="as-h4">Record what you see</h3>
-        <p>Records build the picture of what lives here.</p></div></div>
-    </div>
-
-    <h2 style="margin-top:64px" class="rv as-h3">What not to do</h2>
-    <div class="strands">
-      <div class="strand rv"><div class="strand-n">01</div><div><h3 class="as-h4">Do not cut or move Japanese knotweed</h3>
-        <p>It spreads from fragments of root and stem, so cutting it or shifting the soil around it moves it rather than removes it. Report it and leave it where it is.</p></div></div>
-      <div class="strand rv"><div class="strand-n">02</div><div><h3 class="as-h4">Do not dump garden waste in woodland</h3>
-        <p>Garden plants arrive in woodland this way. Cuttings, roots and seed heads tipped over a wall or at the end of a track can establish where they land.</p></div></div>
-      <div class="strand rv"><div class="strand-n">03</div><div><h3 class="as-h4">Do not move soil between sites</h3>
-        <p>Seeds and fragments travel in soil as readily as in mud on a boot. Soil brought in from elsewhere brings whatever was living in it.</p></div></div>
-    </div>
-
-    <h2 style="margin-top:64px" class="rv as-h3">The water itself</h2>
-    <p class="rv">Photographed inside the catchment on 4 and 11 April 2026. Each carries the elevation and time it was taken.</p>
-    <div class="watershots rv">
-        <figure>
-          <picture><source type="image/avif" srcset="../assets/img/water-margin-700.avif 700w, ../assets/img/water-margin-1100.avif 1100w" sizes="(min-width:900px) 30vw, calc(100vw - 44px)"><source type="image/webp" srcset="../assets/img/water-margin-700.webp 700w, ../assets/img/water-margin-1100.webp 1100w" sizes="(min-width:900px) 30vw, calc(100vw - 44px)"><img src="../assets/img/water-margin-700.webp" width="700" height="526" loading="lazy" decoding="async" alt="Round wet leaves and small yellow flowers crowding a bank, open water beyond"></picture>
-          <figcaption>about 80 m OD - 11 April 2026, 07:42</figcaption>
-        </figure>
-        <figure>
-          <picture><source type="image/avif" srcset="../assets/img/water-bed-700.avif 700w, ../assets/img/water-bed-1100.avif 1100w" sizes="(min-width:900px) 30vw, calc(100vw - 44px)"><source type="image/webp" srcset="../assets/img/water-bed-700.webp 700w, ../assets/img/water-bed-1100.webp 1100w" sizes="(min-width:900px) 30vw, calc(100vw - 44px)"><img src="../assets/img/water-bed-700.webp" width="700" height="932" loading="lazy" decoding="async" alt="A wide bare channel bed of silt and stone, water braiding across it between leaf-covered banks"></picture>
-          <figcaption>about 80 m OD - 11 April 2026, 07:32</figcaption>
-        </figure>
-        <figure>
-          <picture><source type="image/avif" srcset="../assets/img/water-runnel-700.avif 700w, ../assets/img/water-runnel-1100.avif 1100w" sizes="(min-width:900px) 30vw, calc(100vw - 44px)"><source type="image/webp" srcset="../assets/img/water-runnel-700.webp 700w, ../assets/img/water-runnel-1100.webp 1100w" sizes="(min-width:900px) 30vw, calc(100vw - 44px)"><img src="../assets/img/water-runnel-700.webp" width="700" height="932" loading="lazy" decoding="async" alt="A narrow runnel dropping between grassy banks under slender trees"></picture>
-          <figcaption>about 115 m OD - 11 April 2026, 08:25</figcaption>
-        </figure>
-        <figure>
-          <picture><source type="image/avif" srcset="../assets/img/water-trunk-700.avif 700w, ../assets/img/water-trunk-1100.avif 1100w" sizes="(min-width:900px) 30vw, calc(100vw - 44px)"><source type="image/webp" srcset="../assets/img/water-trunk-700.webp 700w, ../assets/img/water-trunk-1100.webp 1100w" sizes="(min-width:900px) 30vw, calc(100vw - 44px)"><img src="../assets/img/water-trunk-700.webp" width="700" height="525" loading="lazy" decoding="async" alt="A stream at the foot of a heavy trunk covered in climbing evergreen leaves"></picture>
-          <figcaption>about 65 m OD - 11 April 2026, 07:12</figcaption>
-        </figure>
-    </div>
-
-    <h2 style="margin-top:64px" class="rv as-h3">Where to record what you see</h2>
-    <p class="rv">These are the bodies already listed on our links page.</p>
-    <div class="linklist rv">
-      <a href="https://biodiversityireland.ie" target="_blank" rel="noopener"><span>National Biodiversity Data Centre - where sightings and survey records are submitted</span><span class="u">biodiversityireland.ie</span></a>
-      <a href="https://invasives.ie" target="_blank" rel="noopener"><span>Invasive Species Ireland - where invasive species are reported</span><span class="u">invasives.ie</span></a>
-      <a href="https://www.catchments.ie" target="_blank" rel="noopener"><span>Catchments.ie - catchment science and water quality in Ireland</span><span class="u">catchments.ie</span></a>
-    </div>
-    <a class="cta" href="../links/">Where to report a sighting</a>
+{{ pages | blocks("water", page.url, collections.gallery.length, instagram, social, figures) | safe }}
   </div>
   <div style="height:100px"></div>
 </main>

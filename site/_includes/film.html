@@ -1,0 +1,12 @@
+<!-- The home page's scroll-driven film: the poster, the video and its frames. Fixed design, not in
+     the editor; the words over it are the top of the home page in the editor. Without JS, or where
+     scrubbing is not viable, this stays a static poster; site.js adds .scrub only when a runtime
+     probe shows the engine can seek at speed. -->
+<picture class="film-poster"><source media="(max-width:899px)" type="image/avif" srcset="assets/img/hero-poster-m720.avif 720w, assets/img/hero-poster-m1080.avif 1080w" sizes="100vw"><source media="(max-width:899px)" type="image/webp" srcset="assets/img/hero-poster-m720.webp 720w, assets/img/hero-poster-m1080.webp 1080w" sizes="100vw"><source type="image/avif" srcset="assets/img/hero-poster-700.avif 700w, assets/img/hero-poster-1100.avif 1100w, assets/img/hero-poster-1920.avif 1920w" sizes="100vw"><source type="image/webp" srcset="assets/img/hero-poster-700.webp 700w, assets/img/hero-poster-1100.webp 1100w, assets/img/hero-poster-1920.webp 1920w" sizes="100vw"><img src="assets/img/hero-poster-1920.webp" width="1920" height="1080" fetchpriority="high" decoding="async" alt="A shallow stony stream running over gravel and flat rock between wooded banks, bare branches on the left and green undergrowth on the right"></picture>
+    <video id="herovideo" muted playsinline preload="none" aria-hidden="true" tabindex="-1"
+           width="1920" height="1080" disablepictureinpicture disableremoteplayback>
+      <source src="assets/video/hero-1920.mp4" type="video/mp4">
+    </video>
+    <div class="film-frames" id="filmframes" aria-hidden="true"><img id="filmframe" alt="" decoding="async"></div>
+    <div class="film-scrim"></div>
+    <div class="film-fade" aria-hidden="true"></div>

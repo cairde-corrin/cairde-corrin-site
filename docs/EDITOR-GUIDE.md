@@ -1,7 +1,7 @@
 # How to post news on the Cáirde Corrin website
 
 This guide is for committee members who write news, add photos to the gallery, change
-the wording of the website's pages, list articles about the group, or change the social
+the website's pages, list articles about the group, or change the social
 media posts on the home page. The same guide opens from the **Help** button in the
 corner of every editor screen. You do not need to know anything about
 websites to follow it. Keep it open the first few times; after that it takes a few
@@ -150,27 +150,105 @@ person who looks after the website to delete it completely.
 
 To throw away a draft that was never published, use **Delete unpublished entry**.
 
-## Changing the wording of a page
+## Changing a page
 
-You can change the text of the home page, About (including how to get involved), Links,
-New spaces and its two proposals, and the stop pages.
+Every page of the website is yours to change, apart from News, the gallery and Articles
+(which have their own sections in this guide) and the Privacy and Terms pages.
 
 The quickest way: while logged in to the editor, open the page on the website itself. A
 green **Edit this page** button appears in the bottom corner (only you can see it, because
-you are logged in); press it and the editor opens at that page's text.
+you are logged in); press it and the editor opens at that page.
 
-Or press **Contents** -> **Page text** and choose the page. Each box is one paragraph,
-labelled with the heading it sits under. Type plain text. Put *asterisks* round words to
-set them in italics.
+Or press **Contents** -> **Pages** and choose the page. Each page has three parts:
+
+- **About this page (for search engines and sharing).** Folded away at the top. The
+  page's title and a one- or two-sentence summary: what search engines show, what appears
+  on the browser tab and when someone shares the page. Some pages also say what they are
+  about (the home page: the Glenabo catchment; the species page: the list's name).
+  Search engines are told this whatever you do with the rest of the page, so keep it
+  true to the page.
+- **The top of the page.** The small line, the title and the opening paragraph; on a stop,
+  its photo, position and height too. Every page has exactly one, always first, so it
+  is not something you can add or remove.
+- **Blocks (the rest of the page).** Everything else, in order, one block at a time.
+
+### Working with blocks
+
+- **Add a block:** press **Add block** at the foot of the list and choose the kind. It is
+  added at the end; drag it to where you want it.
+- **Move a block:** drag it by the handle on its left (or tab to the handle, press the
+  space bar, use the arrow keys, and press the space bar again).
+- **Remove a block:** press the cross on its right.
+- **Copy a block:** open it, tick **Make a copy of this block when I save**, then save.
+  The copy appears straight after it, ready to change; the tick clears itself.
+- **Replace a block with a different kind:** add the new one, drag it into place and
+  remove the old one.
+- **Open or close a block:** press the arrow on its left. Closed, it shows its heading so
+  you can find your way around a long page.
+
+The kinds of block are the parts the website was already built from:
+
+| Block | What it is |
+|---|---|
+| Text | A heading and paragraphs. On the home page, each Text block starts a new band across the page (light, dark or tinted), and the blocks after it sit in that band. |
+| Figure box | Two to four figures side by side, such as "Catchment area: about 3.6 km²". |
+| Single image | One photo, full width, with a caption. |
+| Two photos side by side | Exactly two photos, each with a small line and a caption. |
+| Photo carousel | A row of photos that scrolls sideways, with an optional link to the gallery. |
+| Photo grid | Photos in a grid, each with a caption. |
+| Numbered points | Short points with a number or label, such as the three strands of the work. |
+| Cards | Boxes side by side, each with a title and text, and optionally a photo and a link. |
+| List of links | Links to other websites, each with its name. |
+| Note box | A boxed note, with an optional heading and link; it can be folded away until someone taps it. |
+| Pull quote | A quotation set apart from the text. |
+| Button link | A green button leading to another page. |
+| YouTube video | A video that plays only when someone presses play. |
+| Recording | One sound recording, with a heading and a line about it. |
+| List of recordings, Films | The numbered recordings and the films on the Recordings page. |
+| Folklore story | One story, with its source in the National Folklore Collection. |
+| Species list | The species recorded, each with its name, photo, description and records. |
+| Credits list | The entries on the Credits page. |
+| Interactive map, List of stops, The walked loop | The parts of the Trails page; each can appear once. |
+| Posts from the group | The home page's Instagram or social posts; once. |
+
+**Writing text.** Type plain text. Leave an empty line between paragraphs. Put
+`*asterisks*` round words to set them in italics. To make a link, write
+`[the words](/trails/)` for a page on this site, or `[the words](https://...)` for
+another website. In a heading, press Enter to start a new line.
 
 **Figures are ordinary words.** "About 360 hectares" is typed like the rest of the
 sentence, and you can change it. The same figure often appears on more than one page, so
 if you change one, change the others too. Nothing stops you publishing, but if two pages
 end up giving the same figure differently, the person who looks after the website is
-warned and will check which is right.
+warned and will check which is right. The same goes for counts: if the species page says
+"13 species" and you add a fourteenth, change the 13.
 
-**The Links page** has its list of sites in the same place, under **Links**: a name and a
-full address starting `https://` for each. Drag them to change the order.
+**Photos.** Upload a photo you took yourself, or one you have permission to use, and say
+in one sentence what it shows. Some photos on the website, on the species and water pages,
+are other people's, used under a licence that requires their name and the licence beneath
+the photo. That credit is attached to the photo itself: wherever you put the photo, its
+credit goes with it, and you cannot separate them. If you want to use a photo of someone
+else's that is not on the website yet, ask the person who looks after the website to add
+it with its credit.
+
+**Folklore stories** must keep their source: the volume and page in the Schools'
+Collection, where it was collected, and the link to it on dúchas.ie. The licence the
+stories are used under requires it, so the website will not publish a story without it.
+
+**The Credits page** keeps the credits a licence requires: those for other people's
+photographs, the elevation data behind the maps, the species records and the folklore.
+You can move them among the other entries, but not change them, and if one is removed it is
+put back at the end of the page. Everything else on the Credits page is yours to change.
+
+**Recordings and films** use files already on the website. A new recording or film is
+added by the person who looks after the website, because they first remove the phone's
+location and details from it.
+
+**If a page will not publish.** If a block is incomplete (a photo with no description, a
+"Two photos" block with one photo, a story with no source, a link that is not a web
+address), the website does not publish the change: the page stays exactly as it was, and
+the person who looks after the website sees a message naming the page and the block. Open
+the page again, fix the block, and publish again.
 
 Save, set the status to Ready and publish, as for a post.
 
@@ -207,18 +285,17 @@ page simply has no social section. Save and publish as usual.
 
 Some things are not in the editor at all, on purpose:
 
-- **The survey data behind the figures:** grid positions, the map and the elevation
-  profile. The figures in the text you can change (see "Changing the wording of a page" above).
-- **The species determinations,** which record what was identified and how.
-- **The folklore and its sources,** and the attribution to the National Folklore
-  Collection on dúchas.ie.
-- **The credits and licences,** which are legal conditions of using other people's
-  photographs and maps.
-- **The privacy and terms pages,** which are the group's commitments to visitors.
-- **The trails page,** whose map, profile and figures come from the survey data.
+- **The privacy and terms pages,** which are the group's commitments to visitors: what the
+  website collects, and what it promises about land access, accuracy and reuse. They are
+  statements the group can be held to, not wording to edit.
+- **The credits a licence requires,** for other people's photographs, the elevation data,
+  the species records and the folklore (see "Changing a page" above). You can move them;
+  they stay attached to what they credit.
+- **The survey data:** the map, the catchment and action area, and the walked loop with its
+  elevation profile and GPS download. The figures in the text you can change; the data
+  they come from you cannot.
 
-Each of these was checked against a source: a GPS track, an elevation survey, a botanical
-record, the National Folklore Collection, a licence. The website exists partly to be read
+Each of these was checked against a source: a GPS track, an elevation survey, a licence. The website exists partly to be read
 by landowners and people who know the ground, and those are what it will be judged on.
 Changes to them go through the person who looks after the website, so that each change
 can be checked against its source first. If you spot something wrong, or have something

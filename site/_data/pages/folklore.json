@@ -1,0 +1,81 @@
+{
+  "page": {
+    "title": "Folklore and history",
+    "description": "Five stories collected around Fermoy in the Schools’ Collection, two of them naming Corrin and Glenabo.",
+    "subject": {
+      "name": "Stories from the National Folklore Collection"
+    }
+  },
+  "hero": {
+    "eyebrow": "Folklore and history",
+    "title": "Five stories.\nTwo name this ground.",
+    "intro": "All five were written down by schoolchildren in the 1930s and are held in the National Folklore Collection. Two of them name Corrin and Glenabo directly. Summaries here are written for this site. Nothing from the collection is reproduced."
+  },
+  "blocks": [
+    {
+      "type": "story",
+      "title": "The Story of Corrin",
+      "anchor": "corrin",
+      "volume": "0378",
+      "page": "148",
+      "school": "Adair, Fermoy",
+      "county": "Co. Cork",
+      "collector": "William Turpin",
+      "summary": "A chieftain of the Fermoy district had one son, and an old woman foretold that the boy would drown. To keep him from water his father began building a house on the top of Corrin, and while the work was going on the boy leaned over a barrel, fell in and was drowned. The building was abandoned, and the account says a heap of stones is all that is left on the summit, with a cross raised there in a Holy Year.",
+      "place": "Names Corrin, and places it about three miles from Fermoy.",
+      "link": "https://www.duchas.ie/en/cbes/4921842/4896012/5184829"
+    },
+    {
+      "type": "story",
+      "title": "Glenabo",
+      "anchor": "glenabo",
+      "volume": "0378",
+      "page": "149-150",
+      "school": "Adair, Fermoy",
+      "county": "Co. Cork",
+      "collector": "Cyril Skuse",
+      "summary": "A glen two and a half miles from Fermoy took its name, the account says, from a fairy cow that lived there and gave milk to anyone who came to milk her. Someone brought a sieve instead of a pail and milked until the cow could give no more and fell dead. Everyone who had taken milk from her was sorry, and that, the story ends, is how the glen came to be called Glenabo.",
+      "place": "Names Glenabo, and places it two and a half miles from Fermoy. The account gives the cow as the origin of the name and offers no derivation beyond that.",
+      "link": "https://www.duchas.ie/en/cbes/4921842/4896013/5184830"
+    },
+    {
+      "type": "story",
+      "title": "The Cursing of the Blackwater",
+      "anchor": "cursing-blackwater",
+      "volume": "0378",
+      "page": "153",
+      "school": "Adair, Fermoy",
+      "county": "Co. Cork",
+      "collector": "",
+      "summary": "A Cistercian monastery once stood in Fermoy, in what the account calls Abbey Street. A monk walking the bank of the Blackwater asked a fisherman for some of his catch, was refused, and cursed the river. The page carries two tellings of it; the second sets the curse in the period when Cromwell's soldiers held the land around Fermoy.",
+      "place": "Names the Blackwater, the river this catchment drains into.",
+      "link": "https://www.duchas.ie/en/cbes/4921842/4896017"
+    },
+    {
+      "type": "story",
+      "title": "The Silver Horse",
+      "anchor": "silver-horse",
+      "volume": "0378",
+      "page": "156",
+      "school": "Adair, Fermoy",
+      "county": "Co. Cork",
+      "collector": "",
+      "summary": "A horseman comes upon a silver horse standing under trees, takes it home and rides it about the district of Fermoy. Riding beside the Blackwater he sees a hound struggling in the water and puts the horse into the river to reach it, and as he does the silver horse turns into a fish.",
+      "place": "Names the Blackwater.",
+      "link": "https://www.duchas.ie/en/cbes/4921842/4896020"
+    },
+    {
+      "type": "story",
+      "title": "Another Story of the Famine - Robáird de Barra",
+      "anchor": "famine-miracle",
+      "volume": "0382",
+      "page": "049",
+      "school": "Cnoc na Biolaraighe, Watergrasshill",
+      "county": "Co. Cork",
+      "collector": "",
+      "summary": "The account places the ghost of Robáird de Barra on Corrin Hill. During the Famine a family named Crowley lived in a small house at the foot of the hill, and one day a well-dressed stranger appeared at the half-door and told the woman of the house to hang her pot over the fire and fill it with stones. When it boiled it held good potatoes, and it did so again day after day until the family had come through.",
+      "place": "Names Corrin Hill directly, and places it about nine miles from Watergrasshill.",
+      "link": "https://www.duchas.ie/en/cbes/4921856/4896606"
+    }
+  ]
+}

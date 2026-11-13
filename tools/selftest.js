@@ -83,7 +83,17 @@ assert.deepEqual(ids('<p>Both sit inside the action area of about 990 hectares.<
 assert.deepEqual(ids('<p>Everything that falls on about 320 hectares upstream of here passes this spot.</p>'), ['stop1.upstream=320']);
 assert.deepEqual(ids('<dt>Elevation range</dt><dd>21-213<small>m OD</small></dd>'), ['catchment.outlet=21', 'catchment.top=213']);
 assert.deepEqual(ids('<p>Elevation along the loop: 60-115 m, with about 65 m of climbing.</p>'), ['loop.low=60', 'loop.high=115', 'loop.climb=65']);
-assert.deepEqual(ids('<h1>Three stops recorded, seven to survey.</h1><p>Seven of the ten stops have not been surveyed. Stop 01 Stop 03</p>'), ['stops.recorded=3']);
+assert.deepEqual(ids('<h1>Three stops recorded, seven to survey.</h1><p>Seven of the ten stops have not been surveyed. Stop 01 Stop 03</p>'),
+  ['stops.recorded=3', 'stops.unsurveyed=7', 'stops.unsurveyed=7']);
+// counts of things that exist, in digits or words, compared with how many there are
+assert.deepEqual(ids('<h1>13 species, recorded on the trails.</h1><p>13 plant species recorded.</p>'), ['count.species=13', 'count.species=13']);
+assert.deepEqual(ids('<p>Nineteen field recordings, and three short films.</p><h1>Five stories.</h1>'), ['count.recordings=19', 'count.films=3', 'count.stories=5']);
+assert.deepEqual(ids('<dt>Species reference photographs</dt><dd>Twelve photographs from Commons.</dd><dt>Invasive species photographs</dt><dd>Six photographs from Commons.</dd>'),
+  ['count.species_photos=12', 'count.invasive_photos=6']);
+const counted = { counts: { species: 14, recordings: 19 } };
+assert.match(fc.check([pg('/species/', '<h1>13 species, recorded.</h1>')], counted)[0], /says 13 \(\/species\/\), but the website has 14 species in the species list/);
+assert.deepEqual(fc.check([pg('/r/', '<p>Nineteen recordings.</p>')], counted), []);
+assert.match(fc.check([pg('/a/', '<p>Ten species.</p>'), pg('/b/', '<p>Eleven species.</p>')], counted)[0], /^Number of species is given differently/);
 assert.deepEqual(ids('<p>Other delineations of the same catchment give c. 3.7 km².</p>'), []);  // someone else's figure
 assert.deepEqual(ids('<p>Photographed at about 80 m OD on 11 April 2026.</p>'), []);  // no label, not watched
 const ref = { catchment: { area_ha: '360' } };
@@ -93,8 +103,8 @@ assert.equal(two.length, 1);
 assert.match(two[0], /^Catchment area is given differently.*370 ha on \/ .*330 ha on \/about\//);
 assert.match(fc.check([pg('/', '<p>The catchment is about 370 ha.</p>')], ref)[0], /every page that gives it says 370 ha.*measured value.*is 360 ha/);
 assert.doesNotThrow(() => fc.check([{ url: '/', html: '' }, { url: '/b/', html: '<p>unclosed <b' }], {}));
-// every quantity watched has its measured value in figures.json, apart from the counted one
-for (const q of fc.WATCH.filter((w) => w.ref !== 'stops.recorded')) {
+// every quantity watched has its measured value in figures.json, apart from the counts
+for (const q of fc.WATCH.filter((w) => !w.ref.startsWith('counts.'))) {
   assert.equal(typeof q.ref.split('.').reduce((o, k) => o && o[k], figs), 'string', `figures.json has no ${q.ref}`);
 }
 
@@ -159,5 +169,38 @@ const webp = Buffer.concat([Buffer.from('RIFF'), Buffer.from([(webpBody.length +
   assert.ok(!fsp.readdirSync(opts.dir).some((f) => f.startsWith('17891-')), 'a post gone from the feed keeps its picture');
   assert.deepEqual(await ig.load({ ...opts, feedId: '' }), { username: '', posts: [] });
   fsp.rmSync(tmp, { recursive: true, force: true });
+
+  // Blocks: every page as published renders, and a broken or incomplete block stops the
+  // build with the page and the block named
+  const blocks = require('../site/_includes/blocks.js');
+  const pdir = pth.join(__dirname, '..', 'site', '_data', 'pages');
+  const real = Object.fromEntries(fsp.readdirSync(pdir).filter((f) => f.endsWith('.json')).map((f) => [f.slice(0, -5), JSON.parse(fsp.readFileSync(pth.join(pdir, f), 'utf8'))]));
+  const ctx = (url, pages = real) => ({ url, pages, figures: figs, gallery: 0, instagram: { posts: [] }, social: [], film: '' });
+  const URLS = { home: '/', stop_1: '/stops/stop-1.html', stop_2: '/stops/stop-2.html', stop_3: '/stops/stop-3.html', corrin_moor: '/new-spaces/corrin-moor.html', corrin_wetlands: '/new-spaces/corrin-wetlands.html', new_spaces: '/new-spaces/' };
+  for (const key of Object.keys(real)) await blocks.render(key, real[key], ctx(URLS[key] || `/${key}/`));
+  const page = (...list) => ({ page: { title: 'Test page', description: 'A test.' }, hero: { eyebrow: 'E', title: 'T' }, blocks: list });
+  const broken = async (data, re, key = 'about') => assert.rejects(blocks.render(key, data, ctx('/about/')), re);
+  await broken({ ...page(), page: { description: 'x' } }, /site\/_data\/pages\/about\.json.*no page title/);
+  await broken(page({ type: 'nonsense' }), /Page "Test page".*block 1 \(nonsense\) is not a kind of block/);
+  await broken(page({ type: 'text', heading: 'Fine' }, { type: 'pair', items: [{ photo: '/assets/img/stream-1800.webp', alt: 'x' }] }), /block 2 \(Two photos side by side\) needs exactly two photos; it has 1/);
+  await broken(page({ type: 'image', photo: '/assets/img/stream-1800.webp' }), /block 1 \(Single image\) has a photo .* no description/);
+  await broken(page({ type: 'image', photo: 'https://example.org/x.jpg', alt: 'x' }), /not a photograph on this website/);
+  await broken(page({ type: 'map' }, { type: 'map' }), /block 2 \(Interactive map\) appears twice/);
+  await broken(page({ type: 'story', title: 'S', summary: 'x', volume: '1', page: '2', link: 'https://www.duchas.ie/x' }), /Folklore story\) \(S\) has no place where it was collected\. The licence/);
+  await broken(page({ type: 'story', title: 'S', summary: 'x', volume: '1', page: '2', school: 'A', link: 'https://example.org/' }), /needs the link to the story on dúchas\.ie/);
+  await broken(page({ type: 'button', text: 'Go', url: 'trails' }), /block 1 \(Button link\) has the link "trails", which is neither/);
+  await broken(page({ type: 'audio', file: '/assets/audio/nothing.mp3' }), /not a file on this website/);
+  await broken({ ...real.stop_1, hero: { ...real.stop_1.hero, latitude: '' } }, /position .* is not near Fermoy/, 'stop_1');
+  // a photograph from another source carries its registered credit wherever it is used
+  const sp = await blocks.render('about', page({ type: 'image', photo: '/assets/img/species/bilberry-760.webp', alt: 'Bilberry' }), ctx('/about/'));
+  assert.match(sp, /<figcaption><a href="https:\/\/commons\.wikimedia\.org\/wiki\/File:Vaccinium[^"]*">Lalakmus<\/a>, <a href="[^"]*by-sa\/4\.0">CC BY-SA 4\.0<\/a><\/figcaption>/);
+  // a required credit the editor removed from the credits page is put back at the end
+  const noFolk = { ...real.credits, blocks: [{ type: 'credits', items: real.credits.blocks[0].items.filter((i) => i.group !== 'folklore') }] };
+  const cp = await blocks.render('credits', noFolk, ctx('/credits/'));
+  assert.match(cp, /<dt>Folklore<\/dt>[\s\S]*The Story of Corrin - Volume 0378, Page 148/);
+  // counts: what the website actually holds
+  const n = blocks.counts(real);
+  assert.equal(n.species, real.species.blocks.find((b) => b.type === 'species').items.length);
+  assert.equal(n.stops_recorded + n.stops_unsurveyed, 10);
   console.log('selftest: all checks passed');
 })().catch((e) => { console.error(e); process.exit(1); });

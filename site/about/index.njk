@@ -1,74 +1,25 @@
+{#- The page's title, summary and structured data come from its "About this page" fields
+    in the editor (site/_data/pages/about.json); its content from its blocks (_includes/blocks.js). -#}
+{%- set P = pages.about.page -%}{%- set T = P.title + " - Cáirde Corrin" -%}
 <!DOCTYPE html>
 <html lang="en-IE">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>About - Cáirde Corrin</title>
-<meta name="description" content="Cáirde Corrin is a voluntary community group working on the Glenabo and Corrin woodlands near Fermoy, Co. Cork.">
+<title>{{ T }}</title>
+<meta name="description" content="{{ P.description }}">
 <link rel="canonical" href="https://www.cairdecorrin.ie/about/">
-<meta property="og:title" content="About - Cáirde Corrin"><meta property="og:description" content="Cáirde Corrin is a voluntary community group working on the Glenabo and Corrin woodlands near Fermoy, Co. Cork.">
+<meta property="og:title" content="{{ T }}"><meta property="og:description" content="{{ P.description }}">
 <meta property="og:type" content="website"><meta property="og:url" content="https://www.cairdecorrin.ie/about/">
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png"><link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
 <link rel="preload" href="../assets/fonts/ebgaramond-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/css/site.css">
 <meta property="og:site_name" content="Cáirde Corrin"><meta property="og:locale" content="en_IE">
 <meta property="og:image" content="https://www.cairdecorrin.ie/assets/img/og-default.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="About - Cáirde Corrin">
-<meta name="twitter:description" content="Cáirde Corrin is a voluntary community group working on the Glenabo and Corrin woodlands near Fermoy, Co. Cork."><meta name="twitter:image" content="https://www.cairdecorrin.ie/assets/img/og-default.jpg">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{{ T }}">
+<meta name="twitter:description" content="{{ P.description }}"><meta name="twitter:image" content="https://www.cairdecorrin.ie/assets/img/og-default.jpg">
 <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@graph": [
-  {
-   "@type": "NGO",
-   "@id": "https://www.cairdecorrin.ie/#organisation",
-   "name": "Cáirde Corrin",
-   "url": "https://www.cairdecorrin.ie/",
-   "logo": {
-    "@type": "ImageObject",
-    "url": "https://www.cairdecorrin.ie/assets/img/logo.webp",
-    "width": 400,
-    "height": 144
-   },
-   "areaServed": {
-    "@type": "Place",
-    "name": "Fermoy, County Cork, Ireland",
-    "address": {
-     "@type": "PostalAddress",
-     "addressLocality": "Fermoy",
-     "addressRegion": "County Cork",
-     "addressCountry": "IE"
-    }
-   }
-  },
-  {
-   "@type": "WebSite",
-   "@id": "https://www.cairdecorrin.ie/#website",
-   "name": "Cáirde Corrin",
-   "url": "https://www.cairdecorrin.ie/",
-   "inLanguage": "en-IE",
-   "publisher": {
-    "@id": "https://www.cairdecorrin.ie/#organisation"
-   }
-  },
-  {
-   "@type": "BreadcrumbList",
-   "itemListElement": [
-    {
-     "@type": "ListItem",
-     "position": 1,
-     "name": "Home",
-     "item": "https://www.cairdecorrin.ie/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 2,
-     "name": "About"
-    }
-   ]
-  }
- ]
-}
+{{ pages | pageLd("about", page.url, figures) | safe }}
 </script>
 </head>
 <body>
@@ -76,25 +27,7 @@
 {% include "nav.njk" %}
 <main id="main" class="page-head">
   <div class="wrap">
-    <p class="eyebrow rv">About us</p>
-    <h1 class="rv page-title">A community group<br>working to a catchment.</h1>
-    <p class="lede rv">{{ pages.about.p1 | prose | safe }}</p>
-
-    <h2 style="margin-top:58px" class="rv as-h3">Our vision</h2>
-    <p class="rv">{{ pages.about.p2 | prose | safe }}</p>
-    <h2 style="margin-top:36px" class="rv as-h3">Our mission</h2>
-    <p class="rv">{{ pages.about.p3 | prose | safe }}</p>
-
-    <h2 style="margin-top:58px" class="rv as-h3">Who we work with</h2>
-    <div class="cards">
-      <div class="card rv"><p class="k">Landowner</p><h3 class="as-h4">Coillte</h3><p>{{ pages.about.p4 | prose | safe }}</p></div>
-      <div class="card rv"><p class="k">Recording</p><h3 class="as-h4">National Biodiversity Data Centre</h3><p>{{ pages.about.p5 | prose | safe }}</p></div>
-      <div class="card rv"><p class="k">Local authority</p><h3 class="as-h4">The local authority</h3><p>{{ pages.about.p6 | prose | safe }}</p></div>
-    </div>
-
-    <h2 style="margin-top:36px" class="rv as-h3">How to get involved</h2>
-    <p class="rv">{{ pages.about.p7 | prose | safe }}</p>
-    <a class="cta rv" href="mailto:hello@cairdecorrin.ie">Get in touch</a>
+{{ pages | blocks("about", page.url, collections.gallery.length, instagram, social, figures) | safe }}
   </div>
   <div style="height:100px"></div>
 </main>

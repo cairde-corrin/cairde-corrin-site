@@ -1,4 +1,37 @@
 {
-  "p1": "You are standing about forty metres above the point where this water meets the *Munster Blackwater*, and six hundred and fifty metres from it. Everything that falls on about 320 hectares upstream of here passes this spot.",
-  "p2": "Look at the bed. The stones are angular and the gravel bars are loose. Loose sediment on a stream bed is one of the things that decides whether it can hold fish, because eggs laid in gravel need clean water moving through them."
+  "page": {
+    "title": "The stream at about 60 metres",
+    "description": "The stream at about 60 metres. Recorded at about 60 m in the Glenabo catchment, Fermoy, Co. Cork."
+  },
+  "hero": {
+    "eyebrow": "Stop 01 - cairdecorrin.ie/s/1",
+    "title": "The stream at about 60 metres.",
+    "photo": "/assets/img/stream-1800.webp",
+    "alt": "A shallow stony stream running through woodland with exposed gravel bars",
+    "latitude": "52.12752",
+    "longitude": "-8.29878",
+    "elevation": "60",
+    "facing": "159",
+    "recorded": "11 Apr 2026, 07:10"
+  },
+  "blocks": [
+    {
+      "type": "text",
+      "text": "You are standing about forty metres above the point where this water meets the *Munster Blackwater*, and six hundred and fifty metres from it. Everything that falls on about 320 hectares upstream of here passes this spot.\n\nLook at the bed. The stones are angular and the gravel bars are loose. Loose sediment on a stream bed is one of the things that decides whether it can hold fish, because eggs laid in gravel need clean water moving through them."
+    },
+    {
+      "type": "audio",
+      "heading": "Listen",
+      "text": "Recorded here on 11 April 2026, starting at 07:10. The photograph above was taken fourteen seconds into it. 7 minutes 33 seconds.",
+      "label": "Recording at stop 1, 11 April 2026, from 07:10",
+      "file": "/assets/audio/stop-1.mp3"
+    },
+    {
+      "type": "note",
+      "heading": "The name of this glen",
+      "text": "An account written down at Adair school in the 1930s explains how Glenabo got its name. It names the glen, not this particular spot.",
+      "link_text": "Read the summary and the source →",
+      "link": "/folklore/#glenabo"
+    }
+  ]
 }

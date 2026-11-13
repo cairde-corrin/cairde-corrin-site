@@ -1,0 +1,228 @@
+{
+  "page": {
+    "title": "Species recorded on the trails",
+    "description": "13 plant species recorded on the Corrin Loop and the Old Cattle Trail in August 2026, with the determinations logged for each.",
+    "subject": {
+      "name": "Species recorded on the trails"
+    }
+  },
+  "hero": {
+    "eyebrow": "Ecology on the ground",
+    "title": "13 species,\nrecorded on the trails.",
+    "intro": "Logged on the Corrin Loop and the Old Cattle Trail in August 2026, with a determination for each."
+  },
+  "blocks": [
+    {
+      "type": "text",
+      "text": "Records made using [Pl@ntNet](https://plantnet.org/). Descriptions are summarised from the [BSBI Plant Atlas 2020](https://plantatlas2020.org/), with the account for each species linked beneath it.",
+      "style": "small"
+    },
+    {
+      "type": "species",
+      "items": [
+        {
+          "name": "Autumn hawkbit",
+          "scientific": "Asteraceae",
+          "family": true,
+          "records": [
+            {
+              "trail": "Corrin Loop",
+              "date": ""
+            }
+          ]
+        },
+        {
+          "name": "Bilberry",
+          "scientific": "Vaccinium myrtillus",
+          "authority": "L.",
+          "photo": "/assets/img/species/bilberry-760.webp",
+          "alt": "A low bilberry shrub carrying ripe blue-black berries among small oval leaves, open hillside behind",
+          "description": "A low shrub of acid ground that will not grow over lime. It is often dominant alongside heather on well-drained heath and moor, particularly in the uplands, and forms an understorey in birch, pine and oak woodland. It rarely regenerates from seed.",
+          "atlas": "https://plantatlas2020.org/atlas/2cd4p9h.w50",
+          "records": [
+            {
+              "trail": "Corrin Loop",
+              "date": "15 August 2026"
+            },
+            {
+              "trail": "Old Cattle Trail",
+              "date": "15 August 2026"
+            }
+          ]
+        },
+        {
+          "name": "Common figwort",
+          "scientific": "Scrophularia nodosa",
+          "authority": "L.",
+          "photo": "/assets/img/species/common-figwort-760.webp",
+          "alt": "An upright stem carrying small maroon and green figwort flowers above opposite toothed leaves",
+          "description": "A perennial herb that takes either sun or shade and prefers a fertile soil. It grows in damp woodland and along woodland rides, hedgebanks, ditches and riversides, and turns up occasionally on drier waste ground. Mostly a lowland plant.",
+          "atlas": "https://plantatlas2020.org/atlas/2cd4p9h.ck1",
+          "records": [
+            {
+              "trail": "Old Cattle Trail",
+              "date": "9 August 2026"
+            }
+          ]
+        },
+        {
+          "name": "Devil's bit Scabious",
+          "scientific": "Succisa pratensis",
+          "authority": "Moench",
+          "photo": "/assets/img/species/devils-bit-scabious-760.webp",
+          "alt": "Two rounded flower heads on slender stems, one still in bud and one open to lilac florets",
+          "description": "A perennial herb of damp to moderately free-draining ground, favouring mildly acid soils. It grows in woodland rides, on heath and in grassland, and in fens and mires; in the uplands it also holds on to cliff ledges and ravines.",
+          "atlas": "https://plantatlas2020.org/atlas/2cd4p9h.23w",
+          "records": [
+            {
+              "trail": "Corrin Loop",
+              "date": "15 August 2026"
+            }
+          ]
+        },
+        {
+          "name": "Grey Willow",
+          "scientific": "Salix cinerea",
+          "authority": "L.",
+          "photo": "/assets/img/species/grey-willow-760.webp",
+          "alt": "Male willow catkins dense with pale yellow stamens on bare spring twigs",
+          "description": "A shrub or small tree of wet ground: wet woodland and carr, marshes and fens, reedbeds, bogs, and the banks of rivers and streams. It also colonises damp waste ground and old pits. Two subspecies occur in Britain and Ireland.",
+          "atlas": "https://plantatlas2020.org/atlas/2cd4p9h.1t0",
+          "records": [
+            {
+              "trail": "Corrin Loop",
+              "date": "15 August 2026"
+            }
+          ]
+        },
+        {
+          "name": "Heather",
+          "scientific": "Calluna vulgaris",
+          "authority": "(L.) Hull",
+          "photo": "/assets/img/species/heather-760.webp",
+          "alt": "A spreading mat of heather in flower, fine needle-like leaves on wiry stems",
+          "description": "A low, clump-forming shrub, often the dominant plant on heath, moor and open woodland over acid soils. It takes ground ranging from dry and exposed to wet blanket bog and raised mire. It can colonise newly opened ground such as clearfell in plantations, regenerating from seed long buried in the soil.",
+          "atlas": "https://plantatlas2020.org/atlas/2cd4p9h.yea",
+          "records": [
+            {
+              "trail": "Corrin Loop",
+              "date": "15 August 2026"
+            }
+          ]
+        },
+        {
+          "name": "Herb Robert",
+          "scientific": "Geranium robertianum",
+          "authority": "L.",
+          "photo": "/assets/img/species/herb-robert-760.webp",
+          "alt": "A five-petalled pink flower above deeply divided green leaves",
+          "description": "An annual or biennial herb that tolerates shade and grows on most soils except the strongly acid. Its habitats run from woodland, hedgerows and shaded banks to walls, scree and coastal shingle, and it is very common on waste ground and brickwork in towns.",
+          "atlas": "https://plantatlas2020.org/atlas/2cd4p9h.8nb",
+          "records": [
+            {
+              "trail": "Corrin Loop",
+              "date": "15 August 2026"
+            }
+          ]
+        },
+        {
+          "name": "Marsh thistle",
+          "scientific": "Cirsium palustre",
+          "authority": "(L.) Scop.",
+          "photo": "/assets/img/species/marsh-thistle-760.webp",
+          "alt": "A spiny winged stem carrying clustered purple thistle heads",
+          "description": "A perennial herb that flowers once and then dies, found in mires, fens and marshes, damp grassland and rush pasture, wet woodland, and montane springs and flushes. It spreads only by seed, which can lie in the soil for many years before it germinates.",
+          "atlas": "https://plantatlas2020.org/atlas/2cd4p9h.8hn",
+          "records": [
+            {
+              "trail": "Corrin Loop",
+              "date": "15 August 2026"
+            }
+          ]
+        },
+        {
+          "name": "Purple moor grass",
+          "scientific": "Molinia caerulea",
+          "authority": "(L.) Moench",
+          "photo": "/assets/img/species/purple-moor-grass-760.webp",
+          "alt": "A dense tussock of narrow green grass leaves in open woodland",
+          "description": "A deciduous perennial grass, abundant on wet heath, moorland, blanket bog, mire and fen, and more scattered through open birchwood, montane grassland and stony lake margins. It grows on peats and mineral soils that are wet either permanently or for part of the year.",
+          "atlas": "https://plantatlas2020.org/atlas/2cd4p9h.fgn",
+          "records": [
+            {
+              "trail": "Corrin Loop",
+              "date": "15 August 2026"
+            }
+          ]
+        },
+        {
+          "name": "Rowan",
+          "scientific": "Sorbus aucuparia",
+          "authority": "L.",
+          "photo": "/assets/img/species/rowan-760.webp",
+          "alt": "Pinnate rowan leaves with paired toothed leaflets along a reddish stalk",
+          "description": "A small to medium tree of open woodland, cliffs and rocky ground, rocky riversides and moorland. It is widely planted, and birds sow it freely on waste ground and along railways. It avoids dry lime-rich or heavy soils and does not thrive in dense shade.",
+          "atlas": "https://plantatlas2020.org/atlas/2cd4p9h.w2c",
+          "records": [
+            {
+              "trail": "Old Cattle Trail",
+              "date": "9 August 2026"
+            }
+          ]
+        },
+        {
+          "name": "Sessile oak",
+          "scientific": "Quercus petraea",
+          "authority": "(Matt.) Liebl.",
+          "photo": "/assets/img/species/sessile-oak-760.webp",
+          "alt": "An ancient oak with a broad low crown of twisting bare branches on a rocky slope",
+          "description": "A long-lived deciduous tree forming high forest or coppice woodland, usually on well-drained, shallow, moderately to strongly acid soils. It is the characteristic species of upland oakwood. It varies greatly in form, and telling it from pedunculate oak in the field is not always clear-cut.",
+          "atlas": "https://plantatlas2020.org/atlas/2cd4p9h.vse",
+          "records": [
+            {
+              "trail": "Corrin Loop",
+              "date": "15 August 2026"
+            }
+          ]
+        },
+        {
+          "name": "Tormentil",
+          "scientific": "Potentilla erecta",
+          "authority": "(L.) Raeusch.",
+          "flag": "proposed determination",
+          "photo": "/assets/img/species/tormentil-760.webp",
+          "alt": "Small four-petalled yellow flowers scattered through low green foliage",
+          "description": "A perennial herb of more or less acid soils, found in grassland from the lowlands to the mountains, in hay and fen meadows, on moorland and heath, across blanket and raised mire, and along wood borders and hedgebanks. Stock find it unpalatable, and it does not tolerate much shade.",
+          "atlas": "https://plantatlas2020.org/atlas/2cd4p9h.5v7",
+          "records": [
+            {
+              "trail": "Old Cattle Trail",
+              "date": "9 August 2026"
+            }
+          ]
+        },
+        {
+          "name": "Water figwort",
+          "scientific": "Scrophularia auriculata",
+          "authority": "L.",
+          "photo": "/assets/img/species/water-figwort-760.webp",
+          "alt": "Tall flowering stems of water figwort at the edge of still water",
+          "description": "A partly winter-green perennial herb of water margins: ponds, pits, lakes, rivers, streams and canals, and ditches, marshes, wet meadows, fens and wet woodland. It keeps much closer to water than common figwort, with which it is sometimes confused. Usually a lowland plant.",
+          "atlas": "https://plantatlas2020.org/atlas/2cd4p9h.w1g",
+          "records": [
+            {
+              "trail": "Corrin Loop",
+              "date": "15 August 2026"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "note",
+      "folded": true,
+      "heading": "About these photographs",
+      "text": "The reference photographs are from [Wikimedia Commons](https://commons.wikimedia.org/), under the licence named beneath each one, cropped and resized for this page and served from this site. They show the species, not the individual plant recorded here.\n\nPhotographer and licence are shown beneath every photograph, and repeated in full on the [credits page](/credits/)."
+    }
+  ]
+}

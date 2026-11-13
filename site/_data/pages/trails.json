@@ -1,0 +1,48 @@
+{
+  "page": {
+    "title": "Trails and stops",
+    "description": "An interactive map of the Glenabo catchment with relief, drainage and the recorded interpretation stops.",
+    "subject": {
+      "name": "Glenabo loop",
+      "description": "A walked loop of about 2.3 km from Stop 1 down the east side of the valley and back up the west side, passing all three recorded stops. The track runs from about 60 to about 115 metres, with about 65 metres of climbing."
+    }
+  },
+  "hero": {
+    "eyebrow": "Strand 1 - Points of interest",
+    "title": "Three stops recorded, seven to survey.",
+    "intro": "Each recorded stop carries a short piece on what is in front of you. Signs are being planned for the trail; until they are up, you can read it here."
+  },
+  "blocks": [
+    {
+      "type": "map"
+    },
+    {
+      "type": "stops",
+      "heading": "The stops",
+      "note": "Interpretation signs are being planned for each stop along the trail. Each sign will carry a code you can scan with your phone to read about the place you are standing in. Those codes are being set now so that the signs will keep working however the website changes in future.",
+      "figures": [
+        {
+          "label": "Catchment",
+          "about": true,
+          "value": "360",
+          "unit": "ha"
+        },
+        {
+          "label": "Action area",
+          "about": true,
+          "value": "990",
+          "unit": "ha"
+        },
+        {
+          "label": "Relief",
+          "about": false,
+          "value": "21-213",
+          "unit": "m"
+        }
+      ]
+    },
+    {
+      "type": "walked"
+    }
+  ]
+}

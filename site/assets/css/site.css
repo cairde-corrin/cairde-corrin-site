@@ -541,9 +541,9 @@ figure{margin:0}
 .editlink[hidden]{display:none}
 .editlink:hover{filter:brightness(1.1)}
 .card .byline{font-size:14px;margin:4px 0 0}
-.card .quote{margin:14px 0 0;padding-left:14px;border-left:2px solid var(--glass-lt-line)}
-.card .quote p{font-family:var(--display);font-style:italic;margin:0}
-.card .quote footer{font-family:var(--data);font-size:11px;color:var(--ink-soft);margin-top:4px}
+.quote{margin:14px 0 0;padding-left:14px;border-left:2px solid var(--glass-lt-line)}
+.quote p{font-family:var(--display);font-style:italic;margin:0}
+.quote footer{font-family:var(--data);font-size:11px;color:var(--ink-soft);margin-top:4px}
 .post-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:40px}
 /* Click-to-load video: a self-hosted still with a play button, swapped for the player on
    click (site.js). 16:9 throughout, so the swap does not move the page. */

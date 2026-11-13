@@ -1,4 +1,30 @@
 {
-  "p1": "Even-aged conifer, planted close together. The lower trunks are bare and the floor is bare needle litter. This is a working crop, and it is doing the job it was planted for.",
-  "p2": "The nearest channel is twenty-three metres away."
+  "page": {
+    "title": "Closed canopy",
+    "description": "Closed canopy. Recorded at about 110 m in the Glenabo catchment, Fermoy, Co. Cork."
+  },
+  "hero": {
+    "eyebrow": "Stop 02 - cairdecorrin.ie/s/2",
+    "title": "Closed canopy.",
+    "photo": "/assets/img/plantation-1800.webp",
+    "alt": "Tall closely spaced conifers with bare lower trunks and no ground vegetation",
+    "latitude": "52.12240",
+    "longitude": "-8.30604",
+    "elevation": "110",
+    "facing": "292",
+    "recorded": "11 Apr 2026, 08:48"
+  },
+  "blocks": [
+    {
+      "type": "text",
+      "text": "Even-aged conifer, planted close together. The lower trunks are bare and the floor is bare needle litter. This is a working crop, and it is doing the job it was planted for.\n\nThe nearest channel is twenty-three metres away."
+    },
+    {
+      "type": "note",
+      "heading": "The name of this glen",
+      "text": "An account written down at Adair school in the 1930s explains how Glenabo got its name. It names the glen, not this particular spot.",
+      "link_text": "Read the summary and the source →",
+      "link": "/folklore/#glenabo"
+    }
+  ]
 }

@@ -1,12 +1,15 @@
+{#- The page's title, summary and structured data come from its "About this page" fields
+    in the editor (site/_data/pages/corrin_moor.json); its content from its blocks (_includes/blocks.js). -#}
+{%- set P = pages.corrin_moor.page -%}{%- set T = P.title + " - Cáirde Corrin" -%}
 <!DOCTYPE html>
 <html lang="en-IE">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Corrin moorland - Cáirde Corrin</title>
-<meta name="description" content="Corrin moorland. - a proposal in early development within the Cáirde Corrin action area. No content yet.">
+<title>{{ T }}</title>
+<meta name="description" content="{{ P.description }}">
 <link rel="canonical" href="https://www.cairdecorrin.ie/new-spaces/corrin-moor.html">
-<meta property="og:title" content="Corrin moorland - Cáirde Corrin"><meta property="og:description" content="Corrin moorland. - a proposal in early development within the Cáirde Corrin action area. No content yet.">
+<meta property="og:title" content="{{ T }}"><meta property="og:description" content="{{ P.description }}">
 <meta property="og:type" content="website"><meta property="og:url" content="https://www.cairdecorrin.ie/new-spaces/corrin-moor.html">
 <meta name="robots" content="noindex, follow">
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png"><link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
@@ -14,68 +17,10 @@
 <link rel="stylesheet" href="../assets/css/site.css">
 <meta property="og:site_name" content="Cáirde Corrin"><meta property="og:locale" content="en_IE">
 <meta property="og:image" content="https://www.cairdecorrin.ie/assets/img/og-new-spaces-202611.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Corrin moorland - Cáirde Corrin">
-<meta name="twitter:description" content="Corrin moorland. - a proposal in early development within the Cáirde Corrin action area. No content yet."><meta name="twitter:image" content="https://www.cairdecorrin.ie/assets/img/og-new-spaces-202611.jpg">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{{ T }}">
+<meta name="twitter:description" content="{{ P.description }}"><meta name="twitter:image" content="https://www.cairdecorrin.ie/assets/img/og-new-spaces-202611.jpg">
 <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@graph": [
-  {
-   "@type": "NGO",
-   "@id": "https://www.cairdecorrin.ie/#organisation",
-   "name": "Cáirde Corrin",
-   "url": "https://www.cairdecorrin.ie/",
-   "logo": {
-    "@type": "ImageObject",
-    "url": "https://www.cairdecorrin.ie/assets/img/logo.webp",
-    "width": 400,
-    "height": 144
-   },
-   "areaServed": {
-    "@type": "Place",
-    "name": "Fermoy, County Cork, Ireland",
-    "address": {
-     "@type": "PostalAddress",
-     "addressLocality": "Fermoy",
-     "addressRegion": "County Cork",
-     "addressCountry": "IE"
-    }
-   }
-  },
-  {
-   "@type": "WebSite",
-   "@id": "https://www.cairdecorrin.ie/#website",
-   "name": "Cáirde Corrin",
-   "url": "https://www.cairdecorrin.ie/",
-   "inLanguage": "en-IE",
-   "publisher": {
-    "@id": "https://www.cairdecorrin.ie/#organisation"
-   }
-  },
-  {
-   "@type": "BreadcrumbList",
-   "itemListElement": [
-    {
-     "@type": "ListItem",
-     "position": 1,
-     "name": "Home",
-     "item": "https://www.cairdecorrin.ie/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 2,
-     "name": "New spaces",
-     "item": "https://www.cairdecorrin.ie/new-spaces/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 3,
-     "name": "Corrin moorland."
-    }
-   ]
-  }
- ]
-}
+{{ pages | pageLd("corrin_moor", page.url, figures) | safe }}
 </script>
 </head>
 <body>
@@ -83,11 +28,7 @@
 {% include "nav.njk" %}
 <main id="main" class="page-head reading">
   <div class="wrap">
-    <p class="eyebrow rv">Strand 2 - New spaces</p>
-    <h1 class="rv page-title">Corrin moorland.</h1>
-    <p class="lede rv">{{ pages.corrin_moor.p1 | prose | safe }}</p>
-    <p class="rv devlabel">{{ pages.corrin_moor.p2 | prose | safe }}</p>
-    <a class="cta" href="./">Back to new spaces</a>
+{{ pages | blocks("corrin_moor", page.url, collections.gallery.length, instagram, social, figures) | safe }}
   </div>
   <div style="height:100px"></div>
 </main>

@@ -1,9 +1,10 @@
-# Decap CMS settings for News, the Gallery and the home page's social posts. Served at
+# Decap CMS settings for News, the Gallery, Articles, the home page's social posts and the
+# block-built pages. Served at
 # /admin/config.yml.
 #
 # The CMS saves straight to the main branch, not to build. That is intended for
-# that content and its photos only. Code, layouts and every other page still go
-# through build and are merged by hand. See docs/CONTRIBUTING.md.
+# that content and its photos only. Code, layouts, privacy, terms and the survey data
+# still go through build and are merged by hand. See docs/CONTRIBUTING.md.
 
 backend:
   name: git-gateway
@@ -326,228 +327,530 @@ collections:
                 pattern: ['^.{1,160}$', 'Keep the caption to one short line, under 160 characters.']
                 hint: One short line saying what the post is about. This is what the card shows.
 
+  # Every page below is an ordered list of blocks (site/_includes/blocks.js draws them).
+  # The top of each page is a fixed field, not a block, so a page always has exactly one,
+  # always first. Each block is defined once here (the &anchors) and reused by name (*alias).
   - name: pages
-    label: Page text
+    label: Pages
     label_singular: page
     description: >-
-      The wording of the home page, About, Links, New spaces and the stop pages. Figures
-      (heights, areas, distances) are written as ordinary words. If two pages end up giving
-      the same figure differently, whoever maintains the website is warned. Nothing you
-      change appears on the website until it is published.
+      Every page of the website apart from News, the gallery, Articles, Privacy and Terms.
+      Each page has a fixed top, then a list of blocks you can add, remove, drag into a new
+      order, copy and change. Figures (heights, areas, distances) are ordinary words: if two
+      pages end up giving the same figure differently, whoever maintains the website is
+      warned. Nothing you change appears on the website until it is published.
     editor: { preview: false }
     files:
       - name: home
         label: "Home page"
         file: site/_data/pages/home.json
         fields:
-          - label: "Under \"Glenabo & Corrin\""
-            name: p1
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"Glenabo & Corrin\""
-            name: p2
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"Glenabo & Corrin\""
-            name: p3
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics. Figures such as heights, areas and distances are ordinary words: if you change one, change it on the other pages that give it too."
-          - label: "Under \"Everything that falls here ends up in the Blackwater.\""
-            name: p4
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"Same hill. Same morning.\""
-            name: p5
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics. Figures such as heights, areas and distances are ordinary words: if you change one, change it on the other pages that give it too."
-          - label: "Under \"One point on the Blackwater .\""
-            name: p6
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics. Figures such as heights, areas and distances are ordinary words: if you change one, change it on the other pages that give it too."
-          - label: "Under \"One point on the Blackwater .\""
-            name: p7
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"Catchment, woodland and amenity inside one working boundary.\""
-            name: p8
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"The three strands of our work are\""
-            name: p9
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"Points of interest\""
-            name: p10
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"New spaces\""
-            name: p11
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"Improving water and ecosystems\""
-            name: p12
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"What 360 hectares actually looks like.\""
-            name: p13
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"It is a small catchment. That is the good news.\""
-            name: p14
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics. Figures such as heights, areas and distances are ordinary words: if you change one, change it on the other pages that give it too."
+          - &about_subject
+            label: "About this page (for search engines and sharing)"
+            name: page
+            widget: object
+            collapsed: true
+            fields:
+              - &page_title { label: "Page title", name: title, widget: string, hint: "Shown in search results, on the browser tab and when someone shares the page." }
+              - &page_summary { label: "Summary", name: description, widget: text, hint: "One or two sentences. Shown under the title in search results and when someone shares the page." }
+              - label: "What this page is about"
+                name: subject
+                widget: object
+                hint: "Search engines are told the page describes this."
+                fields:
+                  - { label: "Its name", name: name, widget: string }
+                  - { label: "A sentence describing it", name: description, widget: text }
+          - label: "The top of the page (the film)"
+            name: hero
+            widget: object
+            hint: "The words over the film at the top of the home page. The film itself is not changed here."
+            fields:
+              - { label: "Small line at the top", name: strap, widget: string }
+              - { label: "Title", name: title, widget: string }
+              - { label: "Second line of the title, in italics", name: title_second, widget: string, required: false }
+              - { label: "Line under the title", name: intro, widget: text }
+              - { label: "Second line of the film", name: line2, widget: text }
+              - { label: "Third line of the film", name: line3, widget: text }
+          - label: "Blocks (the rest of the page)"
+            name: blocks
+            widget: list
+            label_singular: block
+            hint: "Each Text block starts a new band across the page; the blocks after it sit in the same band until the next Text block."
+            types:
+              - label: "Text"
+                name: text
+                widget: object
+                summary: "{{fields.heading}}"
+                fields:
+                  - &eyebrow { label: "Small line above the heading", name: eyebrow, widget: string, required: false, hint: "Optional. Shown in small capitals." }
+                  - &heading { label: "Heading", name: heading, widget: text, required: false, hint: "Optional. Press Enter to start a new line." }
+                  - &paragraphs { label: "Paragraphs", name: text, widget: text, required: false, hint: "Leave an empty line between paragraphs. Put `*asterisks*` round words for italics. To make a link, write `[the words](/trails/)` for a page on this site or `[the words](https://...)` for another site." }
+                  - label: "Background of the band"
+                    name: background
+                    widget: select
+                    default: light
+                    options: [{ label: "Light", value: light }, { label: "Dark", value: dark }, { label: "Lightly tinted", value: tint }]
+                  - &copy { label: "Make a copy of this block when I save", name: copy, widget: boolean, required: false, default: false, hint: "Tick, then save: a copy appears straight after this block, ready to change. The tick clears itself." }
+              - &b_figures
+                label: "Figure box"
+                name: figures
+                widget: object
+                fields:
+                  - label: "Figures"
+                    name: items
+                    widget: list
+                    label_singular: figure
+                    summary: "{{fields.label}}: {{fields.value}} {{fields.unit}}"
+                    fields: &figure_fields
+                      - { label: "What it is", name: label, widget: string, hint: "For example: Catchment area." }
+                      - { label: "Put \"about\" in front of the figure", name: about, widget: boolean, required: false, default: false }
+                      - { label: "The figure", name: value, widget: string, hint: "For example: 3.6" }
+                      - { label: "Unit", name: unit, widget: string, required: false, hint: "Optional. For example: km² or ha." }
+                  - *copy
+              - &b_image
+                label: "Single image"
+                name: image
+                widget: object
+                summary: "{{fields.caption}}"
+                fields:
+                  - &photo
+                    label: "Photo"
+                    name: photo
+                    widget: image
+                    media_library: { config: { max_file_size: 20000000 } }
+                    choose_url: false
+                    hint: "Choose or upload a photo you took yourself, or one you have permission to use. Photos straight from a phone are fine: the website makes smaller copies and removes the location and phone details."
+                  - &alt { label: "What the photo shows", name: alt, widget: string, hint: "For people who cannot see the photo: what is in it, in one sentence." }
+                  - { label: "Caption", name: caption, widget: string, required: false }
+                  - *copy
+              - &b_pair
+                label: "Two photos side by side"
+                name: pair
+                widget: object
+                fields:
+                  - label: "The two photos"
+                    name: items
+                    widget: list
+                    label_singular: photo
+                    min: 2
+                    max: 2
+                    fields:
+                      - *photo
+                      - *alt
+                      - { label: "Small line under the photo", name: meta, widget: string, required: false, hint: "Optional. For example the height and time it was taken." }
+                      - { label: "Caption", name: caption, widget: string, required: false }
+                  - *copy
+              - &b_carousel
+                label: "Photo carousel"
+                name: carousel
+                widget: object
+                summary: "{{fields.label}}"
+                fields:
+                  - { label: "What the photos are", name: label, widget: string, default: "Photographs", hint: "Read out to people using a screen reader, for example: Photographs from the Glenabo catchment." }
+                  - { label: "Show a link to the gallery underneath", name: gallery_link, widget: boolean, required: false, default: false, hint: "The link only appears once the gallery has photos." }
+                  - &photo_items
+                    label: "Photos"
+                    name: items
+                    widget: list
+                    label_singular: photo
+                    summary: "{{fields.alt}}"
+                    fields:
+                      - *photo
+                      - *alt
+                      - { label: "Small line under the photo", name: caption, widget: string, required: false, hint: "Optional. For example the height and time it was taken." }
+                  - *copy
+              - &b_grid
+                label: "Photo grid"
+                name: grid
+                widget: object
+                fields:
+                  - *photo_items
+                  - *copy
+              - &b_steps
+                label: "Numbered points"
+                name: steps
+                widget: object
+                fields:
+                  - label: "Points"
+                    name: items
+                    widget: list
+                    label_singular: point
+                    summary: "{{fields.label}} {{fields.heading}}"
+                    fields:
+                      - { label: "Number or label", name: label, widget: string, required: false, hint: "For example: Strand 1, Phase 2 or 03." }
+                      - { label: "Heading", name: heading, widget: string }
+                      - { label: "Text", name: text, widget: text, required: false }
+                      - &link_text { label: "Link words", name: link_text, widget: string, required: false, hint: "Optional. The words people click, for example: See the trail →" }
+                      - &link { label: "Link to", name: link, widget: string, required: false, hint: "A page on this site, starting with / (for example /trails/), or a full address starting with https://" }
+                  - *copy
+              - &b_cards
+                label: "Cards"
+                name: cards
+                widget: object
+                fields:
+                  - label: "Cards"
+                    name: items
+                    widget: list
+                    label_singular: card
+                    summary: "{{fields.title}}"
+                    fields:
+                      - { label: "Small label at the top", name: kicker, widget: string, required: false }
+                      - { label: "Title", name: title, widget: string }
+                      - { label: "Text", name: text, widget: text, required: false }
+                      - { label: "Photo", name: photo, widget: image, required: false, media_library: { config: { max_file_size: 20000000 } }, choose_url: false, hint: "Optional." }
+                      - { label: "What the photo shows", name: alt, widget: string, required: false, hint: "Needed if there is a photo: what is in it, in one sentence." }
+                      - *link_text
+                      - *link
+                  - *copy
+              - &b_links
+                label: "List of links"
+                name: links
+                widget: object
+                fields:
+                  - label: "Links"
+                    name: items
+                    widget: list
+                    label_singular: link
+                    summary: "{{fields.name}}"
+                    fields:
+                      - { label: "Name", name: name, widget: string }
+                      - { label: "Web address", name: url, widget: string, pattern: ['^https://', 'Use the full address, starting with https://'] }
+                  - *copy
+              - &b_note
+                label: "Note box"
+                name: note
+                widget: object
+                summary: "{{fields.heading}}"
+                fields:
+                  - { label: "Heading", name: heading, widget: string, required: false }
+                  - { label: "Text", name: text, widget: text, hint: "Leave an empty line between paragraphs." }
+                  - *link_text
+                  - *link
+                  - { label: "Folded away until someone taps the heading", name: folded, widget: boolean, required: false, default: false }
+                  - *copy
+              - &b_quote
+                label: "Pull quote"
+                name: quote
+                widget: object
+                fields:
+                  - { label: "The quotation", name: text, widget: text, hint: "Without quotation marks: they are added." }
+                  - { label: "Who said it, or where it is from", name: source, widget: string, required: false }
+                  - *copy
+              - &b_button
+                label: "Button link"
+                name: button
+                widget: object
+                summary: "{{fields.text}}"
+                fields:
+                  - { label: "Words on the button", name: text, widget: string }
+                  - { label: "Link to", name: url, widget: string, hint: "A page on this site, starting with / (for example /about/), a full address starting with https://, or mailto: and an email address." }
+                  - *copy
+              - &b_video
+                label: "YouTube video"
+                name: video
+                widget: object
+                summary: "{{fields.title}}"
+                fields:
+                  - { label: "YouTube address", name: url, widget: string, hint: "Copy it from YouTube's Share button. Nothing is loaded from YouTube until a visitor presses play." }
+                  - { label: "Title of the video", name: title, widget: string }
+                  - *copy
+              - &b_audio
+                label: "Recording"
+                name: audio
+                widget: object
+                fields:
+                  - { label: "Heading", name: heading, widget: string, default: "Listen" }
+                  - { label: "About the recording", name: text, widget: text, required: false }
+                  - { label: "What the recording is", name: label, widget: string, hint: "Read out to people using a screen reader." }
+                  - &audio_file { label: "The recording", name: file, widget: string, hint: "A recording already on the website, such as /assets/audio/stop-1.mp3. New recordings are added by whoever looks after the website, who first removes the phone's location and details from them." }
+                  - *copy
+              - &b_story
+                label: "Folklore story"
+                name: story
+                widget: object
+                summary: "{{fields.title}}"
+                fields:
+                  - { label: "Title", name: title, widget: string }
+                  - { label: "Short name for links to this story", name: anchor, widget: string, required: false, hint: "Optional. Used in links such as /folklore/#glenabo. Leave empty to make one from the title." }
+                  - { label: "Summary", name: summary, widget: text, hint: "In your own words. Leave an empty line between paragraphs." }
+                  - { label: "What it names", name: place, widget: text, required: false, hint: "Optional. For example: Names Corrin, and places it about three miles from Fermoy." }
+                  - { label: "Volume", name: volume, widget: string, hint: "The source is required by the licence the story is used under: the website will not publish a story without it." }
+                  - { label: "Page", name: page, widget: string, hint: "For example 148, or 149-150." }
+                  - { label: "Where it was collected", name: school, widget: string, hint: "For example: Adair, Fermoy." }
+                  - { label: "County", name: county, widget: string, default: "Co. Cork" }
+                  - { label: "Collected by", name: collector, widget: string, required: false }
+                  - { label: "The story on dúchas.ie", name: link, widget: string, pattern: ['^https://www\.duchas\.ie/', 'The address of the story on dúchas.ie, starting with https://www.duchas.ie/'] }
+                  - *copy
+              - &b_species
+                label: "Species list"
+                name: species
+                widget: object
+                fields:
+                  - label: "Species"
+                    name: items
+                    widget: list
+                    label_singular: species
+                    summary: "{{fields.name}}"
+                    fields:
+                      - { label: "Common name", name: name, widget: string }
+                      - { label: "Scientific name", name: scientific, widget: string, hint: "Shown in italics. If only the family is known, give the family." }
+                      - { label: "Only the family is known", name: family, widget: boolean, required: false, default: false }
+                      - { label: "Named by", name: authority, widget: string, required: false, hint: "Optional. The botanist's abbreviation after the name, for example L." }
+                      - { label: "Note after the name", name: flag, widget: string, required: false, hint: "Optional. For example: proposed determination." }
+                      - { label: "Photo", name: photo, widget: image, required: false, media_library: { config: { max_file_size: 20000000 } }, choose_url: false, hint: "Optional." }
+                      - { label: "What the photo shows", name: alt, widget: string, required: false, hint: "Needed if there is a photo." }
+                      - { label: "Description", name: description, widget: text, required: false }
+                      - { label: "Its page in the BSBI Plant Atlas", name: atlas, widget: string, required: false, hint: "Optional. The full address, starting with https://" }
+                      - label: "Where and when it was recorded"
+                        name: records
+                        widget: list
+                        label_singular: record
+                        summary: "{{fields.trail}} {{fields.date}}"
+                        fields:
+                          - { label: "Trail", name: trail, widget: string }
+                          - { label: "Date", name: date, widget: string, required: false, hint: "For example: 15 August 2026." }
+                  - *copy
+              - &b_recordings
+                label: "List of recordings"
+                name: recordings
+                widget: object
+                fields:
+                  - { label: "The day they were made", name: date, widget: datetime, format: "YYYY-MM-DD", date_format: "D MMMM YYYY", time_format: false }
+                  - label: "Recordings"
+                    name: items
+                    widget: list
+                    label_singular: recording
+                    summary: "{{fields.start}}"
+                    fields:
+                      - { label: "Started at", name: start, widget: string, hint: "For example: 07:10:03" }
+                      - { label: "Ended at", name: end, widget: string, required: false }
+                      - { label: "Length", name: duration, widget: string, hint: "Minutes and seconds, for example 7:34" }
+                      - { label: "Short note", name: note, widget: string, required: false, hint: "Optional. For example: also on stop 1." }
+                      - *audio_file
+                  - *copy
+              - &b_films
+                label: "Films"
+                name: films
+                widget: object
+                fields:
+                  - label: "Films"
+                    name: items
+                    widget: list
+                    label_singular: film
+                    summary: "{{fields.date}}"
+                    fields:
+                      - { label: "Filmed on", name: date, widget: datetime, format: "YYYY-MM-DD", date_format: "D MMMM YYYY", time_format: false }
+                      - { label: "Length", name: duration, widget: string, hint: "Minutes and seconds, for example 0:23" }
+                      - { label: "The film", name: file, widget: string, hint: "A film already on the website, such as /assets/video/film/walk-april.mp4. New films are added by whoever looks after the website, who first removes the phone's location and details from them." }
+                      - { label: "Its still picture", name: poster, widget: string, required: false }
+                      - { label: "Width in pixels", name: width, widget: number, value_type: int }
+                      - { label: "Height in pixels", name: height, widget: number, value_type: int }
+                  - *copy
+              - label: "Posts from the group"
+                name: social
+                widget: object
+                hint: "The group's Instagram posts, or the posts listed under Home page → Social media posts. Shown only when there are some. It can appear once."
+                fields:
+                  - *eyebrow
+                  - *heading
       - name: about
         label: "About"
         file: site/_data/pages/about.json
-        fields:
-          - label: "Under \"A community group working to a catchment.\""
-            name: p1
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"Our vision\""
-            name: p2
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"Our mission\""
-            name: p3
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"Coillte\""
-            name: p4
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"National Biodiversity Data Centre\""
-            name: p5
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"The local authority\""
-            name: p6
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"How to get involved\""
-            name: p7
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-      - name: links
-        label: "Links"
-        file: site/_data/pages/links.json
-        fields:
-          - label: "Under \"Where to go next.\""
-            name: p1
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: The links
-            name: sites
-            widget: list
-            label_singular: link
-            summary: "{{fields.name}}"
-            hint: The sites listed on the Links page, in this order. Drag to reorder.
+        fields: &standard_fields
+          - &about_plain
+            label: "About this page (for search engines and sharing)"
+            name: page
+            widget: object
+            collapsed: true
+            fields: [*page_title, *page_summary]
+          - &hero
+            label: "The top of the page"
+            name: hero
+            widget: object
             fields:
-              - { label: Name, name: name, widget: string }
-              - label: Address
-                name: url
-                widget: string
-                pattern: ['^https://\S+$', 'Paste the full address, starting https://']
-      - name: new_spaces
-        label: "New spaces"
-        file: site/_data/pages/new_spaces.json
+              - { label: "Small line above the title", name: eyebrow, widget: string }
+              - { label: "Title", name: title, widget: text, hint: "Press Enter to start a new line." }
+              - { label: "Opening paragraph", name: intro, widget: text, required: false }
+          - &blocks
+            label: "Blocks (the rest of the page)"
+            name: blocks
+            widget: list
+            label_singular: block
+            types:
+              - &b_text
+                label: "Text"
+                name: text
+                widget: object
+                summary: "{{fields.heading}}"
+                fields:
+                  - *eyebrow
+                  - *heading
+                  - *paragraphs
+                  - label: "Style of the paragraphs"
+                    name: style
+                    widget: select
+                    default: normal
+                    required: false
+                    options: [{ label: "Ordinary", value: normal }, { label: "Small print, such as where information comes from", value: small }, { label: "A short label, such as In development", value: label }]
+                  - label: "Space above"
+                    name: gap
+                    widget: select
+                    default: none
+                    required: false
+                    options: [{ label: "None", value: none }, { label: "A little", value: small }, { label: "More", value: medium }, { label: "Most", value: large }]
+                  - *copy
+              - *b_figures
+              - *b_image
+              - *b_pair
+              - *b_carousel
+              - *b_grid
+              - *b_steps
+              - *b_cards
+              - *b_links
+              - *b_note
+              - *b_quote
+              - *b_button
+              - *b_video
+              - *b_audio
+              - *b_story
+              - *b_species
+              - *b_recordings
+              - *b_films
+      - { name: links, label: "Links", file: site/_data/pages/links.json, fields: *standard_fields }
+      - { name: new_spaces, label: "New spaces", file: site/_data/pages/new_spaces.json, fields: *standard_fields }
+      - { name: corrin_moor, label: "New spaces: Corrin moorland", file: site/_data/pages/corrin_moor.json, fields: *standard_fields }
+      - { name: corrin_wetlands, label: "New spaces: Corrin wetlands", file: site/_data/pages/corrin_wetlands.json, fields: *standard_fields }
+      - { name: water, label: "Water and ecosystems", file: site/_data/pages/water.json, fields: *standard_fields }
+      - { name: recordings, label: "Recordings", file: site/_data/pages/recordings.json, fields: *standard_fields }
+      - name: species
+        label: "Species"
+        file: site/_data/pages/species.json
+        fields: &listing_fields
+          - label: "About this page (for search engines and sharing)"
+            name: page
+            widget: object
+            collapsed: true
+            fields:
+              - *page_title
+              - *page_summary
+              - label: "What this page is about"
+                name: subject
+                widget: object
+                hint: "Search engines are told the page lists these."
+                fields:
+                  - { label: "Name of the list", name: name, widget: string, hint: "For example: Species recorded on the trails." }
+          - *hero
+          - *blocks
+      - { name: folklore, label: "Folklore", file: site/_data/pages/folklore.json, fields: *listing_fields }
+      - name: trails
+        label: "Trails"
+        file: site/_data/pages/trails.json
         fields:
-          - label: "Under \"Two projects in early development.\""
-            name: p1
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics. Figures such as heights, areas and distances are ordinary words: if you change one, change it on the other pages that give it too."
-          - label: "Under \"Corrin moorland\""
-            name: p2
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"Corrin wetlands\""
-            name: p3
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"The proposed route\""
-            name: p4
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"Glenabo interpretation\""
-            name: p5
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"Corrin interpretation\""
-            name: p6
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"Glenabo extension\""
-            name: p7
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics. Figures such as heights, areas and distances are ordinary words: if you change one, change it on the other pages that give it too."
-          - label: "Under \"The full loop\""
-            name: p8
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics. Figures such as heights, areas and distances are ordinary words: if you change one, change it on the other pages that give it too."
-          - label: "Under \"The full loop\""
-            name: p9
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-      - name: corrin_moor
-        label: "New spaces: Corrin Moor"
-        file: site/_data/pages/corrin_moor.json
+          - *about_subject
+          - *hero
+          - label: "Blocks (the rest of the page)"
+            name: blocks
+            widget: list
+            label_singular: block
+            hint: "The map, the list of stops and the walked loop can each appear once."
+            types:
+              - label: "Interactive map"
+                name: map
+                widget: object
+                hint: "The map of the catchment, the walked loop and the recorded stops. It can appear once."
+                fields:
+                  - { label: "Line under the map", name: note, widget: string, required: false }
+              - label: "List of stops"
+                name: stops
+                widget: object
+                hint: "Every stop from 1 to 10, filled in from the stops' own pages. It can appear once."
+                fields:
+                  - { label: "Heading", name: heading, widget: string, default: "The stops" }
+                  - { label: "Note beside the list", name: note, widget: text, required: false }
+                  - { label: "Figures beside the list", name: figures, widget: list, required: false, label_singular: figure, summary: "{{fields.label}}: {{fields.value}} {{fields.unit}}", fields: *figure_fields }
+              - label: "The walked loop"
+                name: walked
+                widget: object
+                hint: "The group's walked loop, its elevation profile and the GPS download. Its content comes from the checked GPS track and cannot be changed here (see the editor guide). It can appear once."
+                fields:
+                  - { label: "Nothing to fill in", name: none, widget: string, required: false, hint: "This block has no settings." }
+              - *b_text
+              - *b_figures
+              - *b_image
+              - *b_note
+              - *b_button
+      - name: credits
+        label: "Credits"
+        file: site/_data/pages/credits.json
         fields:
-          - label: "Under \"Corrin moorland.\""
-            name: p1
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"Corrin moorland.\""
-            name: p2
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-      - name: corrin_wetlands
-        label: "New spaces: Corrin Wetlands"
-        file: site/_data/pages/corrin_wetlands.json
-        fields:
-          - label: "Under \"Corrin wetlands.\""
-            name: p1
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"Corrin wetlands.\""
-            name: p2
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
+          - *about_plain
+          - *hero
+          - label: "Blocks (the rest of the page)"
+            name: blocks
+            widget: list
+            label_singular: block
+            types:
+              - label: "Credits list"
+                name: credits
+                widget: object
+                fields:
+                  - label: "Entries"
+                    name: items
+                    widget: list
+                    label_singular: entry
+                    hint: "Credits a licence requires can be moved but not changed. If one is removed, it is added back at the end of the page, because the licences the photographs, maps and stories are used under require it."
+                    types:
+                      - label: "Credit"
+                        name: credit
+                        widget: object
+                        summary: "{{fields.heading}}"
+                        fields:
+                          - { label: "Heading", name: heading, widget: string }
+                          - { label: "Text", name: text, widget: text, hint: "Leave an empty line between paragraphs." }
+                      - label: "Credits a licence requires"
+                        name: required
+                        widget: object
+                        summary: "{{fields.group}}"
+                        fields:
+                          - label: "Which credits"
+                            name: group
+                            widget: select
+                            options:
+                              - { label: "Elevation data (for the maps)", value: elevation }
+                              - { label: "Species records", value: species-records }
+                              - { label: "Species reference photographs", value: species-photos }
+                              - { label: "Invasive species photographs", value: invasive-photos }
+                              - { label: "Folklore", value: folklore }
+                  - *copy
+              - *b_text
+              - *b_note
       - name: stop_1
         label: "Stop 01"
         file: site/_data/pages/stop_1.json
-        fields:
-          - label: "Under \"The stream at about 60 metres.\""
-            name: p1
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics. Figures such as heights, areas and distances are ordinary words: if you change one, change it on the other pages that give it too."
-          - label: "Under \"The stream at about 60 metres.\""
-            name: p2
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-      - name: stop_2
-        label: "Stop 02"
-        file: site/_data/pages/stop_2.json
-        fields:
-          - label: "Under \"Closed canopy.\""
-            name: p1
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
-          - label: "Under \"Closed canopy.\""
-            name: p2
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics. Figures such as heights, areas and distances are ordinary words: if you change one, change it on the other pages that give it too."
-      - name: stop_3
-        label: "Stop 03"
-        file: site/_data/pages/stop_3.json
-        fields:
-          - label: "Under \"The mossy stand.\""
-            name: p1
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics. Figures such as heights, areas and distances are ordinary words: if you change one, change it on the other pages that give it too."
-          - label: "Under \"The mossy stand.\""
-            name: p2
-            widget: text
-            hint: "Plain text. Put *asterisks* round words to set them in italics."
+        fields: &stop_fields
+          - label: "About this page (for search engines and sharing)"
+            name: page
+            widget: object
+            collapsed: true
+            fields:
+              - { label: "Name of the stop", name: title, widget: string, hint: "Shown on the trails page, in search results and on the browser tab, after the stop's number." }
+              - *page_summary
+          - label: "The top of the page"
+            name: hero
+            widget: object
+            fields:
+              - { label: "Small line above the title", name: eyebrow, widget: string }
+              - { label: "Title", name: title, widget: text, hint: "Press Enter to start a new line." }
+              - { label: "Photo", name: photo, widget: image, media_library: { config: { max_file_size: 20000000 } }, choose_url: false, hint: "The photo taken at the stop." }
+              - *alt
+              - { label: "Latitude", name: latitude, widget: string, hint: "Degrees north, for example 52.12752" }
+              - { label: "Longitude", name: longitude, widget: string, hint: "Degrees east, so negative here, for example -8.29878" }
+              - { label: "Height in metres", name: elevation, widget: string, hint: "Above sea level, to the nearest 5 metres, for example 60" }
+              - { label: "Facing", name: facing, widget: string, hint: "The compass direction the photo faces, in degrees, for example 159" }
+              - { label: "Recorded", name: recorded, widget: string, hint: "When, for example: 11 Apr 2026, 07:10" }
+          - *blocks
+      - { name: stop_2, label: "Stop 02", file: site/_data/pages/stop_2.json, fields: *stop_fields }
+      - { name: stop_3, label: "Stop 03", file: site/_data/pages/stop_3.json, fields: *stop_fields }
 
   - name: articles
     label: Articles

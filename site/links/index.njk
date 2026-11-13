@@ -1,74 +1,25 @@
+{#- The page's title, summary and structured data come from its "About this page" fields
+    in the editor (site/_data/pages/links.json); its content from its blocks (_includes/blocks.js). -#}
+{%- set P = pages.links.page -%}{%- set T = P.title + " - Cáirde Corrin" -%}
 <!DOCTYPE html>
 <html lang="en-IE">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Related sites and links - Cáirde Corrin</title>
-<meta name="description" content="Recording, reporting and reference links for the Glenabo-Corrin catchment.">
+<title>{{ T }}</title>
+<meta name="description" content="{{ P.description }}">
 <link rel="canonical" href="https://www.cairdecorrin.ie/links/">
-<meta property="og:title" content="Related sites and links - Cáirde Corrin"><meta property="og:description" content="Recording, reporting and reference links for the Glenabo-Corrin catchment.">
+<meta property="og:title" content="{{ T }}"><meta property="og:description" content="{{ P.description }}">
 <meta property="og:type" content="website"><meta property="og:url" content="https://www.cairdecorrin.ie/links/">
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png"><link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
 <link rel="preload" href="../assets/fonts/ebgaramond-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/css/site.css">
 <meta property="og:site_name" content="Cáirde Corrin"><meta property="og:locale" content="en_IE">
 <meta property="og:image" content="https://www.cairdecorrin.ie/assets/img/og-default.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Related sites and links - Cáirde Corrin">
-<meta name="twitter:description" content="Recording, reporting and reference links for the Glenabo-Corrin catchment."><meta name="twitter:image" content="https://www.cairdecorrin.ie/assets/img/og-default.jpg">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{{ T }}">
+<meta name="twitter:description" content="{{ P.description }}"><meta name="twitter:image" content="https://www.cairdecorrin.ie/assets/img/og-default.jpg">
 <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@graph": [
-  {
-   "@type": "NGO",
-   "@id": "https://www.cairdecorrin.ie/#organisation",
-   "name": "Cáirde Corrin",
-   "url": "https://www.cairdecorrin.ie/",
-   "logo": {
-    "@type": "ImageObject",
-    "url": "https://www.cairdecorrin.ie/assets/img/logo.webp",
-    "width": 400,
-    "height": 144
-   },
-   "areaServed": {
-    "@type": "Place",
-    "name": "Fermoy, County Cork, Ireland",
-    "address": {
-     "@type": "PostalAddress",
-     "addressLocality": "Fermoy",
-     "addressRegion": "County Cork",
-     "addressCountry": "IE"
-    }
-   }
-  },
-  {
-   "@type": "WebSite",
-   "@id": "https://www.cairdecorrin.ie/#website",
-   "name": "Cáirde Corrin",
-   "url": "https://www.cairdecorrin.ie/",
-   "inLanguage": "en-IE",
-   "publisher": {
-    "@id": "https://www.cairdecorrin.ie/#organisation"
-   }
-  },
-  {
-   "@type": "BreadcrumbList",
-   "itemListElement": [
-    {
-     "@type": "ListItem",
-     "position": 1,
-     "name": "Home",
-     "item": "https://www.cairdecorrin.ie/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 2,
-     "name": "Links"
-    }
-   ]
-  }
- ]
-}
+{{ pages | pageLd("links", page.url, figures) | safe }}
 </script>
 </head>
 <body>
@@ -76,12 +27,7 @@
 {% include "nav.njk" %}
 <main id="main" class="page-head reading">
   <div class="wrap">
-    <p class="eyebrow rv">Related sites and links</p>
-    <h1 class="rv page-title">Where to go next.</h1>
-    <p class="lede rv">{{ pages.links.p1 | prose | safe }}</p>
-    <div class="linklist rv">{% for l in pages.links.sites %}
-      <a href="{{ l.url }}" target="_blank" rel="noopener"><span>{{ l.name }}</span><span class="u">{{ l.url | domain }}</span></a>{% endfor %}
-    </div>
+{{ pages | blocks("links", page.url, collections.gallery.length, instagram, social, figures) | safe }}
   </div>
   <div style="height:100px"></div>
 </main>

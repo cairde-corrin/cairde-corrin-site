@@ -34,15 +34,12 @@ which commits them to `main`.
   Tailwind or React without a decision to do so. After any change to the build,
   `npm run build && python3 tools/compare_build.py` must report no differences in the
   copied files.
-- **The byte-for-byte guarantee covers the copied files, not the pages.** The 23
-  hand-written pages (trails, the ten stops, species, folklore, recordings, water, new
-  spaces and its two proposals, about, links, credits, privacy, terms) used to be copied
-  exactly as written, so `compare_build.py` proved the build could not alter them. Like
-  the home page, they are now templates, so that the header and footer come from one place
-  (`_includes/nav.js`). Each page is still written out as it is in the repository apart
-  from what the build adds: the header and footer, a second structured-data block
-  (`_includes/ld-pages.js`) and the checks in `_includes/images.js`. But
-  `compare_build.py` now lists them as generated rather than proving them unchanged, and
+- **The byte-for-byte guarantee covers the copied files, not the pages.** Every page is
+  generated. Fifteen of them (the home page, about, links, new spaces and its two
+  proposals, stops 1 to 3, water, credits, species, folklore, recordings, trails) are
+  built from the editor's blocks ("Pages built from blocks" below); privacy, terms and
+  stops 4 to 10 are templates written as they stand. `compare_build.py` lists all of them
+  as generated rather than proving them unchanged, and
   **a change to a layout, an include or `.eleventy.js` reaches every page at once**,
   including the pages that carry the verified figures below (areas, heights, distances,
   coordinates, species determinations). After such a change, diff the built pages against
@@ -85,8 +82,8 @@ which commits them to `main`.
 
 ## Where the figures live
 
-Figures in the page text are ordinary words. Editors write the prose of the home page,
-About, Links, New spaces and stops 1 to 3 in `site/_data/pages/*.json`, and a figure there
+Figures in the page text are ordinary words. Editors write every block-built page in
+`site/_data/pages/*.json`, and a figure there
 ("about 360 hectares", "three hundred and sixty hectares") is typed like any other word:
 nothing locks it. What protects the figures is a warning, not a lock.
 
@@ -95,7 +92,10 @@ build. It reads the text of every finished page, including titles, descriptions 
 structured data, finds the watched quantities in whatever form they are written (digits
 or words, hectares or km², a range such as 21-213 m), and prints a `[figures]` warning
 naming the pages when two of them give the same quantity differently. It also warns when
-every page agrees but disagrees with the measured value. It never fails a build and never
+every page agrees but disagrees with the measured value. Counts of things that exist on the
+website ("13 species", "Nineteen recordings", "Five stories", "Twelve photographs") are
+compared the same way with how many there actually are, counted from the pages' blocks
+(`counts()` in `_includes/blocks.js`). It never fails a build and never
 holds back publishing: an editor's change goes live, and the warning in the Netlify
 deploy log is the signal for whoever maintains the site to check it. A number is matched
 to a quantity by the nearest label in front of it ("Catchment area", "action area",
@@ -114,20 +114,144 @@ are the `WATCH` list at the top of the file:
 | Length, lowest and highest point, and climbing of the walked loop | `loop.*` |
 | Length of the proposed loop route, and the Glenabo extension | `proposal.*` |
 | Distance between the two photographs on the home page | `photo_pair.apart_m` |
-| Number of recorded stops | counted from the published stop pages |
+| Number of recorded stops, and of stops still to survey | counted: stops whose page has content |
+| Number of species, recordings, films and folklore stories | counted: the entries in those blocks |
+| Number of strands of work, of phases, and of new-space projects | counted: points labelled Strand or Phase; cards linking to a new-space page |
+| Number of species and invasive species reference photographs | counted: the credited photographs of each kind in use |
 
 To add a quantity, add a line to `WATCH` and its measured value to `figures.json`, and a
 case to `tools/selftest.js`.
 
 **`site/_data/figures.json`** is no longer where the prose gets its figures. It keeps two
 jobs: it is the measured value the check compares against, and it fills in the parts of
-pages that describe the survey data rather than tell a story (the trails map's layer key
-and the stops' positions in the structured data). The editor has no entry for it, and the
+the trails page that describe the survey data rather than tell a story (the map's layer
+key, and the structured data for the loop, the catchment and the action area). A stop's
+position, height and bearing are fields on the stop's own page. The editor has no entry for it, and the
 check in `.github/workflows/editor-content-only.yml` refuses any editor change to it. When
 a measurement changes, change it there, with its source, on `build`, and the check then
 lists every page whose wording still gives the old figure. The trails page's walked-loop
 section, the elevation profile and the map data are generated by the tools from the
 survey data and are not editable.
+
+## Pages built from blocks
+
+Every editable page is `site/_data/pages/<key>.json`:
+
+    { "page":   { "title", "description", "subject": { "name", "description" } },
+      "hero":   { the top of the page },
+      "blocks": [ { "type": "text", ... }, { "type": "cards", "items": [...] }, ... ] }
+
+`page` is the page's identity ("About this page" in the editor), `hero` the top of the
+page, fixed and always first, and `blocks` the ordered list the editor adds to, removes
+from, reorders and copies. The page's `.njk` is a frame: head, scripts and footer, with
+`{{ pages | blocks("key", ...) }}` for the content and `{{ pages | pageLd("key", ...) }}`
+for the structured data. `_includes/blocks.js` draws every block in the markup the
+hand-written pages used, so converting them changed no page's content.
+
+**The block types** are the sections the site was already made of; none was invented.
+`LABELS` in `blocks.js` lists them with the names editors see:
+
+| Block | Was |
+|---|---|
+| hero (fixed field) | the page head (eyebrow, title, lede); on the home page the film's words; on a stop the photo and stop details |
+| Text | the home page's sections (eyebrow, heading, paragraphs, in a light, dark or tinted band), and headed paragraphs elsewhere, including the small source notes and the "In development" label |
+| Figure box | the `figs` boxes on the home and trails pages |
+| Single image | the home page's two map figures (`mapfig`) |
+| Two photos side by side | the home page's broadleaf and conifer pair |
+| Photo carousel | the home page's photograph carousel |
+| Photo grid | the water page's four photographs |
+| Numbered points | the strands (home), phases (new spaces) and do and do not lists (water) |
+| Cards | the partners (about), the two proposals (new spaces), the invasive species (water) |
+| List of links | the links page and the water page's recording bodies |
+| Note box | the stop and new-spaces notes, and the species page's folded "About these photographs" |
+| Pull quote | the quotation on the articles cards, now usable on any page |
+| Button link | every `cta` button |
+| YouTube video | the click-to-load video of the news posts |
+| Recording | the "Listen" box on stop 1 |
+| List of recordings, Films | the recordings page |
+| Folklore story | each story on the folklore page |
+| Species list | the species page's list |
+| Credits list | the credits page's list |
+| Interactive map, List of stops, The walked loop | the trails page's map, stop list and walked-loop section |
+| Posts from the group | the home page's Instagram carousel or social cards |
+
+**Where blocks go.** The top of a page is a fixed field, not a block, so the editor's own
+structure gives every page exactly one, always first. The map, the list of stops, the
+walked loop and the posts from the group can appear once per page (they carry element ids
+or a page-wide role); a second one stops the build. They are offered only on the page
+they belong to. On the home page, each Text block opens a new band and the blocks after
+it join that band; elsewhere, blocks follow one another in one column. Decap has no
+button to copy a list item, so each block has a "Make a copy of this block when I save"
+tick that `site/admin/editor.js` acts on when the entry is saved.
+
+**A broken block stops the build.** Every block is checked as it is drawn: a missing
+title, a photo without its description or not on this site, a "Two photos" block without
+exactly two, a link that is neither a site path nor an `https://` address, a recording
+that is not a file on the site, a story without its source, a stop without a position
+near Fermoy. The error names the page file and the block number and kind, and Netlify
+keeps the previous version live. The backstop against loading anything from another
+website (`_includes/images.js`) still runs over every finished page, blocks included.
+
+**Photos in blocks** are either one of the site's prepared sets (`/assets/img/name-700.webp`
+and its siblings; the block uses every width and format on disk, as the hand-written page
+did) or an editor's upload (`/assets/uploads/`, re-encoded at build like a news photo).
+How each block writes its photos (sizes, which file is the fallback) is the `FRAMES`
+table. **Recordings and films** must already be files on the site: an editor cannot
+upload sound or video, because phone recordings carry their location, and stripping it is
+a developer's job.
+
+**To add a block type:** a renderer in `R` and a name in `LABELS` (`blocks.js`), a type in
+the `pages` collection of `site/admin/config.yml` (once, with an `&anchor`, then by alias on
+each page that offers it), and a case in `tools/selftest.js`. Before pushing any change
+to `blocks.js`, compare every built page with the previous build: the content of a page
+must not change as a side effect.
+
+## Structured data
+
+Each page's JSON-LD is assembled by `forPage()` in `_includes/ld.js` from three places,
+never from where its blocks happen to sit: the page's "About this page" fields, the
+things its blocks list, and the survey data. Deleting or moving a block cannot change
+what the page says it is. `_includes/ld-pages.js` then adds a WebPage node, named from
+the page title, whose main entity is the page's own subject node.
+
+| Page | Assembled from |
+|---|---|
+| Every page | the organisation and the website (fixed), and a breadcrumb from the page's place in the navigation |
+| Home | a Place for the catchment: its name and description from "What this page is about", its outlet position from `figures.json` |
+| Trails | the loop, as a TouristAttraction: name and description from "What this page is about", length, climb and range from `figures.json`, the stops it passes from the stops with content, its start from Stop 01's position; the catchment Place (name and description from the home page's fields, area and heights from `figures.json`); the action area Place from `figures.json` |
+| A stop | a TouristAttraction named "Stop 0N - " and the stop's name, with the position, height and photo from the top of the stop's page |
+| Species | an ItemList named by "What this page is about", one Taxon per entry of the species list blocks |
+| Folklore | an ItemList named by "What this page is about", one CreativeWork per story block, each based on its dúchas.ie source |
+| Recordings | an AudioObject per recording and a VideoObject per film, from those blocks |
+| About, links, new spaces and its proposals, water, credits | the organisation, website and breadcrumb only |
+
+`tools/ldcheck.py` validates the result against schema.org after every build.
+
+## Credits a licence requires
+
+Some credits are a condition of using other people's work: the photographer and licence
+of each Wikimedia Commons photograph, the Copernicus elevation data behind the maps, the
+Pl@ntNet species records, and the National Folklore Collection for the stories. Deleting
+one would put the group in breach. They are not protected by locking pages. Each is bound
+to the thing it credits, so it cannot be separated from it:
+
+- **Photographs** from another source are registered in `site/_data/credits.json`, keyed by
+  the file (`/assets/img/species/bilberry`). Wherever that photo appears, in any block on
+  any page, its photographer and licence are written beneath it; the editor has no field
+  for the credit, so it cannot be removed while the photo stays. To use a new photo from
+  another source, add it to `assets/img/` and register it there.
+- **Stories** carry their own source fields (volume, page, where collected, the dúchas.ie
+  link); a story block without them stops the build.
+- **The credits page** lists each required group (`groups` in `credits.json`) whenever what
+  it credits is on the website: the elevation data with the two maps or the interactive
+  map, the species records with a species list, the photographs with the photos, the
+  folklore with any story. The editor places each group among the page's other entries
+  as a "Credits a licence requires" entry and can move it; if it is removed, it is added
+  back at the end of the page. Its wording, and the list of photographs and stories,
+  come from the registry and the stories themselves, so they always match what is shown.
+
+The editor has no entry for `credits.json`, and the editor-content check refuses an
+editor change to it.
 
 ## Verified data - safe to cite
 

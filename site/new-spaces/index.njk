@@ -1,74 +1,25 @@
+{#- The page's title, summary and structured data come from its "About this page" fields
+    in the editor (site/_data/pages/new_spaces.json); its content from its blocks (_includes/blocks.js). -#}
+{%- set P = pages.new_spaces.page -%}{%- set T = P.title + " - Cáirde Corrin" -%}
 <!DOCTYPE html>
 <html lang="en-IE">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>New spaces - Cáirde Corrin</title>
-<meta name="description" content="Proposed new recreational and educational amenity in the Glenabo and Corrin catchment, described in four phases.">
+<title>{{ T }}</title>
+<meta name="description" content="{{ P.description }}">
 <link rel="canonical" href="https://www.cairdecorrin.ie/new-spaces/">
-<meta property="og:title" content="New spaces - Cáirde Corrin"><meta property="og:description" content="Proposed new recreational and educational amenity in the Glenabo and Corrin catchment, described in four phases.">
+<meta property="og:title" content="{{ T }}"><meta property="og:description" content="{{ P.description }}">
 <meta property="og:type" content="website"><meta property="og:url" content="https://www.cairdecorrin.ie/new-spaces/">
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png"><link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
 <link rel="preload" href="../assets/fonts/ebgaramond-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/css/site.css">
 <meta property="og:site_name" content="Cáirde Corrin"><meta property="og:locale" content="en_IE">
 <meta property="og:image" content="https://www.cairdecorrin.ie/assets/img/og-new-spaces-202611.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="New spaces - Cáirde Corrin">
-<meta name="twitter:description" content="Proposed new recreational and educational amenity in the Glenabo and Corrin catchment, described in four phases."><meta name="twitter:image" content="https://www.cairdecorrin.ie/assets/img/og-new-spaces-202611.jpg">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{{ T }}">
+<meta name="twitter:description" content="{{ P.description }}"><meta name="twitter:image" content="https://www.cairdecorrin.ie/assets/img/og-new-spaces-202611.jpg">
 <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@graph": [
-  {
-   "@type": "NGO",
-   "@id": "https://www.cairdecorrin.ie/#organisation",
-   "name": "Cáirde Corrin",
-   "url": "https://www.cairdecorrin.ie/",
-   "logo": {
-    "@type": "ImageObject",
-    "url": "https://www.cairdecorrin.ie/assets/img/logo.webp",
-    "width": 400,
-    "height": 144
-   },
-   "areaServed": {
-    "@type": "Place",
-    "name": "Fermoy, County Cork, Ireland",
-    "address": {
-     "@type": "PostalAddress",
-     "addressLocality": "Fermoy",
-     "addressRegion": "County Cork",
-     "addressCountry": "IE"
-    }
-   }
-  },
-  {
-   "@type": "WebSite",
-   "@id": "https://www.cairdecorrin.ie/#website",
-   "name": "Cáirde Corrin",
-   "url": "https://www.cairdecorrin.ie/",
-   "inLanguage": "en-IE",
-   "publisher": {
-    "@id": "https://www.cairdecorrin.ie/#organisation"
-   }
-  },
-  {
-   "@type": "BreadcrumbList",
-   "itemListElement": [
-    {
-     "@type": "ListItem",
-     "position": 1,
-     "name": "Home",
-     "item": "https://www.cairdecorrin.ie/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 2,
-     "name": "New spaces"
-    }
-   ]
-  }
- ]
-}
+{{ pages | pageLd("new_spaces", page.url, figures) | safe }}
 </script>
 </head>
 <body>
@@ -76,31 +27,7 @@
 {% include "nav.njk" %}
 <main id="main" class="page-head">
   <div class="wrap">
-    <p class="eyebrow rv">Strand 2 - New spaces</p>
-    <h1 class="rv page-title">Two projects in early development.</h1>
-    <p class="lede rv">{{ pages.new_spaces.p1 | prose | safe }}</p>
-    <div class="cards">
-      <div class="card rv"><p class="k">In development</p><h2 class="as-h3">Corrin moorland</h2>
-        <p>{{ pages.new_spaces.p2 | prose | safe }}</p>
-        <p><a class="card-link" href="corrin-moor.html">Corrin moorland →</a></p></div>
-      <div class="card rv"><p class="k">In development</p><h2 class="as-h3">Corrin wetlands</h2>
-        <p>{{ pages.new_spaces.p3 | prose | safe }}</p>
-        <p><a class="card-link" href="corrin-wetlands.html">Corrin wetlands →</a></p></div>
-    </div>
-    <h2 style="margin-top:64px" class="rv as-h3">The proposed route</h2>
-    <p class="rv">{{ pages.new_spaces.p4 | prose | safe }}</p>
-    <div class="strands">
-      <div class="strand rv"><div class="strand-n">Phase 1</div><div><h3 class="as-h4">Glenabo interpretation</h3>
-        <p>{{ pages.new_spaces.p5 | prose | safe }}</p></div></div>
-      <div class="strand rv"><div class="strand-n">Phase 2</div><div><h3 class="as-h4">Corrin interpretation</h3>
-        <p>{{ pages.new_spaces.p6 | prose | safe }}</p></div></div>
-      <div class="strand rv"><div class="strand-n">Phase 3</div><div><h3 class="as-h4">Glenabo extension</h3>
-        <p>{{ pages.new_spaces.p7 | prose | safe }}</p></div></div>
-      <div class="strand rv"><div class="strand-n">Phase 4</div><div><h3 class="as-h4">The full loop</h3>
-        <p>{{ pages.new_spaces.p8 | prose | safe }}</p></div></div>
-    </div>
-    <div class="note"><p>{{ pages.new_spaces.p9 | prose | safe }}</p></div>
-    <a class="cta" href="../trails/">See the mapped area</a>
+{{ pages | blocks("new_spaces", page.url, collections.gallery.length, instagram, social, figures) | safe }}
   </div>
   <div style="height:100px"></div>
 </main>

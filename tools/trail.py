@@ -6,8 +6,9 @@
 Reads   archive/source-data/2026-08-29_glenabo_loop.gpx (raw, timestamped; kept out of the repository)
 Writes  site/assets/data/cairde-corrin.geojson   the "Walked loop" feature
         site/assets/data/glenabo-loop.gpx        the download: loop plus the four points
-        site/trails/index.njk                    the walked-loop section and its profile,
-                                                 between the walked-loop markers
+        site/_includes/walked-loop.html          the walked-loop section and its profile,
+                                                 between the walked-loop markers, which the
+                                                 trails page shows as its "walked loop" block
 
 Cleaning. The walk doubled back on itself three times. It turned at the north end
 of the west-side path (point 100), went back south and turned again (123), then
@@ -27,7 +28,7 @@ GPX_OUT = os.path.join(ROOT, 'site', 'assets', 'data', 'glenabo-loop.gpx')
 WARN = ('A record of one walk through unwaymarked woodland on land the group does not own: not a '
         'surveyed or waymarked route, and not for navigation. Access is not guaranteed, and tracks may be '
         'closed, felled or unsafe. Read https://www.cairdecorrin.ie/terms/ before you go.')
-TRAILS = os.path.join(ROOT, 'site', 'trails', 'index.njk')
+TRAILS = os.path.join(ROOT, 'site', '_includes', 'walked-loop.html')
 WALKED = '2026-08-29'
 KEEP = [(0, 100), (146, 189)]  # inclusive index ranges kept from the raw track
 MAX_ZOOM_PX_PER_MERC_M = 2.0   # map.js zoom() ceiling
@@ -215,7 +216,7 @@ def main():
     page = page[:a] + section + page[b:]
     assert '\u2014' not in page and '\u2013' not in page  # no em or en dashes
     open(TRAILS, 'w', encoding='utf-8').write(page)
-    print('wrote the Walked loop feature, %s (%d KB) and the trails page section' % (
+    print('wrote the Walked loop feature, %s (%d KB) and the trails page section (site/_includes/walked-loop.html)' % (
         os.path.relpath(GPX_OUT, ROOT), size_kb))
 
 

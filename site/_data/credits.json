@@ -1,0 +1,219 @@
+{
+ "_about": "Credits that a licence requires, bound to the thing they credit. The editor cannot open this file, and the check in .github/workflows/editor-content-only.yml refuses any editor change to it. photos: each photograph from another source, keyed by its file (without the -380.webp ending); wherever that photograph is shown, its photographer and licence are shown beneath it, and it is listed on the credits page. groups: the credits page entries a licence requires. Each appears on the credits page whenever the thing it credits is on the website, where the editor places it or, if the editor has removed it, at the end. Entries are HTML. See docs/CONTRIBUTING.md, 'Credits a licence requires'.",
+ "groups": {
+  "elevation": {
+   "heading": "Elevation data",
+   "credits": "the maps of the catchment and the action area, and the interactive map, which are drawn from it",
+   "entries": [
+    "Copernicus DEM GLO-30. © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved. The catchment boundary, area, elevation range and longest flow path are derived from it. The stop and photograph elevations combine it with the group's own GPS track of the trail, and are given to the nearest 5 metres."
+   ],
+   "for_photos": [
+    "/assets/img/map-catchment-202611b",
+    "/assets/img/map-action-202611b"
+   ],
+   "for_blocks": [
+    "map"
+   ]
+  },
+  "species-records": {
+   "heading": "Species records",
+   "credits": "the species list",
+   "entries": [
+    "Made using <a href=\"https://plantnet.org/\" rel=\"noopener\">Pl@ntNet</a>. Determinations are as accepted by the contributor and have not been independently verified.",
+    "Species descriptions are summarised in our own words from the <a href=\"https://plantatlas2020.org/\" rel=\"noopener\">BSBI Plant Atlas 2020</a>, the Botanical Society of Britain and Ireland’s survey of the flora of Britain and Ireland. The account for each species is linked beneath its description. No text is reproduced.",
+    "Determination data: Pl@ntNet, <a href=\"https://creativecommons.org/licenses/by/4.0/\" rel=\"noopener\">CC BY</a>. Observations recorded by Cáirde Corrin on the Northern Europe flora."
+   ],
+   "for_blocks": [
+    "species"
+   ]
+  },
+  "species-photos": {
+   "heading": "Species reference photographs",
+   "credits": "the species reference photographs",
+   "entries": [
+    "Twelve photographs from <a href=\"https://commons.wikimedia.org/\" rel=\"noopener\">Wikimedia Commons</a>, cropped to 3:2 and resized for this site, and served from this site rather than hotlinked. Each shows the species, not the individual plant that was recorded. Autumn hawkbit has no photograph because it is recorded to family only, so there is no binomial to check a photograph against."
+   ]
+  },
+  "invasive-photos": {
+   "heading": "Invasive species photographs",
+   "credits": "the invasive species photographs",
+   "entries": [
+    "Six photographs from <a href=\"https://commons.wikimedia.org/\" rel=\"noopener\">Wikimedia Commons</a>, cropped to 3:2 and resized for this site, and served from this site rather than hotlinked. Each was checked against the binomial on its own Commons file page before use."
+   ]
+  },
+  "folklore": {
+   "heading": "Folklore",
+   "credits": "the folklore stories",
+   "entries": [
+    "National Folklore Collection, UCD, published on <a href=\"https://www.duchas.ie/\" rel=\"noopener\">dúchas.ie</a> as The Schools’ Collection, under <a href=\"https://creativecommons.org/licenses/by-nc/4.0/\" rel=\"noopener\">CC BY-NC 4.0</a>. Summaries on this site are written for it; no text from the collection is reproduced."
+   ],
+   "for_blocks": [
+    "story"
+   ]
+  }
+ },
+ "photos": {
+  "/assets/img/species/bilberry": {
+   "group": "species-photos",
+   "subject": "Bilberry (<em>Vaccinium myrtillus</em>)",
+   "by": "Lalakmus",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "file": "Vaccinium myrtillus L. 6382.jpg",
+   "file_url": "https://commons.wikimedia.org/wiki/File:Vaccinium_myrtillus_L._6382.jpg"
+  },
+  "/assets/img/species/common-figwort": {
+   "group": "species-photos",
+   "subject": "Common figwort (<em>Scrophularia nodosa</em>)",
+   "by": "OldMuzzle",
+   "licence": "CC BY-SA 3.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/3.0",
+   "file": "Scrophularia nodosa OM52.JPG",
+   "file_url": "https://commons.wikimedia.org/wiki/File:Scrophularia_nodosa_OM52.JPG"
+  },
+  "/assets/img/species/devils-bit-scabious": {
+   "group": "species-photos",
+   "subject": "Devil's bit scabious (<em>Succisa pratensis</em>)",
+   "by": "Ivar Leidus",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "file": "Succisa pratensis - Niitvälja bog - Keila.jpg",
+   "file_url": "https://commons.wikimedia.org/wiki/File:Succisa_pratensis_-_Niitv%C3%A4lja_bog_-_Keila.jpg"
+  },
+  "/assets/img/species/grey-willow": {
+   "group": "species-photos",
+   "subject": "Grey willow (<em>Salix cinerea</em>)",
+   "by": "BCB",
+   "licence": "CC BY-SA 3.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+   "file": "Salix cinerea flowers-2.jpg",
+   "file_url": "https://commons.wikimedia.org/wiki/File:Salix_cinerea_flowers-2.jpg"
+  },
+  "/assets/img/species/heather": {
+   "group": "species-photos",
+   "subject": "Heather (<em>Calluna vulgaris</em>)",
+   "by": "Krzysztof Ziarnek, Kenraiz",
+   "licence": "CC BY 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by/4.0",
+   "file": "Calluna vulgaris kz33.jpg",
+   "file_url": "https://commons.wikimedia.org/wiki/File:Calluna_vulgaris_kz33.jpg"
+  },
+  "/assets/img/species/herb-robert": {
+   "group": "species-photos",
+   "subject": "Herb Robert (<em>Geranium robertianum</em>)",
+   "by": "DidierFy",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "file": "Geranium robertianum 04.2025 (3).jpg",
+   "file_url": "https://commons.wikimedia.org/wiki/File:Geranium_robertianum_04.2025_(3).jpg"
+  },
+  "/assets/img/species/marsh-thistle": {
+   "group": "species-photos",
+   "subject": "Marsh thistle (<em>Cirsium palustre</em>)",
+   "by": "DidierFy",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "file": "Cirsium palustre 06.2026 (2).jpg",
+   "file_url": "https://commons.wikimedia.org/wiki/File:Cirsium_palustre_06.2026_(2).jpg"
+  },
+  "/assets/img/species/purple-moor-grass": {
+   "group": "species-photos",
+   "subject": "Purple moor grass (<em>Molinia caerulea</em>)",
+   "by": "Krzysztof Ziarnek, Kenraiz",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "file": "Molinia caerulea kz08.jpg",
+   "file_url": "https://commons.wikimedia.org/wiki/File:Molinia_caerulea_kz08.jpg"
+  },
+  "/assets/img/species/rowan": {
+   "group": "species-photos",
+   "subject": "Rowan (<em>Sorbus aucuparia</em>)",
+   "by": "Ryan Hodnett",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "file": "Rowan (Rogn) (Sorbus aucuparia) - Moskenes, Norway 2023-07-18.jpg",
+   "file_url": "https://commons.wikimedia.org/wiki/File:Rowan_(Rogn)_(Sorbus_aucuparia)_-_Moskenes,_Norway_2023-07-18.jpg"
+  },
+  "/assets/img/species/sessile-oak": {
+   "group": "species-photos",
+   "subject": "Sessile oak (<em>Quercus petraea</em>)",
+   "by": "Rosser1954",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "file": "Ancient Sessile Oak (Quercus petraea), Falls of Cruachan.JPG",
+   "file_url": "https://commons.wikimedia.org/wiki/File:Ancient_Sessile_Oak_(Quercus_petraea),_Falls_of_Cruachan.JPG"
+  },
+  "/assets/img/species/tormentil": {
+   "group": "species-photos",
+   "subject": "Tormentil (<em>Potentilla erecta</em>)",
+   "by": "T. Kebert",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "file": "Potentilla erecta 2 TK 2021-07-28.jpg",
+   "file_url": "https://commons.wikimedia.org/wiki/File:Potentilla_erecta_2_TK_2021-07-28.jpg"
+  },
+  "/assets/img/species/water-figwort": {
+   "group": "species-photos",
+   "subject": "Water figwort (<em>Scrophularia auriculata</em>)",
+   "by": "DidierFy",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "file": "Scrophularia auriculata 07.2025 (1).jpg",
+   "file_url": "https://commons.wikimedia.org/wiki/File:Scrophularia_auriculata_07.2025_(1).jpg"
+  },
+  "/assets/img/invasive/cherry-laurel": {
+   "group": "invasive-photos",
+   "subject": "Cherry laurel (<em>Prunus laurocerasus</em>)",
+   "by": "Dandarmkd",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "file": "Prunus laurocerasus - Ботаничка градина Скопје 03.jpg",
+   "file_url": "https://commons.wikimedia.org/wiki/File:Prunus_laurocerasus_-_%D0%91%D0%BE%D1%82%D0%B0%D0%BD%D0%B8%D1%87%D0%BA%D0%B0_%D0%B3%D1%80%D0%B0%D0%B4%D0%B8%D0%BD%D0%B0_%D0%A1%D0%BA%D0%BE%D0%BF%D1%98%D0%B5_03.jpg"
+  },
+  "/assets/img/invasive/rhododendron": {
+   "group": "invasive-photos",
+   "subject": "Rhododendron (<em>Rhododendron ponticum</em>)",
+   "by": "Agnes Monkelbaan",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "file": "Rhododendron ponticum actm 04.jpg",
+   "file_url": "https://commons.wikimedia.org/wiki/File:Rhododendron_ponticum_actm_04.jpg"
+  },
+  "/assets/img/invasive/japanese-knotweed": {
+   "group": "invasive-photos",
+   "subject": "Japanese knotweed (<em>Reynoutria japonica</em>)",
+   "by": "Flocci Nivis",
+   "licence": "CC BY 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by/4.0",
+   "file": "20180616 Reynoutria japonica.jpg",
+   "file_url": "https://commons.wikimedia.org/wiki/File:20180616_Reynoutria_japonica.jpg"
+  },
+  "/assets/img/invasive/grey-squirrel": {
+   "group": "invasive-photos",
+   "subject": "Grey squirrel (<em>Sciurus carolinensis</em>)",
+   "by": "Tom Friedel",
+   "licence": "CC BY 3.0",
+   "licence_url": "https://creativecommons.org/licenses/by/3.0",
+   "file": "Eastern Grey Squirrel.jpg",
+   "file_url": "https://commons.wikimedia.org/wiki/File:Eastern_Grey_Squirrel.jpg"
+  },
+  "/assets/img/invasive/american-mink": {
+   "group": "invasive-photos",
+   "subject": "American mink (<em>Neogale vison</em>)",
+   "by": "Patrick Reijnders",
+   "licence": "CC BY-SA 3.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/3.0",
+   "file": "American Mink.jpg",
+   "file_url": "https://commons.wikimedia.org/wiki/File:American_Mink.jpg"
+  },
+  "/assets/img/invasive/asian-hornet": {
+   "group": "invasive-photos",
+   "subject": "Asian hornet (<em>Vespa velutina</em>)",
+   "by": "Charles J. Sharp",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "file": "Asian hornet (Vespa velutina).jpg",
+   "file_url": "https://commons.wikimedia.org/wiki/File:Asian_hornet_(Vespa_velutina).jpg"
+  }
+ }
+}

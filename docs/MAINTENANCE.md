@@ -193,6 +193,20 @@ buttons by Decap's internal labels, which an update can rename.
   `python3 tools/linkcheck.py --external` and fix or remove what it reports.
 - **Structured data.** After changing a page's facts or layout, run
   `python3 tools/ldcheck.py`.
+- **A publish that did not appear, with a failed deploy.** If an editor publishes a page
+  with a broken or incomplete block, the build stops and Netlify keeps the previous
+  version live. The deploy log names the page file and the block, for example
+  `Page "About" (site/_data/pages/about.json): block 3 (Two photos side by side) needs
+  exactly two photos; it has 1.` Tell the editor which block, or fix it in the editor
+  yourself, and publish again.
+- **Someone wants a photo from another source** (Wikimedia Commons, a partner). Its credit
+  must travel with it: add the prepared sizes to `site/assets/img/` and register the photo,
+  with photographer, licence and file page, in `site/_data/credits.json`
+  (`CONTRIBUTING.md`, "Credits a licence requires"). The editor can then place it anywhere.
+- **A new recording or film.** Strip the location and phone details first (an audio or video
+  file from a phone carries them), add the file under `site/assets/audio/` or
+  `site/assets/video/`, and the editor can then add it to a Recording, List of recordings or
+  Films block.
 - **A `[figures]` warning in a deploy log.** Editors can change any figure in the page
   text, and the build warns when two pages then give the same quantity differently, or
   when they all disagree with the measured value in `site/_data/figures.json`. The

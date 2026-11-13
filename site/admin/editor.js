@@ -17,6 +17,29 @@
     });
   }).observe(document.documentElement, { childList: true, subtree: true });
 
+  // Copying a block. Decap can add, remove and reorder the blocks of a page but has no copy
+  // button, so every block has a "Make a copy of this block when I save" tick: on saving,
+  // each ticked block is followed by a copy of itself, and both ticks are cleared.
+  function copyTicked(list) {
+    return list.flatMap(function (b) {
+      if (!b || !b.get || !b.get('copy')) return [b];
+      var plain = b.set('copy', false);
+      return [plain, plain];
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    if (!window.CMS || !window.CMS.registerEventListener) return;
+    window.CMS.registerEventListener({
+      name: 'preSave',
+      handler: function (e) {
+        var data = e.entry.get('data');
+        var blocks = data && data.get && data.get('blocks');
+        if (!blocks || !blocks.some || !blocks.some(function (b) { return b && b.get && b.get('copy'); })) return data;
+        return data.set('blocks', copyTicked(blocks));
+      },
+    });
+  });
+
   // A Help button on every editor screen, opening the editor guide (admin/help/) in a new tab
   var help = document.createElement('a');
   help.href = '/admin/help/'; help.target = '_blank'; help.rel = 'noopener';

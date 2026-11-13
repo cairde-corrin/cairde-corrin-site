@@ -1,196 +1,25 @@
+{#- The page's title, summary and structured data come from its "About this page" fields
+    in the editor (site/_data/pages/trails.json); its content from its blocks (_includes/blocks.js). -#}
+{%- set P = pages.trails.page -%}{%- set T = P.title + " - Cáirde Corrin" -%}
 <!DOCTYPE html>
 <html lang="en-IE">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Trails and stops - Cáirde Corrin</title>
-<meta name="description" content="An interactive map of the Glenabo catchment with relief, drainage and the recorded interpretation stops.">
+<title>{{ T }}</title>
+<meta name="description" content="{{ P.description }}">
 <link rel="canonical" href="https://www.cairdecorrin.ie/trails/">
-<meta property="og:title" content="Trails and stops - Cáirde Corrin"><meta property="og:description" content="An interactive map of the Glenabo catchment with relief, drainage and the recorded interpretation stops.">
+<meta property="og:title" content="{{ T }}"><meta property="og:description" content="{{ P.description }}">
 <meta property="og:type" content="website"><meta property="og:url" content="https://www.cairdecorrin.ie/trails/">
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png"><link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
 <link rel="preload" href="../assets/fonts/ebgaramond-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/css/site.css">
 <meta property="og:site_name" content="Cáirde Corrin"><meta property="og:locale" content="en_IE">
 <meta property="og:image" content="https://www.cairdecorrin.ie/assets/img/og-trails-202611.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Trails and stops - Cáirde Corrin">
-<meta name="twitter:description" content="An interactive map of the Glenabo catchment with relief, drainage and the recorded interpretation stops."><meta name="twitter:image" content="https://www.cairdecorrin.ie/assets/img/og-trails-202611.jpg">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{{ T }}">
+<meta name="twitter:description" content="{{ P.description }}"><meta name="twitter:image" content="https://www.cairdecorrin.ie/assets/img/og-trails-202611.jpg">
 <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@graph": [
-  {
-   "@type": "NGO",
-   "@id": "https://www.cairdecorrin.ie/#organisation",
-   "name": "Cáirde Corrin",
-   "url": "https://www.cairdecorrin.ie/",
-   "logo": {
-    "@type": "ImageObject",
-    "url": "https://www.cairdecorrin.ie/assets/img/logo.webp",
-    "width": 400,
-    "height": 144
-   },
-   "areaServed": {
-    "@type": "Place",
-    "name": "Fermoy, County Cork, Ireland",
-    "address": {
-     "@type": "PostalAddress",
-     "addressLocality": "Fermoy",
-     "addressRegion": "County Cork",
-     "addressCountry": "IE"
-    }
-   }
-  },
-  {
-   "@type": "WebSite",
-   "@id": "https://www.cairdecorrin.ie/#website",
-   "name": "Cáirde Corrin",
-   "url": "https://www.cairdecorrin.ie/",
-   "inLanguage": "en-IE",
-   "publisher": {
-    "@id": "https://www.cairdecorrin.ie/#organisation"
-   }
-  },
-  {
-   "@type": "BreadcrumbList",
-   "itemListElement": [
-    {
-     "@type": "ListItem",
-     "position": 1,
-     "name": "Home",
-     "item": "https://www.cairdecorrin.ie/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 2,
-     "name": "Trails"
-    }
-   ]
-  },
-  {
-   "@type": "TouristAttraction",
-   "@id": "https://www.cairdecorrin.ie/trails/#glenabo-loop",
-   "name": "Glenabo loop",
-   "description": "A walked loop of about 2.3 km from Stop 1 down the east side of the valley and back up the west side, passing all three recorded stops. The track runs from about 60 to about 115 metres, with about 65 metres of climbing.",
-   "url": "https://www.cairdecorrin.ie/trails/",
-   "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": 52.12752,
-    "longitude": -8.29878,
-    "elevation": 60
-   },
-   "additionalProperty": [
-    {
-     "@type": "PropertyValue",
-     "name": "Length",
-     "value": 2.3,
-     "unitCode": "KMT",
-     "unitText": "km"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "Total ascent",
-     "value": 65,
-     "unitCode": "MTR",
-     "unitText": "m"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "Lowest point",
-     "value": 60,
-     "unitCode": "MTR",
-     "unitText": "m"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "Highest point",
-     "value": 115,
-     "unitCode": "MTR",
-     "unitText": "m"
-    }
-   ],
-   "containsPlace": [
-    {
-     "@id": "https://www.cairdecorrin.ie/stops/stop-1.html#place"
-    },
-    {
-     "@id": "https://www.cairdecorrin.ie/stops/stop-2.html#place"
-    },
-    {
-     "@id": "https://www.cairdecorrin.ie/stops/stop-3.html#place"
-    }
-   ],
-   "containedInPlace": {
-    "@id": "https://www.cairdecorrin.ie/#glenabo-catchment"
-   },
-   "hasMap": "https://www.cairdecorrin.ie/trails/",
-   "subjectOf": {
-    "@type": "DataDownload",
-    "name": "GPS track of the Glenabo loop",
-    "contentUrl": "https://www.cairdecorrin.ie/assets/data/glenabo-loop.gpx",
-    "encodingFormat": "application/gpx+xml"
-   }
-  },
-  {
-   "@type": "Place",
-   "@id": "https://www.cairdecorrin.ie/#glenabo-catchment",
-   "name": "Glenabo catchment",
-   "description": "The Glenabo catchment covers about 3.6 km² (about 360 ha) and falls from 213 m to its outlet at about 21 m OD on the Munster Blackwater (HA 18). Longest flow path about 4 km.",
-   "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": 52.1333,
-    "longitude": -8.3002
-   },
-   "additionalProperty": [
-    {
-     "@type": "PropertyValue",
-     "name": "Area",
-     "value": 360,
-     "unitCode": "HAR",
-     "unitText": "ha"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "Highest point",
-     "value": 213,
-     "unitCode": "MTR",
-     "unitText": "m"
-    },
-    {
-     "@type": "PropertyValue",
-     "name": "Outlet",
-     "value": 21,
-     "unitCode": "MTR",
-     "unitText": "m OD"
-    }
-   ],
-   "containedInPlace": {
-    "@type": "Place",
-    "name": "Fermoy, County Cork, Ireland"
-   },
-   "hasMap": "https://www.cairdecorrin.ie/trails/"
-  },
-  {
-   "@type": "Place",
-   "@id": "https://www.cairdecorrin.ie/trails/#action-area",
-   "name": "Proposed area for action",
-   "description": "A drawn proposal of about 990 ha: the Glenabo catchment with Glenabo Wood, Corrin Hill and Knockananig Reservoir added. Offered for discussion, not a designation.",
-   "additionalProperty": [
-    {
-     "@type": "PropertyValue",
-     "name": "Area",
-     "value": 990,
-     "unitCode": "HAR",
-     "unitText": "ha"
-    }
-   ],
-   "containsPlace": {
-    "@id": "https://www.cairdecorrin.ie/#glenabo-catchment"
-   },
-   "hasMap": "https://www.cairdecorrin.ie/trails/"
-  }
- ]
-}
+{{ pages | pageLd("trails", page.url, figures) | safe }}
 </script>
 </head>
 <body>
@@ -198,77 +27,7 @@
 {% include "nav.njk" %}
 <main id="main" class="page-head">
   <div class="wrap">
-    <p class="eyebrow rv">Strand 1 - Points of interest</p>
-    <h1 class="rv page-title">Three stops recorded, seven to survey.</h1>
-    <p class="lede rv">Each recorded stop carries a short piece on what is in front of you. Signs are being planned for the trail; until they are up, you can read it here.</p>
-
-    <div class="maprig rv">
-      <div class="mapshell">
-        <svg id="map" role="img" tabindex="0" aria-label="Interactive map of the Glenabo catchment showing relief, boundary, drainage, the walked loop and recorded stops. Arrow keys move the map, plus and minus zoom, zero resets it."></svg>
-        <button class="maplayers-toggle" id="mlt" aria-expanded="false" aria-controls="maplayers">Layers</button>
-        <div class="maplayers" id="maplayers">
-          <label><input type="checkbox" id="L-terr" checked> Relief <i>{{ figures.catchment.outlet_m }}-{{ figures.catchment.elev_max_m }} m</i></label>
-          <label><input type="checkbox" id="L-action" checked> Action area <i>about {{ figures.action_area.ha }} ha</i></label>
-          <label><input type="checkbox" id="L-catch" checked> Catchment <i>about {{ figures.catchment.area_ha }} ha</i></label>
-          <label><input type="checkbox" id="L-chan" checked> Drainage <i>modelled</i></label>
-          <label><input type="checkbox" id="L-trail" checked> Walked loop <i>about {{ figures.loop.length_km }} km</i></label>
-          <label><input type="checkbox" id="L-stops" checked> Stops <i>3 recorded</i></label>
-        </div>
-        <div class="mapctl">
-          <button id="mz-in" title="Zoom in" aria-label="Zoom in">+</button>
-          <button id="mz-out" title="Zoom out" aria-label="Zoom out">−</button>
-          <button id="mz-fit" title="Reset view" aria-label="Reset view">⤢</button>
-          <button id="mz-loc" title="Show my position" aria-label="Show my position">◎</button>
-        </div>
-        <div class="mapscale"><div class="bar" id="scbar"></div><span id="sctxt">500 m</span></div>
-        <div class="mapread" id="mapread">Glenabo catchment</div>
-        <div class="mapinfo" id="mapinfo" hidden>
-          <button class="mapclose" id="mapclose" aria-label="Close">×</button>
-          <div id="mapinfobody"></div>
-        </div>
-      </div>
-      <p class="loc-note">Drag to pan with a mouse, or use two fingers on a touchscreen. Scroll or pinch to zoom.</p>
-    </div>
-
-    <div class="trailgrid">
-      <div>
-        <h2 class="as-h3">The stops</h2>
-        <div class="stoplist">
-      <a class="stopitem" href="../stops/stop-1.html"><span class="sn">01</span>
-        <span><span class="st">The stream at about {{ figures.stops.s1.elevation_m }} metres</span><span class="sd">{{ figures.stops.s1.lat }}°N {{ figures.stops.s1.lon_abs }}°W</span></span><span class="se">about {{ figures.stops.s1.elevation_m }} m</span></a>
-      <a class="stopitem" href="../stops/stop-2.html"><span class="sn">02</span>
-        <span><span class="st">Closed canopy</span><span class="sd">{{ figures.stops.s2.lat }}°N {{ figures.stops.s2.lon_abs }}°W</span></span><span class="se">about {{ figures.stops.s2.elevation_m }} m</span></a>
-      <a class="stopitem" href="../stops/stop-3.html"><span class="sn">03</span>
-        <span><span class="st">The mossy stand</span><span class="sd">{{ figures.stops.s3.lat }}°N {{ figures.stops.s3.lon_abs }}°W</span></span><span class="se">about {{ figures.stops.s3.elevation_m }} m</span></a>
-      <div class="stopitem pending"><span class="sn">04</span><span><span class="st">To be surveyed</span></span><span class="se">-</span></div>
-      <div class="stopitem pending"><span class="sn">05</span><span><span class="st">To be surveyed</span></span><span class="se">-</span></div>
-      <div class="stopitem pending"><span class="sn">06</span><span><span class="st">To be surveyed</span></span><span class="se">-</span></div>
-      <div class="stopitem pending"><span class="sn">07</span><span><span class="st">To be surveyed</span></span><span class="se">-</span></div>
-      <div class="stopitem pending"><span class="sn">08</span><span><span class="st">To be surveyed</span></span><span class="se">-</span></div>
-      <div class="stopitem pending"><span class="sn">09</span><span><span class="st">To be surveyed</span></span><span class="se">-</span></div>
-      <div class="stopitem pending"><span class="sn">10</span><span><span class="st">To be surveyed</span></span><span class="se">-</span></div>
-        </div>
-      </div>
-      <div>
-        <div class="note" style="margin-top:0"><p>Interpretation signs are being planned for each stop along the trail. Each sign will carry a code you can scan with your phone to read about the place you are standing in. Those codes are being set now so that the signs will keep working however the website changes in future.</p></div>
-        <dl class="figs light">
-          <div class="fig"><dt>Catchment</dt><dd><small>about</small>360<small>ha</small></dd></div>
-          <div class="fig"><dt>Action area</dt><dd><small>about</small>990<small>ha</small></dd></div>
-          <div class="fig"><dt>Relief</dt><dd>21-213<small>m</small></dd></div>
-        </dl>
-      </div>
-    </div>
-    <!-- walked-loop -->
-    <section class="walked" aria-labelledby="walked-h">
-      <h2 class="as-h3" id="walked-h">The walked loop</h2>
-      <p>The group walked this loop with a GPS on 29 August 2026, from Stop 1 down the east side of the valley and back up the west side, passing all three recorded stops. It is about 2.3 km round. Where the walk doubled back on itself, the repeat has been taken out.</p>
-      <figure class="profile">
-        <svg viewBox="0 0 720 240" role="img" aria-labelledby="lp-t lp-d"><title id="lp-t">Elevation along the walked Glenabo loop</title><desc id="lp-d">From Stop 1 along the loop and back: the walked track's own elevation runs from about 60 to about 115 metres, with about 65 metres of climbing. Stops 1, 2 and 3 are marked.</desc><line class="grid" x1="86" x2="704" y1="196.0" y2="196.0"/><text class="ax" x="78" y="200.0" text-anchor="end">60 m</text><line class="grid" x1="86" x2="704" y1="142.0" y2="142.0"/><text class="ax" x="78" y="146.0" text-anchor="end">80 m</text><line class="grid" x1="86" x2="704" y1="88.0" y2="88.0"/><text class="ax" x="78" y="92.0" text-anchor="end">100 m</text><line class="grid" x1="86" x2="704" y1="34.0" y2="34.0"/><text class="ax" x="78" y="38.0" text-anchor="end">120 m</text><text class="ax" x="86.0" y="222" text-anchor="start">0 km</text><text class="ax" x="222.2" y="222" text-anchor="middle">0.5 km</text><text class="ax" x="358.3" y="222" text-anchor="middle">1 km</text><text class="ax" x="494.5" y="222" text-anchor="middle">1.5 km</text><text class="ax" x="630.6" y="222" text-anchor="middle">2 km</text><g class="stop"><line x1="86.4" x2="86.4" y1="30" y2="196"/><text x="91.4" y="24" text-anchor="start">Stop 1</text></g><g class="stop"><line x1="460.9" x2="460.9" y1="30" y2="196"/><text x="455.9" y="24" text-anchor="end">Stop 2</text></g><g class="stop"><line x1="494.9" x2="494.9" y1="30" y2="196"/><text x="499.9" y="24" text-anchor="start">Stop 3</text></g><polygon class="area" points="86.0,196 86.0,192.2 88.1,194.4 92.2,191.4 96.5,185.2 100.6,180.1 104.7,176.0 109.1,173.6 113.5,172.5 117.7,168.7 121.9,166.6 126.4,166.0 130.7,163.3 135.2,159.6 139.6,160.1 144.2,162.0 148.5,160.9 152.8,160.4 156.9,159.6 161.4,160.4 165.5,151.7 169.6,144.7 173.9,140.9 178.2,143.9 182.6,147.1 186.8,148.2 191.2,148.8 195.6,148.8 199.7,149.8 204.8,145.2 208.9,149.3 213.2,146.9 217.4,142.0 221.5,135.5 226.0,131.5 230.0,131.2 234.3,132.0 238.3,129.3 242.8,127.2 247.3,121.2 251.5,118.2 256.3,119.0 260.8,113.9 264.9,109.3 269.3,109.1 273.7,105.0 278.1,100.2 282.5,95.3 286.8,91.5 290.8,91.0 295.5,94.2 299.9,92.0 304.1,87.5 308.3,83.7 312.4,83.4 316.7,83.4 320.9,83.7 325.1,81.5 329.5,77.2 334.0,72.6 338.6,72.1 342.7,68.6 346.8,65.3 350.8,60.5 355.3,60.2 359.5,57.5 363.8,54.0 367.9,53.4 372.1,51.3 376.9,47.8 381.0,45.9 385.3,54.5 389.5,55.1 393.6,58.8 398.0,57.2 402.1,56.1 406.1,54.0 410.7,57.2 415.3,59.1 419.4,61.5 423.9,65.3 428.0,66.9 432.4,67.8 436.6,68.6 440.9,68.6 445.7,69.4 449.7,70.2 453.9,71.5 458.0,74.5 462.4,75.8 466.5,78.3 470.8,77.2 475.3,81.8 479.6,81.2 484.3,80.4 488.6,82.6 492.8,78.8 497.2,75.8 501.6,75.0 505.9,75.6 510.1,74.8 514.6,69.4 515.3,70.7 523.9,66.4 528.1,60.5 532.9,58.0 537.2,58.3 541.4,59.1 549.6,59.1 553.8,58.0 558.5,58.8 562.8,62.6 567.5,63.2 571.9,64.0 576.0,62.3 580.4,65.6 584.4,68.3 588.5,71.3 592.8,73.2 597.9,75.0 602.3,80.4 606.6,84.5 611.0,86.4 615.2,88.0 619.5,93.4 623.9,99.9 628.2,97.5 632.5,102.6 636.7,109.6 641.0,117.7 645.5,127.2 649.6,135.2 654.0,144.4 658.0,150.4 662.3,155.0 666.4,158.7 670.6,162.5 674.7,166.8 678.9,170.3 683.1,173.6 687.4,177.9 691.7,182.2 695.9,186.3 700.6,191.7 704.0,192.2 704.0,196"/><polyline class="line" points="86.0,192.2 88.1,194.4 92.2,191.4 96.5,185.2 100.6,180.1 104.7,176.0 109.1,173.6 113.5,172.5 117.7,168.7 121.9,166.6 126.4,166.0 130.7,163.3 135.2,159.6 139.6,160.1 144.2,162.0 148.5,160.9 152.8,160.4 156.9,159.6 161.4,160.4 165.5,151.7 169.6,144.7 173.9,140.9 178.2,143.9 182.6,147.1 186.8,148.2 191.2,148.8 195.6,148.8 199.7,149.8 204.8,145.2 208.9,149.3 213.2,146.9 217.4,142.0 221.5,135.5 226.0,131.5 230.0,131.2 234.3,132.0 238.3,129.3 242.8,127.2 247.3,121.2 251.5,118.2 256.3,119.0 260.8,113.9 264.9,109.3 269.3,109.1 273.7,105.0 278.1,100.2 282.5,95.3 286.8,91.5 290.8,91.0 295.5,94.2 299.9,92.0 304.1,87.5 308.3,83.7 312.4,83.4 316.7,83.4 320.9,83.7 325.1,81.5 329.5,77.2 334.0,72.6 338.6,72.1 342.7,68.6 346.8,65.3 350.8,60.5 355.3,60.2 359.5,57.5 363.8,54.0 367.9,53.4 372.1,51.3 376.9,47.8 381.0,45.9 385.3,54.5 389.5,55.1 393.6,58.8 398.0,57.2 402.1,56.1 406.1,54.0 410.7,57.2 415.3,59.1 419.4,61.5 423.9,65.3 428.0,66.9 432.4,67.8 436.6,68.6 440.9,68.6 445.7,69.4 449.7,70.2 453.9,71.5 458.0,74.5 462.4,75.8 466.5,78.3 470.8,77.2 475.3,81.8 479.6,81.2 484.3,80.4 488.6,82.6 492.8,78.8 497.2,75.8 501.6,75.0 505.9,75.6 510.1,74.8 514.6,69.4 515.3,70.7 523.9,66.4 528.1,60.5 532.9,58.0 537.2,58.3 541.4,59.1 549.6,59.1 553.8,58.0 558.5,58.8 562.8,62.6 567.5,63.2 571.9,64.0 576.0,62.3 580.4,65.6 584.4,68.3 588.5,71.3 592.8,73.2 597.9,75.0 602.3,80.4 606.6,84.5 611.0,86.4 615.2,88.0 619.5,93.4 623.9,99.9 628.2,97.5 632.5,102.6 636.7,109.6 641.0,117.7 645.5,127.2 649.6,135.2 654.0,144.4 658.0,150.4 662.3,155.0 666.4,158.7 670.6,162.5 674.7,166.8 678.9,170.3 683.1,173.6 687.4,177.9 691.7,182.2 695.9,186.3 700.6,191.7 704.0,192.2"/></svg>
-        <figcaption>Elevation along the loop from Stop 1, from the walked track's own GPS: about 60 to 115 m, with about 65 m of climbing. Like every elevation on this site, given to the nearest five metres.</figcaption>
-      </figure>
-      <p><a href="../assets/data/glenabo-loop.gpx" download>Download the walked loop as GPX</a> (11 KB). It also carries the three stops and the outlet. It is a record of one walk through unwaymarked woodland, not a surveyed route and not for navigation: read the <a href="../terms/">terms</a> before you go.</p>
-    </section>
-    <!-- /walked-loop -->
+{{ pages | blocks("trails", page.url, collections.gallery.length, instagram, social, figures) | safe }}
   </div>
   <div style="height:100px"></div>
 </main>

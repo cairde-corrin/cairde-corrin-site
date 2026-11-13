@@ -1,16 +1,254 @@
 {
-  "p1": "An historical land where all living things can thrive in harmony with nature.",
-  "p2": "Everything that falls here ends up in the Blackwater.",
-  "p3": "About 360 hectares. One outlet. A catchment small enough that a community can change what comes down it.",
-  "p4": "A catchment is not an opinion. It is the exact area of ground whose surface water drains to one point. Ours drains to a single confluence on the *Munster Blackwater* at the northern tip of Glenabo Wood, and it can be drawn.",
-  "p5": "One hundred and thirty-six metres apart on the same slope. What separates them is what was planted here, and when.",
-  "p6": "About three hundred and sixty hectares drain through a single confluence. Upstream of it, every field, track, drain and stand of trees is part of the same system. Downstream, it is somebody else's water.",
-  "p7": "That is why we work to a catchment rather than a parish.",
-  "p8": "The hydrological catchment is the scientific unit. The area we propose to work in is larger, because Corrin Hill, Corrin Wood and Knockananig Reservoir belong to the same landscape and the same walk, even where they drain elsewhere.",
-  "p9": "We work to protect, restore and celebrate the environment, heritage and recreational use of our Glenabo-Corrin waterways, engaging with our local community, partnering with agencies, and taking action to ensure the rivers and their valleys flourish for future generations.",
-  "p10": "Enhancing existing trails to include information on the ecology, history and folklore of our area",
-  "p11": "Developing new local recreational and educational amenities in the Glenabo/Corrin catchment",
-  "p12": "Working with other local and national community, state, voluntary, educational and outdoor activity bodies to improve the water quality and biodiversity of our target area",
-  "p13": "Photographed on the Glenabo trail on 4 and 11 April 2026. Each carries the elevation and time it was taken.",
-  "p14": "About three hundred and sixty hectares is walkable in a morning and knowable in a season. Survey work, invasive species removal, recording what is here - none of it needs a specialist to start."
+  "page": {
+    "title": "Cáirde Corrin - caring for land, connecting community",
+    "description": "A community group protecting, restoring and celebrating the Glenabo-Corrin catchment above Fermoy, Co. Cork.",
+    "subject": {
+      "name": "Glenabo catchment",
+      "description": "The Glenabo catchment covers about 3.6 km² (about 360 ha) and falls from 213 m to its outlet at about 21 m OD on the Munster Blackwater (HA 18). Longest flow path about 4 km."
+    }
+  },
+  "hero": {
+    "strap": "Cáirde Corrin",
+    "title": "Glenabo",
+    "title_second": "& Corrin",
+    "intro": "An historical land where all living things can thrive in harmony with nature.",
+    "line2": "Everything that falls here ends up in the Blackwater.",
+    "line3": "About 360 hectares. One outlet. A catchment small enough that a community can change what comes down it."
+  },
+  "blocks": [
+    {
+      "type": "text",
+      "eyebrow": "The ground we are talking about",
+      "background": "dark",
+      "heading": "Everything that falls here\nends up in the Blackwater.",
+      "text": "A catchment is not an opinion. It is the exact area of ground whose surface water drains to one point. Ours drains to a single confluence on the *Munster Blackwater* at the northern tip of Glenabo Wood, and it can be drawn."
+    },
+    {
+      "type": "figures",
+      "items": [
+        {
+          "label": "Catchment area",
+          "about": true,
+          "value": "3.6",
+          "unit": "km²"
+        },
+        {
+          "label": "Or, in hectares",
+          "about": true,
+          "value": "360",
+          "unit": "ha"
+        },
+        {
+          "label": "Elevation range",
+          "about": false,
+          "value": "21-213",
+          "unit": "m OD"
+        },
+        {
+          "label": "Longest flow path",
+          "about": true,
+          "value": "4",
+          "unit": "km"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "photo": "/assets/img/map-catchment-202611b-1800.webp",
+      "alt": "Map of the Glenabo hydrological catchment showing boundary, modelled channel network and outlet to the Munster Blackwater",
+      "caption": "The Glenabo hydrological catchment, its modelled channel network, and the outlet to the Munster Blackwater."
+    },
+    {
+      "type": "text",
+      "eyebrow": "Two photographs, twelve minutes apart",
+      "background": "light",
+      "heading": "Same hill.\nSame morning.",
+      "text": "One hundred and thirty-six metres apart on the same slope. What separates them is what was planted here, and when."
+    },
+    {
+      "type": "pair",
+      "items": [
+        {
+          "photo": "/assets/img/open-broadleaf-1800.webp",
+          "alt": "Widely spaced slim broadleaf trunks with a thick green grass and herb layer covering the ground",
+          "meta": "about 80 m OD - 11 April 2026, 07:54",
+          "caption": "Broadleaf, widely spaced. Light reaches the floor and the ground is green."
+        },
+        {
+          "photo": "/assets/img/dense-conifer-1800.webp",
+          "alt": "Closely spaced straight conifer trunks above a floor of bare brown needle litter, ivy at the lower edge",
+          "meta": "about 90 m OD - 11 April 2026, 08:07",
+          "caption": "Even-aged conifer, planted close. The floor is bare needle litter."
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "eyebrow": "About 21 m OD - the outlet",
+      "background": "dark",
+      "heading": "One point on the *Blackwater*.",
+      "text": "About three hundred and sixty hectares drain through a single confluence. Upstream of it, every field, track, drain and stand of trees is part of the same system. Downstream, it is somebody else's water.\n\nThat is why we work to a catchment rather than a parish."
+    },
+    {
+      "type": "text",
+      "eyebrow": "The wider picture",
+      "background": "light",
+      "heading": "Catchment, woodland and amenity\ninside one working boundary.",
+      "text": "The hydrological catchment is the scientific unit. The area we propose to work in is larger, because Corrin Hill, Corrin Wood and Knockananig Reservoir belong to the same landscape and the same walk, even where they drain elsewhere."
+    },
+    {
+      "type": "figures",
+      "items": [
+        {
+          "label": "Proposed action area",
+          "about": false,
+          "value": "9.9",
+          "unit": "km²"
+        },
+        {
+          "label": "Or, in hectares",
+          "about": true,
+          "value": "990",
+          "unit": "ha"
+        },
+        {
+          "label": "Of which catchment",
+          "about": true,
+          "value": "3.6",
+          "unit": "km²"
+        },
+        {
+          "label": "Proposed loop route",
+          "about": false,
+          "value": "~15",
+          "unit": "km"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "photo": "/assets/img/map-action-202611b-1800.webp",
+      "alt": "Map of the proposed area for action around Glenabo, Corrin Hill and Knockananig Reservoir",
+      "caption": "The proposed area for action, taking in the Glenabo catchment, Glenabo Wood, Corrin Hill and Knockananig Reservoir."
+    },
+    {
+      "type": "button",
+      "text": "Explore the interactive map",
+      "url": "/trails/"
+    },
+    {
+      "type": "text",
+      "eyebrow": "Strands of our Work",
+      "background": "tint",
+      "heading": "The three strands of our work are",
+      "text": "We work to protect, restore and celebrate the environment, heritage and recreational use of our Glenabo-Corrin waterways, engaging with our local community, partnering with agencies, and taking action to ensure the rivers and their valleys flourish for future generations."
+    },
+    {
+      "type": "steps",
+      "items": [
+        {
+          "label": "Strand 1",
+          "heading": "Points of interest",
+          "text": "Enhancing existing trails to include information on the ecology, history and folklore of our area",
+          "link_text": "See the trail →",
+          "link": "/trails/"
+        },
+        {
+          "label": "Strand 2",
+          "heading": "New spaces",
+          "text": "Developing new local recreational and educational amenities in the Glenabo/Corrin catchment",
+          "link_text": "What we are working on →",
+          "link": "/new-spaces/"
+        },
+        {
+          "label": "Strand 3",
+          "heading": "Improving water and ecosystems",
+          "text": "Working with other local and national community, state, voluntary, educational and outdoor activity bodies to improve the water quality and biodiversity of our target area",
+          "link_text": "How to help →",
+          "link": "/water/"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "eyebrow": "From inside the catchment",
+      "background": "light",
+      "heading": "What 360 hectares\nactually looks like.",
+      "text": "Photographed on the Glenabo trail on 4 and 11 April 2026. Each carries the elevation and time it was taken."
+    },
+    {
+      "type": "carousel",
+      "label": "Photographs from the Glenabo catchment",
+      "gallery_link": true,
+      "items": [
+        {
+          "photo": "/assets/img/white-flowers-1100.webp",
+          "alt": "Small white flowers in bud among low green leaves on the woodland floor",
+          "caption": "about 70 m OD - 11 April 2026, 07:28"
+        },
+        {
+          "photo": "/assets/img/stream-step-1100.webp",
+          "alt": "A shallow step in the stream running over bedrock, with long undivided fern fronds on the bank",
+          "caption": "about 80 m OD - 11 April 2026, 07:35"
+        },
+        {
+          "photo": "/assets/img/wet-woodland-1100.webp",
+          "alt": "Bare slender trunks rising from a wet woodland floor of moss and grass",
+          "caption": "about 80 m OD - 11 April 2026, 07:54"
+        },
+        {
+          "photo": "/assets/img/moss-bank-1100.webp",
+          "alt": "A steep bank thick with moss and small ferns",
+          "caption": "about 85 m OD - 11 April 2026, 07:56"
+        },
+        {
+          "photo": "/assets/img/fern-fronds-1100.webp",
+          "alt": "Long ladder-like fern fronds spreading over moss and leaf litter",
+          "caption": "about 100 m OD - 11 April 2026, 08:13"
+        },
+        {
+          "photo": "/assets/img/gully-stream-1100.webp",
+          "alt": "A narrow stream running through a gully between moss-covered banks",
+          "caption": "about 115 m OD - 11 April 2026, 08:21"
+        },
+        {
+          "photo": "/assets/img/bedrock-stream-1100.webp",
+          "alt": "The stream running wide and shallow over flat bedrock between wooded banks",
+          "caption": "about 115 m OD - 11 April 2026, 08:33"
+        },
+        {
+          "photo": "/assets/img/mist-trees-1100.webp",
+          "alt": "Tall bare trees with low sun breaking through mist behind them",
+          "caption": "about 115 m OD - 11 April 2026, 08:36"
+        },
+        {
+          "photo": "/assets/img/leaf-carpet-1100.webp",
+          "alt": "A dense carpet of broad green leaves and grasses covering the woodland floor",
+          "caption": "about 110 m OD - 11 April 2026, 08:59"
+        },
+        {
+          "photo": "/assets/img/boulder-stream-1100.webp",
+          "alt": "The stream dropping between moss-covered boulders under bare branches",
+          "caption": "about 130 m OD - 4 April 2026, 07:56"
+        }
+      ]
+    },
+    {
+      "type": "social",
+      "eyebrow": "Elsewhere",
+      "heading": "Recent posts\nfrom the group."
+    },
+    {
+      "type": "text",
+      "eyebrow": "Get involved",
+      "background": "light",
+      "heading": "It is a small catchment.\nThat is the good news.",
+      "text": "About three hundred and sixty hectares is walkable in a morning and knowable in a season. Survey work, invasive species removal, recording what is here - none of it needs a specialist to start."
+    },
+    {
+      "type": "button",
+      "text": "Join Cáirde Corrin",
+      "url": "/about/"
+    }
+  ]
 }

@@ -1,112 +1,25 @@
+{#- The page's title, summary and structured data come from its "About this page" fields
+    in the editor (site/_data/pages/stop_3.json); its content from its blocks (_includes/blocks.js). -#}
+{%- set P = pages.stop_3.page -%}{%- set T = "Stop 03 - " + P.title + " - Cáirde Corrin" -%}
 <!DOCTYPE html>
 <html lang="en-IE">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Stop 03 - The mossy stand - Cáirde Corrin</title>
-<meta name="description" content="The mossy stand. Recorded at about 105 m in the Glenabo catchment, Fermoy, Co. Cork.">
+<title>{{ T }}</title>
+<meta name="description" content="{{ P.description }}">
 <link rel="canonical" href="https://www.cairdecorrin.ie/stops/stop-3.html">
-<meta property="og:title" content="Stop 03 - The mossy stand - Cáirde Corrin"><meta property="og:description" content="The mossy stand. Recorded at about 105 m in the Glenabo catchment, Fermoy, Co. Cork.">
+<meta property="og:title" content="{{ T }}"><meta property="og:description" content="{{ P.description }}">
 <meta property="og:type" content="website"><meta property="og:url" content="https://www.cairdecorrin.ie/stops/stop-3.html">
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png"><link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
 <link rel="preload" href="../assets/fonts/ebgaramond-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/css/site.css">
 <meta property="og:site_name" content="Cáirde Corrin"><meta property="og:locale" content="en_IE">
 <meta property="og:image" content="https://www.cairdecorrin.ie/assets/img/og-stop-3.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Stop 03 - The mossy stand - Cáirde Corrin">
-<meta name="twitter:description" content="The mossy stand. Recorded at about 105 m in the Glenabo catchment, Fermoy, Co. Cork."><meta name="twitter:image" content="https://www.cairdecorrin.ie/assets/img/og-stop-3.jpg">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{{ T }}">
+<meta name="twitter:description" content="{{ P.description }}"><meta name="twitter:image" content="https://www.cairdecorrin.ie/assets/img/og-stop-3.jpg">
 <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@graph": [
-  {
-   "@type": "NGO",
-   "@id": "https://www.cairdecorrin.ie/#organisation",
-   "name": "Cáirde Corrin",
-   "url": "https://www.cairdecorrin.ie/",
-   "logo": {
-    "@type": "ImageObject",
-    "url": "https://www.cairdecorrin.ie/assets/img/logo.webp",
-    "width": 400,
-    "height": 144
-   },
-   "areaServed": {
-    "@type": "Place",
-    "name": "Fermoy, County Cork, Ireland",
-    "address": {
-     "@type": "PostalAddress",
-     "addressLocality": "Fermoy",
-     "addressRegion": "County Cork",
-     "addressCountry": "IE"
-    }
-   }
-  },
-  {
-   "@type": "WebSite",
-   "@id": "https://www.cairdecorrin.ie/#website",
-   "name": "Cáirde Corrin",
-   "url": "https://www.cairdecorrin.ie/",
-   "inLanguage": "en-IE",
-   "publisher": {
-    "@id": "https://www.cairdecorrin.ie/#organisation"
-   }
-  },
-  {
-   "@type": "BreadcrumbList",
-   "itemListElement": [
-    {
-     "@type": "ListItem",
-     "position": 1,
-     "name": "Home",
-     "item": "https://www.cairdecorrin.ie/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 2,
-     "name": "Trails",
-     "item": "https://www.cairdecorrin.ie/trails/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 3,
-     "name": "Stop 03"
-    }
-   ]
-  },
-  {
-   "@type": "TouristAttraction",
-   "@id": "https://www.cairdecorrin.ie/stops/stop-3.html#place",
-   "name": "Stop 03 - The mossy stand",
-   "url": "https://www.cairdecorrin.ie/stops/stop-3.html",
-   "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": {{ figures.stops.s3.lat }},
-    "longitude": {{ figures.stops.s3.lon }},
-    "elevation": {{ figures.stops.s3.elevation_m }}
-   },
-   "photo": {
-    "@type": "ImageObject",
-    "url": "https://www.cairdecorrin.ie/assets/img/mossy-1800.webp",
-    "contentLocation": {
-     "@type": "Place",
-     "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": {{ figures.stops.s3.lat }},
-      "longitude": {{ figures.stops.s3.lon }}
-     }
-    }
-   },
-   "containedInPlace": [
-    {
-     "@id": "https://www.cairdecorrin.ie/#glenabo-catchment"
-    },
-    {
-     "@id": "https://www.cairdecorrin.ie/trails/#glenabo-loop"
-    }
-   ]
-  }
- ]
-}
+{{ pages | pageLd("stop_3", page.url, figures) | safe }}
 </script>
 </head>
 <body>
@@ -114,22 +27,7 @@
 {% include "nav.njk" %}
 <main id="main" class="page-head">
   <div class="wrap">
-    <p class="eyebrow">Stop 03 - cairdecorrin.ie/s/3</p>
-    <h1 class="page-title">The mossy stand.</h1>
-    <div class="stophero"><picture><source type="image/avif" srcset="../assets/img/mossy-700.avif 700w, ../assets/img/mossy-1100.avif 1100w, ../assets/img/mossy-1800.avif 1800w" sizes="(min-width:1200px) 1100px, (min-width:901px) calc(100vw - 64px), calc(100vw - 44px)"><source type="image/webp" srcset="../assets/img/mossy-700.webp 700w, ../assets/img/mossy-1100.webp 1100w, ../assets/img/mossy-1800.webp 1800w" sizes="(min-width:1200px) 1100px, (min-width:901px) calc(100vw - 64px), calc(100vw - 44px)"><img src="../assets/img/mossy-1100.webp" width="1800" height="2397" decoding="async" alt="Moss-covered branches of broadleaf trees coming into leaf, light reaching the woodland floor"></picture></div>
-    <div class="stopmeta">
-      <div><span>Position</span>{{ figures.stops.s3.lat }}°N {{ figures.stops.s3.lon_abs }}°W</div>
-      <div><span>Elevation</span>about {{ figures.stops.s3.elevation_m }} m OD</div>
-      <div><span>Facing</span>{{ figures.stops.s3.bearing }}°</div>
-      <div><span>Recorded</span>{{ figures.stops.s3.recorded }}</div>
-    </div>
-<p>{{ pages.stop_3.p1 | prose | safe }}</p>
-<p>{{ pages.stop_3.p2 | prose | safe }}</p>
-    <div class="note folknote">
-      <h2 class="as-h4">The name of this glen</h2>
-      <p>An account written down at Adair school in the 1930s explains how Glenabo got its name. It names the glen, not this particular spot.</p>
-      <p><a class="story-link" href="../folklore/#glenabo">Read the summary and the source →</a></p>
-    </div>
+{{ pages | blocks("stop_3", page.url, collections.gallery.length, instagram, social, figures) | safe }}
     <div class="stopnav"><a href="stop-2.html">← Stop 02</a><a href="../trails/">All stops →</a></div>
   </div>
   <div style="height:100px"></div>

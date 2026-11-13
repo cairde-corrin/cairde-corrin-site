@@ -1,13 +1,9 @@
 {
-  "_about": "The measured figures, kept by whoever maintains the site; the editor cannot open this file, and the check in .github/workflows/editor-content-only.yml refuses any editor change to it. Page text does not read from here: figures in the text are ordinary words. This file has two jobs. It is the measured value the figure consistency check (site/_includes/figurecheck.js) compares the pages against, and it fills in the parts of pages that describe the survey data rather than tell a story: the trails map's layer key and the stops' positions in the structured data. Sources for each figure are in docs/CONTRIBUTING.md, 'Verified data'.",
+  "_about": "The measured figures, kept by whoever maintains the site; the editor cannot open this file, and the check in .github/workflows/editor-content-only.yml refuses any editor change to it. Page text does not read from here: figures in the text are ordinary words. This file has two jobs. It is the measured value the figure consistency check (site/_includes/figurecheck.js) compares the pages against, and it fills in the parts of the trails page that describe the survey data rather than tell a story: the map's layer key and the structured data for the loop, the catchment and the action area. The stops' positions and heights are on the stops' own pages. Sources for each figure are in docs/CONTRIBUTING.md, 'Verified data'.",
   "catchment": { "area_ha": "360", "area_km2": "3.6", "elev_max_m": "213", "outlet_m": "21", "flow_path_km": "4", "outlet_lat": "52.1333", "outlet_lon": "-8.3002" },
   "action_area": { "ha": "990", "km2": "9.9" },
   "loop": { "length_km": "2.3", "ascent_m": "65", "min_m": "60", "max_m": "115" },
   "photo_pair": { "apart_m": "136" },
   "proposal": { "extension_m": "600", "loop_km": "15" },
-  "stops": {
-    "s1": { "lat": "52.12752", "lon": "-8.29878", "lon_abs": "8.29878", "elevation_m": "60", "bearing": "159", "recorded": "11 Apr 2026, 07:10", "upstream_ha": "320" },
-    "s2": { "lat": "52.12240", "lon": "-8.30604", "lon_abs": "8.30604", "elevation_m": "110", "bearing": "292", "recorded": "11 Apr 2026, 08:48" },
-    "s3": { "lat": "52.12344", "lon": "-8.30538", "lon_abs": "8.30538", "elevation_m": "105", "bearing": "106", "recorded": "11 Apr 2026, 08:54" }
-  }
+  "stops": { "s1": { "upstream_ha": "320" } }
 }

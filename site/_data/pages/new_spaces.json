@@ -1,11 +1,72 @@
 {
-  "p1": "Both sit inside the action area of about 990 hectares. Neither is agreed yet, and both are described here as proposals rather than plans.",
-  "p2": "Upland habitat on the Corrin side of the action area, outside the Glenabo catchment but part of the same walk and the same landscape.",
-  "p3": "Wet ground with potential for habitat creation and for holding water back before it reaches the main channel.",
-  "p4": "The phased approach runs from interpretation on existing trails through to a single connected loop.",
-  "p5": "Trail signage with codes linking to ecology, biodiversity, flora, fauna, folklore and history, and to guidance on responsible recreation.",
-  "p6": "The same approach applied at Corrin, reflecting its own ecological, archaeological and landscape character.",
-  "p7": "Roughly 600 metres of new trail to the rear of the existing route, reaching a forest track opposite the road to Waste Recovery Services.",
-  "p8": "Linking Glenabo to Corrin to give a connected route of up to 15 km, joining Fermoy Quays, Barnane, Glenabo Woods, Corrin Woods and the Cork Road.",
-  "p9": "Any works would be subject to Coillte consent, environmental assessment including screening for Appropriate Assessment where required, and compliance with health and safety standards."
+  "page": {
+    "title": "New spaces",
+    "description": "Proposed new recreational and educational amenity in the Glenabo and Corrin catchment, described in four phases."
+  },
+  "hero": {
+    "eyebrow": "Strand 2 - New spaces",
+    "title": "Two projects in early development.",
+    "intro": "Both sit inside the action area of about 990 hectares. Neither is agreed yet, and both are described here as proposals rather than plans."
+  },
+  "blocks": [
+    {
+      "type": "cards",
+      "items": [
+        {
+          "kicker": "In development",
+          "title": "Corrin moorland",
+          "text": "Upland habitat on the Corrin side of the action area, outside the Glenabo catchment but part of the same walk and the same landscape.",
+          "link_text": "Corrin moorland →",
+          "link": "/new-spaces/corrin-moor.html"
+        },
+        {
+          "kicker": "In development",
+          "title": "Corrin wetlands",
+          "text": "Wet ground with potential for habitat creation and for holding water back before it reaches the main channel.",
+          "link_text": "Corrin wetlands →",
+          "link": "/new-spaces/corrin-wetlands.html"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "heading": "The proposed route",
+      "gap": "large",
+      "text": "The phased approach runs from interpretation on existing trails through to a single connected loop."
+    },
+    {
+      "type": "steps",
+      "items": [
+        {
+          "label": "Phase 1",
+          "heading": "Glenabo interpretation",
+          "text": "Trail signage with codes linking to ecology, biodiversity, flora, fauna, folklore and history, and to guidance on responsible recreation."
+        },
+        {
+          "label": "Phase 2",
+          "heading": "Corrin interpretation",
+          "text": "The same approach applied at Corrin, reflecting its own ecological, archaeological and landscape character."
+        },
+        {
+          "label": "Phase 3",
+          "heading": "Glenabo extension",
+          "text": "Roughly 600 metres of new trail to the rear of the existing route, reaching a forest track opposite the road to Waste Recovery Services."
+        },
+        {
+          "label": "Phase 4",
+          "heading": "The full loop",
+          "text": "Linking Glenabo to Corrin to give a connected route of up to 15 km, joining Fermoy Quays, Barnane, Glenabo Woods, Corrin Woods and the Cork Road."
+        }
+      ]
+    },
+    {
+      "type": "note",
+      "text": "Any works would be subject to Coillte consent, environmental assessment including screening for Appropriate Assessment where required, and compliance with health and safety standards."
+    },
+    {
+      "type": "button",
+      "text": "See the mapped area",
+      "url": "/trails/"
+    }
+  ]
 }

@@ -26,7 +26,8 @@ nothing from any other site until they press play on a video.
 
     site/            everything that deploys (index: README.md, "Structure")
     site/_includes/  the build's code: layouts, nav, helpers (listed below)
-    site/_data/      figures.json (measured values), pages/ (page text), social.json
+    site/_data/      figures.json (measured values), credits.json (licence credits),
+                     pages/ (every editable page, as blocks), social.json
     site/_content/   news, gallery and articles, one Markdown file each
     site/_instagram/ the saved Instagram posts and their re-encoded pictures
     site/admin/      the editor: index.html, config.yml, photos.js, editor.js, help.njk
@@ -46,6 +47,12 @@ nothing from any other site until they press play on a video.
    Collections: `news`, `gallery`, `articles`.
 3. **Render.** Every `.njk` page renders. A global permalink keeps each page at the
    address it had as a hand-written file (`stops/stop-1.njk` to `stops/stop-1.html`).
+   An editable page's `.njk` is a frame: its head, scripts and footer, with the title and
+   summary from the page's "About this page" fields, the structured data from the
+   `pageLd` filter (`_includes/ld.js`) and the main content from the `blocks` filter
+   (`_includes/blocks.js`), both reading `site/_data/pages/<key>.json`. A broken or
+   incomplete block throws, naming the page and block, so the build fails and the live
+   site keeps its previous version (`CONTRIBUTING.md`, "Pages built from blocks").
    `_includes/nav.njk` and `footnav.njk` draw the navigation from `_includes/nav.js`.
 4. **Transforms**, on every generated HTML page, in this order:
    - `uploads` (`_includes/images.js`): rewrites any `/assets/uploads/` image to its
@@ -60,21 +67,24 @@ nothing from any other site until they press play on a video.
      `[figures]` warning when two pages give the same figure differently. It never
      stops a build (`CONTRIBUTING.md`, "Where the figures live").
 
-Filters worth knowing: `prose` (page text, `_includes/prose.js`),
-`editLink`, `navItems`, `domain`, `socialPosts`, `guide` (the editor's Help page).
+Filters worth knowing: `blocks` and `pageLd` (the editable pages), `prose` (one piece of
+editor text, `_includes/prose.js`), `editLink`, `navItems`, `domain`, `socialPosts`,
+`guide` (the editor's Help page).
 
 ## The content pipeline
 
 | Content | Where it lives | Who changes it | How it reaches the page |
 |---|---|---|---|
-| Measured values | `site/_data/figures.json` | developers only | the trails map key and stop structured data read `figures.*`; the figure check compares the pages with it |
-| Page text | `site/_data/pages/*.json` | editors (Page text) | `{{ pages.x.pN \| prose \| safe }}`; figures are plain words |
+| Measured values | `site/_data/figures.json` | developers only | the trails map key and the trails structured data read `figures.*`; the figure check compares the pages with it |
+| Every editable page | `site/_data/pages/*.json` | editors (Pages) | `{{ pages \| blocks("key", ...) }}` and `pageLd`; figures are plain words |
+| Licence credits | `site/_data/credits.json` | developers only | beneath each credited photo, and on the credits page whenever what they credit is in use |
+| The walked loop section | `site/_includes/walked-loop.html` | `tools/trail.py` only | the trails page's "walked loop" block |
 | News posts | `site/_content/news/*.md` | editors (News) | `_includes/post.njk`, `/news/` |
 | Gallery photos | `site/_content/gallery/*.md` | editors (Gallery) | `/gallery/` |
 | Articles | `site/_content/articles/*.md` | editors (Articles) | `/articles/` |
 | Social posts | `site/_data/social.json` | editors (Home page) | home page cards, `_includes/social.js`, when there is no Instagram feed |
 | Instagram posts | Behold, saved in `site/_instagram/` | the group, on Instagram | home page carousel, `_includes/instagram.js` |
-| Species, folklore, credits, privacy, terms, trails | the `.njk` page itself | developers only | as written |
+| Privacy, terms, stops 4 to 10 | the `.njk` page itself | developers only | as written |
 
 An entry with `hidden: true` (the editor's "Take this off the website" tick) is added to
 Eleventy's ignore list in `.eleventy.js`, so it produces no page, no list entry and no

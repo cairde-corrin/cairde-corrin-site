@@ -1,74 +1,25 @@
+{#- The page's title, summary and structured data come from its "About this page" fields
+    in the editor (site/_data/pages/credits.json); its content from its blocks (_includes/blocks.js). -#}
+{%- set P = pages.credits.page -%}{%- set T = P.title + " - Cáirde Corrin" -%}
 <!DOCTYPE html>
 <html lang="en-IE">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Credits and sources - Cáirde Corrin</title>
-<meta name="description" content="Where the photographs, footage, mapping, species records, folklore and recordings on this site come from.">
+<title>{{ T }}</title>
+<meta name="description" content="{{ P.description }}">
 <link rel="canonical" href="https://www.cairdecorrin.ie/credits/">
-<meta property="og:title" content="Credits and sources - Cáirde Corrin"><meta property="og:description" content="Where the photographs, footage, mapping, species records, folklore and recordings on this site come from.">
+<meta property="og:title" content="{{ T }}"><meta property="og:description" content="{{ P.description }}">
 <meta property="og:type" content="website"><meta property="og:url" content="https://www.cairdecorrin.ie/credits/">
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png"><link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
 <link rel="preload" href="../assets/fonts/ebgaramond-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/css/site.css">
 <meta property="og:site_name" content="Cáirde Corrin"><meta property="og:locale" content="en_IE">
 <meta property="og:image" content="https://www.cairdecorrin.ie/assets/img/og-default.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Credits and sources - Cáirde Corrin">
-<meta name="twitter:description" content="Where the photographs, footage, mapping, species records, folklore and recordings on this site come from."><meta name="twitter:image" content="https://www.cairdecorrin.ie/assets/img/og-default.jpg">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{{ T }}">
+<meta name="twitter:description" content="{{ P.description }}"><meta name="twitter:image" content="https://www.cairdecorrin.ie/assets/img/og-default.jpg">
 <script type="application/ld+json">
-{
- "@context": "https://schema.org",
- "@graph": [
-  {
-   "@type": "NGO",
-   "@id": "https://www.cairdecorrin.ie/#organisation",
-   "name": "Cáirde Corrin",
-   "url": "https://www.cairdecorrin.ie/",
-   "logo": {
-    "@type": "ImageObject",
-    "url": "https://www.cairdecorrin.ie/assets/img/logo.webp",
-    "width": 400,
-    "height": 144
-   },
-   "areaServed": {
-    "@type": "Place",
-    "name": "Fermoy, County Cork, Ireland",
-    "address": {
-     "@type": "PostalAddress",
-     "addressLocality": "Fermoy",
-     "addressRegion": "County Cork",
-     "addressCountry": "IE"
-    }
-   }
-  },
-  {
-   "@type": "WebSite",
-   "@id": "https://www.cairdecorrin.ie/#website",
-   "name": "Cáirde Corrin",
-   "url": "https://www.cairdecorrin.ie/",
-   "inLanguage": "en-IE",
-   "publisher": {
-    "@id": "https://www.cairdecorrin.ie/#organisation"
-   }
-  },
-  {
-   "@type": "BreadcrumbList",
-   "itemListElement": [
-    {
-     "@type": "ListItem",
-     "position": 1,
-     "name": "Home",
-     "item": "https://www.cairdecorrin.ie/"
-    },
-    {
-     "@type": "ListItem",
-     "position": 2,
-     "name": "Credits and sources"
-    }
-   ]
-  }
- ]
-}
+{{ pages | pageLd("credits", page.url, figures) | safe }}
 </script>
 </head>
 <body>
@@ -76,82 +27,7 @@
 {% include "nav.njk" %}
 <main id="main" class="page-head reading">
   <div class="wrap">
-    <p class="eyebrow rv">Credits and sources</p>
-    <h1 class="rv page-title">Where everything<br>on this site comes from.</h1>
-
-    <dl class="credits rv">
-
-      <dt>Photography</dt>
-      <dd>Photographed in the Glenabo catchment on 11 April 2026 and 4 April 2026.</dd>
-
-      <dt>Hero footage</dt>
-      <dd>Composite. Photographed in the Glenabo catchment on 11 April 2026, with wildlife added digitally.</dd>
-
-      <dt>Mapping</dt>
-      <dd>The catchment boundary is flow-routed on the Copernicus GLO-30 elevation model from the Glenabo's confluence with the Munster Blackwater, by priority-flood depression filling and D8 flow routing. It is good to about one 30 metre grid cell. The action area is a drawn proposal, recovered from the group's map by georeferencing and raster tracing, and accurate to approximately 10-20 metres. Both are indicative, and not a substitute for field survey.</dd>
-      <dd>Base mapping © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap</a> contributors, ODbL.</dd>
-      <dd>The channel network is modelled from elevation data, not walked, and is partial.</dd>
-      <dd>The walked loop on the trails map, its elevation profile and the GPX download are the group's own GPS track of the trail, walked on 29 August 2026. Where the walk doubled back on itself, the repeat has been taken out. Positions are phone GPS, good to roughly 10-20 metres, and the profile uses the track's own elevations, given to the nearest 5 metres.</dd>
-
-      <dt>Elevation data</dt>
-      <dd>Copernicus DEM GLO-30. © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved. The catchment boundary, area, elevation range and longest flow path are derived from it. The stop and photograph elevations combine it with the group's own GPS track of the trail, and are given to the nearest 5 metres.</dd>
-
-      <dt>Water level</dt>
-      <dd>Office of Public Works, hydrometric station 18124 Fermoy U/S Rowing, <a href="https://waterlevel.ie/0000018124/" rel="noopener">waterlevel.ie</a>. Levels relative to Malin Head Ordnance Datum (OSGM15), licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a>. The outlet elevation, and the low end of the elevation range, are the river level at this gauge, 1.4 km downstream of the confluence.</dd>
-
-      <dt>Catchment area, compared</dt>
-      <dd>Our figure of about 360 hectares is the area of the boundary on the map, 3.58 km². Other delineations of the same catchment give c. 3.7 km² (Roughan &amp; O'Donovan Consulting Engineers, <cite>Glenabo Stream Feasibility Study, Phase 1: Scoping Report</cite>, Final, January 2021, ref. 20.132) and c. 3.92 km² (<cite>Phase 2: Feasibility Report</cite>, April 2022, ref. 20.132). Both reports were prepared for Avondhu Blackwater Partnership on behalf of Fermoy Forum and funded by the Department of Rural and Community Development. Flow routing on <a href="https://doi.org/10.5523/bris.s5hqmjcdj8yo2ibzi9b4ew3sn" rel="noopener">FABDEM V1-2</a> (Jeffrey Neal and Laurence Hawker, University of Bristol, 2023, <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener">CC BY-NC-SA 4.0</a>), used here only as a check, gives 3.75 km². Delineations differ with the elevation data and method each uses.</dd>
-
-      <dt>Species records</dt>
-      <dd>Made using <a href="https://plantnet.org/" rel="noopener">Pl@ntNet</a>. Determinations are as accepted by the contributor and have not been independently verified.</dd>
-      <dd>Species descriptions are summarised in our own words from the <a href="https://plantatlas2020.org/" rel="noopener">BSBI Plant Atlas 2020</a>, the Botanical Society of Britain and Ireland’s survey of the flora of Britain and Ireland. The account for each species is linked beneath its description. No text is reproduced.</dd>
-      <dd>Determination data: Pl@ntNet, <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY</a>. Observations recorded by Cáirde Corrin on the Northern Europe flora.</dd>
-
-      <dt>Species reference photographs</dt>
-      <dd>Twelve photographs from <a href="https://commons.wikimedia.org/" rel="noopener">Wikimedia Commons</a>, cropped to 3:2 and resized for this site, and served from this site rather than hotlinked. Each shows the species, not the individual plant that was recorded. Autumn hawkbit has no photograph because it is recorded to family only, so there is no binomial to check a photograph against.</dd>
-      <dd class="cred-list">
-        <span>Bilberry (<em>Vaccinium myrtillus</em>) - Lalakmus, <a href="https://creativecommons.org/licenses/by-sa/4.0" rel="noopener">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/wiki/File:Vaccinium_myrtillus_L._6382.jpg" rel="noopener">Vaccinium myrtillus L. 6382.jpg</a></span>
-        <span>Common figwort (<em>Scrophularia nodosa</em>) - OldMuzzle, <a href="https://creativecommons.org/licenses/by-sa/3.0" rel="noopener">CC BY-SA 3.0</a>, <a href="https://commons.wikimedia.org/wiki/File:Scrophularia_nodosa_OM52.JPG" rel="noopener">Scrophularia nodosa OM52.JPG</a></span>
-        <span>Devil&#x27;s bit scabious (<em>Succisa pratensis</em>) - Ivar Leidus, <a href="https://creativecommons.org/licenses/by-sa/4.0" rel="noopener">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/wiki/File:Succisa_pratensis_-_Niitv%C3%A4lja_bog_-_Keila.jpg" rel="noopener">Succisa pratensis - Niitvälja bog - Keila.jpg</a></span>
-        <span>Grey willow (<em>Salix cinerea</em>) - BCB, <a href="https://creativecommons.org/licenses/by-sa/3.0/" rel="noopener">CC BY-SA 3.0</a>, <a href="https://commons.wikimedia.org/wiki/File:Salix_cinerea_flowers-2.jpg" rel="noopener">Salix cinerea flowers-2.jpg</a></span>
-        <span>Heather (<em>Calluna vulgaris</em>) - Krzysztof Ziarnek, Kenraiz, <a href="https://creativecommons.org/licenses/by/4.0" rel="noopener">CC BY 4.0</a>, <a href="https://commons.wikimedia.org/wiki/File:Calluna_vulgaris_kz33.jpg" rel="noopener">Calluna vulgaris kz33.jpg</a></span>
-        <span>Herb Robert (<em>Geranium robertianum</em>) - DidierFy, <a href="https://creativecommons.org/licenses/by-sa/4.0" rel="noopener">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/wiki/File:Geranium_robertianum_04.2025_(3).jpg" rel="noopener">Geranium robertianum 04.2025 (3).jpg</a></span>
-        <span>Marsh thistle (<em>Cirsium palustre</em>) - DidierFy, <a href="https://creativecommons.org/licenses/by-sa/4.0" rel="noopener">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/wiki/File:Cirsium_palustre_06.2026_(2).jpg" rel="noopener">Cirsium palustre 06.2026 (2).jpg</a></span>
-        <span>Purple moor grass (<em>Molinia caerulea</em>) - Krzysztof Ziarnek, Kenraiz, <a href="https://creativecommons.org/licenses/by-sa/4.0" rel="noopener">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/wiki/File:Molinia_caerulea_kz08.jpg" rel="noopener">Molinia caerulea kz08.jpg</a></span>
-        <span>Rowan (<em>Sorbus aucuparia</em>) - Ryan Hodnett, <a href="https://creativecommons.org/licenses/by-sa/4.0" rel="noopener">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/wiki/File:Rowan_(Rogn)_(Sorbus_aucuparia)_-_Moskenes,_Norway_2023-07-18.jpg" rel="noopener">Rowan (Rogn) (Sorbus aucuparia) - Moskenes, Norway 2023-07-18.jpg</a></span>
-        <span>Sessile oak (<em>Quercus petraea</em>) - Rosser1954, <a href="https://creativecommons.org/licenses/by-sa/4.0" rel="noopener">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/wiki/File:Ancient_Sessile_Oak_(Quercus_petraea),_Falls_of_Cruachan.JPG" rel="noopener">Ancient Sessile Oak (Quercus petraea), Falls of Cruachan.JPG</a></span>
-        <span>Tormentil (<em>Potentilla erecta</em>) - T. Kebert, <a href="https://creativecommons.org/licenses/by-sa/4.0" rel="noopener">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/wiki/File:Potentilla_erecta_2_TK_2021-07-28.jpg" rel="noopener">Potentilla erecta 2 TK 2021-07-28.jpg</a></span>
-        <span>Water figwort (<em>Scrophularia auriculata</em>) - DidierFy, <a href="https://creativecommons.org/licenses/by-sa/4.0" rel="noopener">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/wiki/File:Scrophularia_auriculata_07.2025_(1).jpg" rel="noopener">Scrophularia auriculata 07.2025 (1).jpg</a></span>
-      </dd>
-
-      <dt>Invasive species photographs</dt>
-      <dd>Six photographs from <a href="https://commons.wikimedia.org/" rel="noopener">Wikimedia Commons</a>, cropped to 3:2 and resized for this site, and served from this site rather than hotlinked. Each was checked against the binomial on its own Commons file page before use.</dd>
-      <dd class="cred-list">
-        <span>American mink (<em>Neogale vison</em>) - Patrick Reijnders, <a href="https://creativecommons.org/licenses/by-sa/3.0" rel="noopener">CC BY-SA 3.0</a>, <a href="https://commons.wikimedia.org/wiki/File:American_Mink.jpg" rel="noopener">American Mink.jpg</a></span>
-        <span>Asian hornet (<em>Vespa velutina</em>) - Charles J. Sharp, <a href="https://creativecommons.org/licenses/by-sa/4.0" rel="noopener">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/wiki/File:Asian_hornet_(Vespa_velutina).jpg" rel="noopener">Asian hornet (Vespa velutina).jpg</a></span>
-        <span>Cherry laurel (<em>Prunus laurocerasus</em>) - Dandarmkd, <a href="https://creativecommons.org/licenses/by-sa/4.0" rel="noopener">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/wiki/File:Prunus_laurocerasus_-_%D0%91%D0%BE%D1%82%D0%B0%D0%BD%D0%B8%D1%87%D0%BA%D0%B0_%D0%B3%D1%80%D0%B0%D0%B4%D0%B8%D0%BD%D0%B0_%D0%A1%D0%BA%D0%BE%D0%BF%D1%98%D0%B5_03.jpg" rel="noopener">Prunus laurocerasus - Ботаничка градина Скопје 03.jpg</a></span>
-        <span>Grey squirrel (<em>Sciurus carolinensis</em>) - Tom Friedel, <a href="https://creativecommons.org/licenses/by/3.0" rel="noopener">CC BY 3.0</a>, <a href="https://commons.wikimedia.org/wiki/File:Eastern_Grey_Squirrel.jpg" rel="noopener">Eastern Grey Squirrel.jpg</a></span>
-        <span>Japanese knotweed (<em>Reynoutria japonica</em>) - Flocci Nivis, <a href="https://creativecommons.org/licenses/by/4.0" rel="noopener">CC BY 4.0</a>, <a href="https://commons.wikimedia.org/wiki/File:20180616_Reynoutria_japonica.jpg" rel="noopener">20180616 Reynoutria japonica.jpg</a></span>
-        <span>Rhododendron (<em>Rhododendron ponticum</em>) - Agnes Monkelbaan, <a href="https://creativecommons.org/licenses/by-sa/4.0" rel="noopener">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/wiki/File:Rhododendron_ponticum_actm_04.jpg" rel="noopener">Rhododendron ponticum actm 04.jpg</a></span>
-      </dd>
-
-      <dt>Folklore</dt>
-      <dd>National Folklore Collection, UCD, published on <a href="https://www.duchas.ie/" rel="noopener">dúchas.ie</a> as The Schools’ Collection, under <a href="https://creativecommons.org/licenses/by-nc/4.0/" rel="noopener">CC BY-NC 4.0</a>. Summaries on this site are written for it; no text from the collection is reproduced.</dd>
-      <dd class="cred-list">
-        <span>The Story of Corrin - Volume 0378, Page 148, Adair, Fermoy, collected by William Turpin</span>
-        <span>Glenabo - Volume 0378, Pages 149-150, Adair, Fermoy, collected by Cyril Skuse</span>
-        <span>The Cursing of the Blackwater - Volume 0378, Page 153, Adair, Fermoy</span>
-        <span>The Silver Horse - Volume 0378, Page 156, Adair, Fermoy</span>
-        <span>Another Story of the Famine - Volume 0382, Page 049, Cnoc na Biolaraighe, Watergrasshill</span>
-      </dd>
-
-      <dt>Audio and film</dt>
-      <dd>Recorded by Cáirde Corrin in the Glenabo catchment.</dd>
-
-      <dt>Type</dt>
-      <dd>EB Garamond, Inter and IBM Plex Mono, served from this site.</dd>
-
-    </dl>
+{{ pages | blocks("credits", page.url, collections.gallery.length, instagram, social, figures) | safe }}
   </div>
   <div style="height:100px"></div>
 </main>
