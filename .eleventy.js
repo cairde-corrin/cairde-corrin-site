@@ -27,16 +27,27 @@ const root = (url) => '../'.repeat(url.replace(/[^/]*$/, '').split('/').filter(B
 
 // When a page stops the build, the last thing in the build log is a plain explanation for
 // the editor who published it: the build's own error, with its stack trace, comes above it.
+// The same explanation is written to .cache/build-failure.json, which exists only when a
+// page's content stopped the build: the build check on GitHub opens an issue from it
+// (.github/workflows/build-check.yml), and any other kind of failure leaves no such file.
 process.once('exit', (code) => {
   const p = blocks.lastProblem();
   if (!code || !p) return;
-  const line = '='.repeat(72);
-  console.error(`\n${line}\nTHE WEBSITE WAS NOT UPDATED. The live website has not changed.\n\n`
+  const summary = 'THE WEBSITE WAS NOT UPDATED. The live website has not changed.\n\n'
     + `The page "${p.page}" in the editor needs fixing:\n${p.problems.map((x) => `  - ${x}`).join('\n')}\n\n`
     + `To fix it: in the editor, open Contents, then Pages, then "${p.page}". Put the block right and\n`
     + 'publish again. If you are not sure what to do, ask whoever looks after the website.\n'
-    + `(For whoever looks after the website: ${p.file.slice(1, -1)}.)\n${line}`);
+    + `(For whoever looks after the website: ${p.file.slice(1, -1)}.)`;
+  const line = '='.repeat(72);
+  console.error(`\n${line}\n${summary}\n${line}`);
+  try {
+    fs.mkdirSync(path.join(__dirname, '.cache'), { recursive: true });
+    fs.writeFileSync(path.join(__dirname, '.cache', 'build-failure.json'),
+      JSON.stringify({ page: p.page, problems: p.problems, file: p.file.slice(1, -1), summary }, null, 1));
+  } catch (e) { /* the log above still says it */ }
 });
+// A build that gets as far as starting clears any record of an earlier failure
+try { fs.rmSync(path.join(__dirname, '.cache', 'build-failure.json'), { force: true }); } catch (e) { /* none */ }
 
 module.exports = function (eleventyConfig) {
   eleventyConfig.setTemplateFormats(['njk', 'md']);
@@ -69,6 +80,10 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter('sitePhotos', (pages) => JSON.stringify(blocks.sitePhotos(pages), null, 1));
   // The stops whose page has content, for the sitemap; what the map draws besides the survey data
   eleventyConfig.addFilter('recordedStops', (pages) => blocks.stopList(pages).filter((s) => s.recorded));
+  // The terms page's count of stops not yet surveyed, from the stops' own pages, as the
+  // trails page counts them: " Seven of the ten stops have not been surveyed at all.", or
+  // nothing once every stop has been surveyed
+  eleventyConfig.addFilter('unsurveyedSentence', blocks.unsurveyedSentence);
   eleventyConfig.addAsyncFilter('mapLayers', async (pages) => {
     const { version, ...data } = await blocks.mapLayers(pages);
     return JSON.stringify(data);

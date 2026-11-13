@@ -352,8 +352,8 @@ can tell it is this when the editor said **Changes saved** and the post or page 
 longer in the **Workflow** tab, but ten minutes and a hard refresh later the website still
 shows the old version.
 
-Nobody is told about this automatically: noticing that your change has not appeared is
-the signal, and you are the first to know. So when it happens:
+The person who looks after the website is sent an email about it, but you are the one
+who knows what you just changed, and you may notice first. So when it happens:
 
 1. **Do not publish the same change again.** It will stop in the same place each time.
    Nothing else you or anyone else publishes will appear either until it is fixed.

@@ -618,8 +618,14 @@ When a page stops the build, the build's error lists every problem on that page 
 words, and the last thing in the log is a framed summary headed "THE WEBSITE WAS NOT
 UPDATED" naming the page as it appears in the editor, the problems, what to do, and the
 file. The live site keeps its previous version. Netlify's deploy log is visible only to
-members of the Netlify team, so editors cannot read it: see `MAINTENANCE.md`, "When the
-website does not update", for who is told and how.
+members of the Netlify team, so editors cannot read it, and Netlify's own failure emails
+need a paid plan. Instead `.github/workflows/build-check.yml` runs the same build on every
+push to main (Node from `netlify.toml`; actions pinned to release commits) and, when a
+page's content stopped it, opens a `website-not-updated` issue from
+`.cache/build-failure.json`, which the build writes only then. Watchers are emailed; one
+issue per failure (a fingerprint of the page and its problems); the issue closes when the
+build passes. Any other failure opens nothing. See `MAINTENANCE.md`, "When the website does
+not update".
 
 ## Photos already on the site
 

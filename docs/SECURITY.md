@@ -28,7 +28,9 @@ has every `<` escaped, so no field can close its script element. An uploaded GPS
 rebuilt from positions and heights in the editor's browser before upload (`site/admin/tracks.js`)
 and again at build (`_includes/gpx.js`), so no time or name in it reaches the public
 repository or the site. The photo picker only reads a list of the site's own photos and
-writes a path; it uploads nothing and has no address field. The build refuses any
+writes a path; it uploads nothing and has no address field. The build check workflow (`.github/workflows/build-check.yml`) runs with read access to
+the code and write access to issues only, uses no secret beyond the run's own token, and
+pins its two actions to release commits. The build refuses any
 page that would load something from another website (`_includes/images.js`) and any page
 with an inline script other than the two the site carries on purpose (`_includes/csp.js`).
 Behind that, every page carries a Content Security Policy that lets the browser run

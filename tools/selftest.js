@@ -231,6 +231,12 @@ const webp = Buffer.concat([Buffer.from('RIFF'), Buffer.from([(webpBody.length +
   const noFolk = { ...real.credits, blocks: [{ type: 'credits', items: real.credits.blocks[0].items.filter((i) => i.group !== 'folklore') }] };
   const cp = await blocks.render('credits', noFolk, ctx('/credits/'));
   assert.match(cp, /<dt>Folklore<\/dt>[\s\S]*The Story of Corrin - Volume 0378, Page 148/);
+  // the terms page's count of stops still to survey follows the stops' pages
+  assert.equal(blocks.unsurveyedSentence(real), ' Seven of the ten stops have not been surveyed at all.');
+  const live = (n) => Object.fromEntries(Array.from({ length: 10 }, (_, i) => [`stop_${i + 1}`, i < n ? real.stop_1 : real.stop_4]));
+  assert.equal(blocks.unsurveyedSentence(live(4)), ' Six of the ten stops have not been surveyed at all.');
+  assert.equal(blocks.unsurveyedSentence(live(9)), ' One of the ten stops has not been surveyed at all.');
+  assert.equal(blocks.unsurveyedSentence(live(10)), '');
   // counts: what the website actually holds
   const n = blocks.counts(real);
   assert.equal(n.species, real.species.blocks.find((b) => b.type === 'species').items.length);

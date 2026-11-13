@@ -795,4 +795,12 @@ function sitePhotos(pages) {
   return out.map(({ base, ...x }) => x).sort((a, b) => a.path.localeCompare(b.path));
 }
 
-module.exports = { render, ldItems, counts, mapLayers, sitePhotos, lastProblem: () => lastProblem, stopList, stopPlace, usage, photoSet, webpSize, creditFor, LABELS, SINGULAR, root, BlockError };
+// The terms page's sentence on the stops not yet surveyed, counted as the trails page counts
+// them: " Seven of the ten stops have not been surveyed at all.", or nothing once all have
+function unsurveyedSentence(pages) {
+  const n = stopList(pages).filter((s) => !s.recorded).length;
+  const word = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'][n];
+  return n === 0 ? '' : ` ${word} of the ten stops ${n === 1 ? 'has' : 'have'} not been surveyed at all.`;
+}
+
+module.exports = { render, ldItems, counts, unsurveyedSentence, mapLayers, sitePhotos, lastProblem: () => lastProblem, stopList, stopPlace, usage, photoSet, webpSize, creditFor, LABELS, SINGULAR, root, BlockError };

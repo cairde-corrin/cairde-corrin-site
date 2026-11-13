@@ -198,20 +198,32 @@ buttons by Decap's internal labels, which an update can rename.
   (`CONTRIBUTING.md`, "Checks before publishing"). What is left are things only the build
   can check (an unreadable photo or GPS track). The build then stops, the live site keeps
   its previous version, and the end of the deploy log says, in plain words, which page and
-  block and what to fix. **Nobody is notified automatically.** On the free plan,
-  Netlify's email and Slack deploy notifications are not available (both carry a Pro tag
-  in the Netlify UI), and no other route has been set up. Editors cannot open Netlify's
-  deploy log; they are told, in the editor guide ("When a change does not appear"), to
-  tell you when a change has not appeared. So whoever looks after the site checks for
-  failed deploys themselves:
-  - **When an editor says a change has not appeared, and once a week otherwise** (after
-    the Monday rebuild is a good moment), open Netlify -> the project -> **Deploys**.
-  - A failed deploy is marked **Failed** in red. Open it and scroll to the very end of
-    its log: the box headed **THE WEBSITE WAS NOT UPDATED** names the page as editors see
-    it, each problem, and the file.
-  - Fix it in the editor (or tell the editor which block), and publish. The next deploy
-    should be green. While a deploy fails, nothing anyone publishes reaches the site.
-  If a notification route is set up later, describe it here and in the editor guide.
+  block and what to fix.
+
+  **The primary signal is a GitHub issue.** Netlify's email and Slack deploy notices are
+  not available on the free plan (both carry a Pro tag in the Netlify UI), so the
+  repository runs the same build itself (`.github/workflows/build-check.yml`) on every push
+  to main, with the Node version read from `netlify.toml`. When a page's content stops it,
+  the workflow opens an issue labelled `website-not-updated` whose text is the plain
+  "THE WEBSITE WAS NOT UPDATED" summary: the page as editors see it, each problem, what to
+  do. GitHub emails everyone watching the repository, so **watch the repository** (Watch ->
+  All activity, or Custom -> Issues) with the address you want these at. The same failure
+  published again does not open a second issue, and the issue closes itself, with a note,
+  the next time the website builds. A failure that is not about content (npm or the
+  network failing in the runner, a bug in the code) opens nothing; the run shows a warning.
+
+  When an issue arrives: fix the page in the editor, or tell the editor which block, and
+  publish. While it is open, nothing anyone publishes reaches the site.
+
+  **The backstop is the Deploys page.** Once a week (after the Monday rebuild is a good
+  moment), and whenever an editor says a change has not appeared, open Netlify -> the
+  project -> **Deploys**. A failed deploy is marked **Failed**; the end of its log carries
+  the same summary. This catches what the issue would not: a failure that is not about
+  content, or the workflow itself not running.
+
+  To check the route works after a change to it: **Actions** -> **Build check** -> **Run
+  workflow**, tick "Break the About page in this run only". It opens an issue headed
+  "[Test, close me]" without touching the site; close it by hand.
 - **A publish that did not appear, with a failed deploy.** If an editor publishes a page
   with a broken or incomplete block, the build stops and Netlify keeps the previous
   version live. The deploy log names the page file and the block, for example

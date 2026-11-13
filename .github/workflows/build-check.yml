@@ -1,0 +1,119 @@
+# Runs the same build as Netlify on every push to main, and opens an issue when a page's
+# content stops it, so that GitHub emails whoever watches the repository. Netlify's own
+# email and Slack notices are not available on the free plan (docs/MAINTENANCE.md).
+#
+# Only a content failure raises an issue: a page the build's checks refuse
+# (site/admin/checks.js, site/_includes/blocks.js). The build writes
+# .cache/build-failure.json, with the plain "THE WEBSITE WAS NOT UPDATED" summary, only
+# then (.eleventy.js). A failure without that file (npm cannot install, the runner has no
+# network, a bug in the code) opens nothing: Netlify's build log is where to look, and the
+# YouTube and Behold fetches never stop a build anyway, they fall back to saved copies.
+#
+# One issue per failure: the issue carries a fingerprint of the page and its problems, and
+# a run that finds an open issue with the same fingerprint adds nothing. A run that builds
+# cleanly closes every open issue it opened.
+#
+# The Node version is read from netlify.toml, so this build and Netlify's cannot drift
+# apart. Actions are pinned to the commit of a release, so no tag can change under us.
+#
+# To check that it works: Actions -> Build check -> Run workflow, tick "Break the About
+# page in this run only". It opens a test issue; close it by hand.
+name: Build check
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      test_failure:
+        description: Break the About page in this run only, to check that an issue is opened
+        type: boolean
+        default: false
+permissions:
+  contents: read
+  issues: write
+# one run at a time, so two quick publishes cannot open the same issue twice
+concurrency:
+  group: build-check
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
+      - name: Read the Node version Netlify builds with
+        id: node
+        run: |
+          version=$(sed -n 's/^[[:space:]]*NODE_VERSION[[:space:]]*=[[:space:]]*"\([0-9.]*\)".*/\1/p' netlify.toml)
+          if [ -z "$version" ]; then echo "::error::No NODE_VERSION in netlify.toml"; exit 1; fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4.4.0
+        with:
+          node-version: ${{ steps.node.outputs.version }}
+      - name: Install
+        id: install
+        continue-on-error: true
+        run: npm ci --no-audit --no-fund
+      - name: Build, as Netlify does
+        id: build
+        if: steps.install.outcome == 'success'
+        continue-on-error: true
+        env:
+          TEST_FAILURE: ${{ inputs.test_failure }}
+        run: |
+          if [ "$TEST_FAILURE" = "true" ]; then
+            # this run only: a "Two photos" block with one photo and no description
+            node -e "const f='site/_data/pages/about.json',fs=require('fs');const d=JSON.parse(fs.readFileSync(f));d.blocks.splice(2,0,{type:'pair',items:[{photo:'/assets/img/stream-1800.webp',alt:''}]});fs.writeFileSync(f,JSON.stringify(d,null,2))"
+          fi
+          npm run build
+      - name: Report
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          SERVER: ${{ github.server_url }}
+          RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          INSTALL: ${{ steps.install.outcome }}
+          BUILD: ${{ steps.build.outcome }}
+          TEST_FAILURE: ${{ inputs.test_failure }}
+        run: |
+          LABEL=website-not-updated
+          short=${SHA:0:7}
+          if [ "$INSTALL" != "success" ]; then
+            echo "::warning::npm could not install the packages, so the build was not checked. This is not a problem with the website's content; no issue opened."
+            exit 0
+          fi
+          if [ "$BUILD" = "success" ]; then
+            for n in $(gh issue list -R "$REPO" --label "$LABEL" --state open --limit 100 --json number --jq '.[].number'); do
+              gh issue close "$n" -R "$REPO" --comment "The website built again from commit [$short]($SERVER/$REPO/commit/$SHA), so this is fixed."
+            done
+            echo "The website builds."
+            exit 0
+          fi
+          if [ ! -f .cache/build-failure.json ]; then
+            echo "::warning::The build failed, but not because of a page's content (no .cache/build-failure.json), so no issue was opened. See this run's log and Netlify's deploy log."
+            exit 0
+          fi
+          page=$(jq -r .page .cache/build-failure.json)
+          # the same page with the same problems is the same failure, however often it is published
+          fp=$(jq -c '{page, problems}' .cache/build-failure.json | sha256sum | cut -c1-16)
+          [ "$TEST_FAILURE" = "true" ] && fp="test-$fp"
+          open=$(gh issue list -R "$REPO" --label "$LABEL" --state open --limit 100 --json number,body \
+            --jq ".[] | select(.body | contains(\"build-check: $fp\")) | .number" | head -1)
+          if [ -n "$open" ]; then
+            echo "Already reported in issue #$open; nothing new to say."
+            exit 0
+          fi
+          gh label create "$LABEL" -R "$REPO" --color B60205 \
+            --description "A page's content stopped the website updating" 2>/dev/null || true
+          {
+            echo "The website did not update after the latest change to main ([$short]($SERVER/$REPO/commit/$SHA)), because a page's content stopped the build. Netlify keeps the previous version live, and nothing published after this will appear until it is fixed."
+            echo
+            jq -r .summary .cache/build-failure.json | sed 's/^/> /'
+            echo
+            echo "This issue closes itself when the website builds again. [The check's log]($RUN)."
+            echo
+            echo "<!-- build-check: $fp -->"
+          } > issue.md
+          title="The website was not updated: the page \"$page\" needs fixing"
+          [ "$TEST_FAILURE" = "true" ] && title="[Test, close me] $title"
+          gh issue create -R "$REPO" --title "$title" --body-file issue.md --label "$LABEL"
