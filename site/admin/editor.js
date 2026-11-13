@@ -38,10 +38,12 @@
         // A page that would stop the website updating is not saved: its editor is told
         // what to fix now, rather than seeing Publish succeed and nothing change.
         // site/admin/checks.js is the same set of checks the build makes.
-        if (e.entry.get('collection') === 'pages' && window.CairdeChecks) {
-          var found = window.CairdeChecks.problems(e.entry.get('slug'), data.toJS());
+        var coll = e.entry.get('collection');
+        if ((coll === 'pages' || coll === 'news') && window.CairdeChecks) {
+          var js = data.toJS();
+          var found = coll === 'pages' ? window.CairdeChecks.problems(e.entry.get('slug'), js) : window.CairdeChecks.newsProblems(js, js.body);
           if (found.length) {
-            var msg = 'This page has not been saved, because the website could not publish it as it is:\n\n'
+            var msg = 'This ' + (coll === 'pages' ? 'page' : 'post') + ' has not been saved, because the website could not publish it as it is:\n\n'
               + found.map(function (x) { return '- ' + x; }).join('\n') + '\n\nFix ' + (found.length === 1 ? 'this' : 'these') + ' and save again. Nothing you typed has been lost.';
             window.alert(msg);
             throw new Error(found.join(' '));
@@ -75,6 +77,37 @@
       });
       return o;
     }
+    // Where, which way and when an uploaded photo was taken, read before photos.js removed
+    // it, offered for the fields beside the photo. Decap gives a field no way to set another,
+    // so they are found by their labels within this photo's own part of the form (the part
+    // holding its "Who took this photo") and typed into as an editor would.
+    var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    function when(t, short) {
+      var m = /^(\d{4})-(\d\d)-(\d\d) (\d\d:\d\d)$/.exec(t || '');
+      return m ? +m[3] + ' ' + (short ? MONTHS[+m[2] - 1].slice(0, 3) : MONTHS[+m[2] - 1]) + ' ' + m[1] + ', ' + m[4] : '';
+    }
+    function labelled(scope, words) {
+      var ls = scope ? scope.querySelectorAll('label') : [];
+      for (var i = 0; i < ls.length; i++) {
+        if (ls[i].textContent.trim().indexOf(words) === 0 && ls[i].htmlFor) return document.getElementById(ls[i].htmlFor);
+      }
+      return null;
+    }
+    function ownPart(el) {
+      for (var a = el && el.parentElement; a; a = a.parentElement) if (labelled(a, 'Who took this photo')) return a;
+      return null;
+    }
+    function put(input, v) {
+      Object.getOwnPropertyDescriptor(Object.getPrototypeOf(input), 'value').set.call(input, v);
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    var heights = null;
+    function heightAt(lat, lon) {
+      if (!heights) heights = Promise.all([fetch('/admin/dem/copernicus-od.json').then(function (r) { return r.json(); }),
+        fetch('/admin/dem/copernicus-od.bin').then(function (r) { return r.arrayBuffer(); })])
+        .then(function (x) { return window.CairdeDem.grid(x[0], x[1]); });
+      return heights.then(function (g) { var m = g.height(lat, lon); return m == null ? null : window.CairdeDem.nearest5(m); }, function () { return null; });
+    }
     var box = 'border:1px solid #dfe3e8;border-radius:6px;padding:12px;margin-top:8px;background:#fff';
     var btn = 'font:600 14px/1 system-ui,sans-serif;padding:9px 14px;border-radius:5px;border:1px solid #24451A;background:#fff;color:#24451A;cursor:pointer;margin:0 8px 8px 0';
     var Control = window.createClass({
@@ -89,6 +122,7 @@
           var p = typeof inserted === 'string' ? inserted : (inserted.path || String(inserted));
           if (p !== this.props.value) this.props.onChange(p);
           this.props.onRemoveInsertedMedia(this.controlID);
+          this.setState({ info: (window.CairdePhotoInfo && window.CairdePhotoInfo(p)) || null, filled: '' });
         }
       },
       browse: function () {
@@ -96,7 +130,26 @@
         this.setState({ open: !this.state.open });
         load().then(function (photos) { self.setState({ photos: photos }); });
       },
-      pick: function (p) { this.props.onChange(p.path); this.setState({ open: false }); },
+      pick: function (p) { this.props.onChange(p.path); this.setState({ open: false, info: null }); },
+      // the stop's position, direction and time, as its fields take them
+      fillStop: function (part) {
+        var i = this.state.info, done = [], f;
+        var lat = labelled(part, 'Latitude'), lon = labelled(part, 'Longitude');
+        if (i.lat != null && lat && lon) { put(lat, i.lat.toFixed(5)); put(lon, i.lon.toFixed(5)); done.push('the position'); }
+        if (i.facing != null && (f = labelled(part, 'Facing'))) { put(f, String(i.facing)); done.push('the direction'); }
+        if (i.taken && (f = labelled(part, 'Recorded'))) { put(f, when(i.taken, true)); done.push('the time'); }
+        this.setState({ filled: done.length ? 'Filled in ' + done.join(', ').replace(/, ([^,]*)$/, ' and $1') + '. Check them before saving.' : 'Nothing could be filled in.' });
+      },
+      // "about 80 m OD - 11 April 2026, 07:54": the height read from the elevation grid at
+      // the photo's position, to the nearest 5 m, and the time the camera gave
+      fillLine: function (part) {
+        var self = this, i = this.state.info, f = labelled(part, 'Small line under the photo');
+        (i.lat != null ? heightAt(i.lat, i.lon) : Promise.resolve(null)).then(function (m) {
+          var line = [m == null ? '' : 'about ' + m + ' m OD', when(i.taken)].filter(Boolean).join(' - ');
+          if (f && line) put(f, line);
+          self.setState({ filled: f && line ? 'Filled in the small line: "' + line + '". Check it before saving.' : 'Nothing could be filled in.' });
+        });
+      },
       // A photo from Wikimedia Commons: its author and licence are read from Commons now,
       // with the same rules the build applies (site/admin/commons.js). Refused: nothing is
       // put in the field, and the reason is shown. Nothing is uploaded either way.
@@ -122,6 +175,14 @@
       },
       render: function () {
         var self = this, v = this.props.value || '', s = this.state;
+        var part = s.info ? ownPart(this.el) : null;
+        var read = s.info ? [s.info.lat != null ? 'taken at ' + s.info.lat.toFixed(5) + ', ' + s.info.lon.toFixed(5) : '',
+          s.info.facing != null ? 'facing ' + s.info.facing + ' degrees' : '', s.info.taken ? 'on ' + when(s.info.taken).replace(', ', ' at ') : ''].filter(Boolean) : [];
+        var offer = read.length ? h('div', { role: 'status', style: css(box + ';font:14px/1.45 system-ui,sans-serif') },
+          h('p', { style: css('margin:0 0 8px') }, 'Read from the photo before the location was removed: ' + read.join(', ') + '. The copy uploaded to the website carries none of this.'),
+          labelled(part, 'Latitude') ? h('button', { type: 'button', style: css(btn), onClick: function () { self.fillStop(part); } }, 'Fill in the stop\'s position, direction and time from the photo') : null,
+          labelled(part, 'Small line under the photo') && (s.info.taken || s.info.lat != null) ? h('button', { type: 'button', style: css(btn), onClick: function () { self.fillLine(part); } }, 'Fill in the small line under the photo (height and time)') : null,
+          s.filled ? h('p', { style: css('margin:0;color:#24451A') }, s.filled) : null) : null;
         var onSite = /^\/assets\/img\//.test(v);
         var fromC = window.CairdeCommons && window.CairdeCommons.isCommons(v);
         var known = onSite && s.photos ? s.photos.filter(function (p) { return p.path === v; })[0] : null;
@@ -144,8 +205,9 @@
                 h('span', { style: css('display:block;margin-top:4px') }, p.alt || p.path.split('/').pop()),
                 p.credit ? h('span', { style: css('display:block;color:#555') }, 'Photo: ' + p.credit + ' (credited automatically)') : null);
               }))) : null;
-        return h('div', { id: this.props.forID, className: this.props.classNameWrapper, style: css('padding:12px') },
+        return h('div', { id: this.props.forID, ref: function (el) { self.el = el; }, className: this.props.classNameWrapper, style: css('padding:12px') },
           current,
+          offer,
           h('button', { type: 'button', style: css(btn), onClick: this.browse, 'aria-expanded': s.open ? 'true' : 'false' }, s.open ? 'Close the list of photos' : 'Choose a photo already on the website'),
           h('button', { type: 'button', style: css(btn), onClick: this.upload }, 'Upload a new photo'),
           h('button', { type: 'button', style: css(btn), 'aria-expanded': s.commons ? 'true' : 'false', onClick: function () { self.setState({ commons: !s.commons, found: null }); } }, 'Use a photo from Wikimedia Commons'),
@@ -171,6 +233,59 @@
   }
   document.addEventListener('DOMContentLoaded', function () {
     if (window.CMS && window.CMS.registerWidget && window.createClass && window.h) sitePhotoWidget();
+  });
+
+  // The "Link to" fields: a list of the website's pages (/admin/site-pages.json, written by
+  // the build from every page open to visitors) to choose from, so nobody types an address
+  // wrong. Another website's address and an email address are still typed in full.
+  function siteLinkWidget() {
+    var h = window.h, CMS = window.CMS, list = null;
+    var OTHER = '(another website)', MAIL = '(an email address)', NONE = '';
+    var field = 'display:block;width:100%;margin-top:6px;padding:8px;font:14px system-ui,sans-serif;border:1px solid #9aa3ad;border-radius:4px;background:#fff';
+    var Control = window.createClass({
+      getInitialState: function () { return { pages: null, kind: null }; },
+      componentDidMount: function () {
+        var self = this;
+        if (!list) list = fetch('/admin/site-pages.json', { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.json() : []; }, function () { return []; });
+        list.then(function (pages) { self.setState({ pages: pages }); });
+      },
+      render: function () {
+        var self = this, v = String(this.props.value || ''), pages = this.state.pages || [];
+        var onSite = pages.some(function (p) { return p.url === v; });
+        // a link to a part of a page, such as /folklore/#glenabo, is kept as it is
+        var base = v.split('#')[0], within = pages.filter(function (p) { return p.url === base; })[0];
+        var kind = this.state.kind || (!v ? NONE : onSite ? v : /^mailto:/.test(v) ? MAIL : /^https?:/.test(v) ? OTHER : v);
+        var optional = this.props.field && this.props.field.get && this.props.field.get('required') === false;
+        var opts = [h('option', { key: 'none', value: NONE }, optional ? 'No link' : 'Choose where it leads')];
+        if (v && !onSite && kind === v) opts.push(h('option', { key: 'kept', value: v }, within ? within.title + ', the part at #' + v.split('#')[1] + ' (' + v + ')' : 'As it is now: ' + v));
+        pages.forEach(function (p) { opts.push(h('option', { key: p.url, value: p.url }, p.title + ' (' + p.url + ')')); });
+        opts.push(h('option', { key: 'o', value: OTHER }, 'Another website...'), h('option', { key: 'm', value: MAIL }, 'An email address...'));
+        return h('div', { className: this.props.classNameWrapper, style: { padding: '12px' } },
+          h('select', { id: this.props.forID, value: kind, style: { display: 'block', width: '100%', padding: '8px', font: '14px system-ui,sans-serif', border: '1px solid #9aa3ad', borderRadius: '4px', background: '#fff' },
+            onChange: function (e) {
+              var k = e.target.value;
+              self.setState({ kind: k === OTHER || k === MAIL ? k : null });
+              if (k === OTHER) self.props.onChange(/^https?:/.test(v) ? v : 'https://');
+              else if (k === MAIL) self.props.onChange(/^mailto:/.test(v) ? v : 'mailto:');
+              else self.props.onChange(k);
+            } }, opts),
+          kind === OTHER ? h('input', { type: 'url', value: v, 'aria-label': 'The address of the other website, starting https://', placeholder: 'https://',
+            onChange: function (e) { self.props.onChange(e.target.value.trim()); }, style: css(field) }) : null,
+          kind === MAIL ? h('input', { type: 'email', value: v.replace(/^mailto:/, ''), 'aria-label': 'The email address', placeholder: 'name@example.ie',
+            onChange: function (e) { self.props.onChange('mailto:' + e.target.value.trim()); }, style: css(field) }) : null,
+          this.state.pages && v && !onSite && !within && kind === v && /^\//.test(v) ? h('p', { style: { font: '13px/1.45 system-ui,sans-serif', color: '#9b1c1c', margin: '6px 0 0' } },
+            'This address is not one of the website\'s pages. Choose the page it should lead to from the list.') : null);
+      },
+    });
+    function css(t) {
+      var o = {};
+      t.split(';').forEach(function (d) { var i = d.indexOf(':'); if (i > 0) o[d.slice(0, i).trim().replace(/-([a-z])/g, function (m, c) { return c.toUpperCase(); })] = d.slice(i + 1).trim(); });
+      return o;
+    }
+    CMS.registerWidget('sitelink', Control, window.createClass({ render: function () { return h('span', null, this.props.value || ''); } }));
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.CMS && window.CMS.registerWidget && window.createClass && window.h) siteLinkWidget();
   });
 
   // A Help button on every editor screen, opening the editor guide (admin/help/) in a new tab

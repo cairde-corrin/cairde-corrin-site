@@ -188,7 +188,7 @@ tick that `site/admin/editor.js` acts on when the entry is saved.
 **A broken block stops the build.** Every block is checked as it is drawn: a missing
 title, a photo without its description or not on this site, a "Two photos" block without
 exactly two, a link that is neither a site path nor an `https://` address, a recording
-that is not a file on the site, a story without its source, a stop without a position
+that is not a file on the site or cannot be read as MP3, M4A or WAV, a story without its source, a stop without a position
 near Fermoy. The error names the page file and the block number and kind, and Netlify
 keeps the previous version live. The backstop against loading anything from another
 website (`_includes/images.js`) still runs over every finished page, blocks included.
@@ -201,11 +201,38 @@ table. **Films** are YouTube addresses, handled exactly as a news post's video
 (`_includes/youtube.js`: the same pattern, the same self-hosted still, the same
 click-to-load player). The three films already kept on the site stay as files; their size
 is read from the MP4 itself (`mp4Size` in `blocks.js`), so nobody types pixel sizes.
-**Recordings** must already be files on the site: an editor cannot upload sound, because
-phone recordings carry their location and details, and stripping them is a developer's
-job. **Who took a photo** is a field on every photo (`by`, default "Cáirde Corrin"); any
+**Recordings** are uploaded in the editor as MP3, M4A or WAV, and cleaned twice without
+being re-encoded (`site/admin/audio.js`, shared by the editor and the build): in the
+editor's browser before upload, and again at build, which publishes the cleaned copy under
+`/assets/audio/uploads/` and never the upload itself. From an MP3 it removes every ID3v2
+tag, an ID3v1 tag and an APE tag; from an M4A or MP4 it blanks the `udta`, `meta`, `uuid`
+and `XMP_` boxes to `free` boxes of the same size (so no offset moves) and zeroes the
+creation and modification times in `mvhd`, `tkhd` and `mdhd`; from a WAV it keeps only the
+`fmt `, `data` and `fact` chunks. The sound frames are never touched. Ogg, Opus, WebM, WMA
+and the like are refused, in the editor with a plain message, because their tags sit inside
+the stream and cannot be removed without re-encoding. A recording's length (rounded to the
+second) and its end time (start plus length, rounded up) are read from the file, so an
+editor gives only the start time. **Who took a photo** is a field on every photo (`by`, default "Cáirde Corrin"); any
 other name is shown beneath the photo as "Photo: <name>". A registered or Commons photo
 always shows its licence credit instead.
+
+**Derived, not requested.** A field the build can work out is not asked of an editor:
+
+| What | Worked out from |
+|---|---|
+| A stop's sign line, "Stop 05 - cairdecorrin.ie/s/5" | its number |
+| A stop's height | the elevation grid at its position (below); stops 1 to 3 keep their checked heights in a hidden `elevation` field, and the build warns if one strays more than 10 m from the grid, which means the stop was moved |
+| A YouTube video's or film's title | YouTube's public oEmbed address, fetched with the still and kept in `site/_youtube/<id>.json`; a typed title still wins. Commit the file with the still, as the build log says |
+| A recording's length and end time | the file (`audio.js`) |
+| A photo's position, direction and time | its Exif, read in the editor's browser before the photo is stripped (`photos.js` `exif()`), offered to the editor and never uploaded; a caption's height comes from the elevation grid, never the camera's altitude |
+| Where a link leads | a list of the built pages, `/admin/site-pages.json`, written after every build; another website or an email address is still typed |
+
+**The elevation grid** (`site/admin/dem/copernicus-od.bin` and `.json`, 62 KB) is
+Copernicus GLO-30 cut to the action area plus about 500 m by `tools/dem_clip.py`,
+converted to metres above Malin Head OD, and read bilinearly by `site/admin/dem.js` in the
+build and in the editor, to the nearest 5 m. It is the one piece of raster data in the
+repository; the full tiles stay in `fetch_dem.py`'s cache. Rerun `dem_clip.py` only if the
+action area grows past it, and check the three stop heights it prints.
 
 **To add a block type:** a renderer in `R` and a name in `LABELS` (`blocks.js`), a type in
 the `pages` collection of `site/admin/config.yml` (once, with an `&anchor`, then by alias on
@@ -296,7 +323,10 @@ Times are Irish summer time (UTC+1), as the cameras recorded them.
    Reservoir added. Traced from the group's map and accurate to 10-20 m; the outline
    measures 9.86 km². Not re-derived.
 5. Stop and photograph elevations come from the walk's own GPX (`archive/source-data/`) and
-   Copernicus, rounded to 5 m; they agree within 4-8 m at each stop. No elevation on the
+   Copernicus, rounded to 5 m; they agree within 4-8 m at each stop. A stop added after
+   stops 1 to 3, and a caption an editor fills in from a photo's position, takes Copernicus
+   alone, at that position (the elevation grid above): it reads a few metres high under
+   trees, which the rounding absorbs. No elevation on the
    site is finer than 5 m, and every one carries "about". Never use photograph EXIF
    altitudes as they stand: the Pixel 8a used on 11 April records height above the
    ellipsoid, about 57 m above sea level here, so its photographs came down by about
@@ -351,7 +381,11 @@ they are versioned together: bump `DATA_V` in `map.js` and the `?v=` on its scri
 a new script with a day-old data file, or the reverse, and a new layer silently fails to
 appear.
 
-**Audio.** Mono, 64 kbps, MP3, into `site/assets/audio/`. Every clip needs a written
+**Audio.** Mono, 64 kbps, MP3, into `site/assets/audio/`, with no tags: an encoder or a
+phone leaves an ID3 tag (the published recordings carried `com.android.version` and the
+encoder's name until they were stripped). Strip one without re-encoding with
+`node -e "const a=require('./site/admin/audio.js'),f=process.argv[1],fs=require('fs');const r=a.clean(fs.readFileSync(f),f);fs.writeFileSync(f,r.bytes);console.log(r.removed)" FILE.mp3`;
+the build warns about any recording that still has one. Every clip needs a written
 transcript inside the `<details class="transcript">` block on that stop page. This is
 not optional: it covers deaf visitors and anyone with no signal.
 
@@ -411,7 +445,9 @@ survive the canvas, and any metadata the browser adds of its own is stripped, so
 phone's EXIF block, with the GPS position, the time and the phone model, never leaves
 the device. What reaches `site/assets/uploads/`, and so the public repository, is a
 file of roughly 0.7 to 1.5 MB with no EXIF, XMP or GPS. The camera's rotation is applied
-before the tag is lost. Photos dragged or pasted onto the editor are refused, so nothing
+before the tag is lost. Before that, `exif()` reads the position, direction and time from a
+JPEG's Exif and keeps them in the page's memory only, so the photo field can offer them to
+the editor (see "Derived, not requested"). Photos dragged or pasted onto the editor are refused, so nothing
 reaches Decap without passing through this step. Uploads are still never published as
 they are: at build time,
 `site/_includes/images.js` re-encodes each one referenced by a post into WebP at 700,

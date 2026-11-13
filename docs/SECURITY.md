@@ -27,7 +27,13 @@ this site or an `https://` address, and the structured data built from the page'
 has every `<` escaped, so no field can close its script element. An uploaded GPS track is
 rebuilt from positions and heights in the editor's browser before upload (`site/admin/tracks.js`)
 and again at build (`_includes/gpx.js`), so no time or name in it reaches the public
-repository or the site. The photo picker only reads a list of the site's own photos and
+repository or the site. An uploaded recording is cleaned of its tags and boxes in the
+editor's browser before upload and again at build (`site/admin/audio.js`), without
+re-encoding, and only the cleaned copy is published; formats that cannot be cleaned (Ogg,
+Opus, WebM, WMA) are refused. The editor reads a photo's position, direction and time
+before stripping it and offers them to the editor; they stay in the page's memory and
+reach the repository only if the editor fills them into a field and saves. The link
+picker and the elevation grid (`site/admin/dem/`) are read from this site only. The photo picker only reads a list of the site's own photos and
 writes a path; it uploads nothing and has no address field. The build check workflow (`.github/workflows/build-check.yml`) runs with read access to
 the code and write access to issues only, uses no secret beyond the run's own token, and
 pins its two actions to release commits. The build refuses any
@@ -76,7 +82,9 @@ costing 15 credits. *Mitigated:* it is a GitHub Actions secret, never in the rep
 
 **Photos give away where an editor lives or walks.** *Mitigated:* photos are stripped of
 their location, time and camera details in the editor's browser before upload, and again
-by the build (`CONTRIBUTING.md`, "Uploaded photos").
+by the build (`CONTRIBUTING.md`, "Uploaded photos"). Recordings likewise
+(`CONTRIBUTING.md`, "Recordings"); the nineteen published recordings carried a phone's
+software version and the encoder's name, and were stripped.
 
 ## What is accepted, and why
 

@@ -12,7 +12,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const SOURCES = ['!**/*.njk', '!**/*.md', '!**/*.11tydata.js', '!_includes', '!_includes/**',
-  '!_content', '!_content/**', '!_data', '!_data/**', '!assets/uploads', '!assets/uploads/**', '!_instagram', '!_instagram/**', '!_commons', '!_commons/**'];
+  '!_content', '!_content/**', '!_data', '!_data/**', '!assets/uploads', '!assets/uploads/**', '!_instagram', '!_instagram/**', '!_commons', '!_commons/**', '!_youtube', '!_youtube/**'];
 const images = require('./site/_includes/images.js');
 const social = require('./site/_includes/social.js');
 const { nav } = require('./site/_includes/nav.js');
@@ -34,9 +34,10 @@ const root = (url) => '../'.repeat(url.replace(/[^/]*$/, '').split('/').filter(B
 process.once('exit', (code) => {
   const p = blocks.lastProblem();
   if (!code || !p) return;
+  const subject = p.subject || `the page "${p.page}"`;
   const summary = 'THE WEBSITE WAS NOT UPDATED. The live website has not changed.\n\n'
-    + `The page "${p.page}" in the editor needs fixing:\n${p.problems.map((x) => `  - ${x}`).join('\n')}\n\n`
-    + `To fix it: in the editor, open Contents, then Pages, then "${p.page}". Put the block right and\n`
+    + `${subject.charAt(0).toUpperCase()}${subject.slice(1)} in the editor needs fixing:\n${p.problems.map((x) => `  - ${x}`).join('\n')}\n\n`
+    + `To fix it: in the editor, open Contents, then ${p.section || 'Pages'}, then "${p.page}". Put ${p.section ? 'it' : 'the block'} right and\n`
     + 'publish again. If you are not sure what to do, ask whoever looks after the website.\n'
     + `(For whoever looks after the website: ${p.file.slice(1, -1)}.)`;
   const line = '='.repeat(72);
@@ -44,7 +45,7 @@ process.once('exit', (code) => {
   try {
     fs.mkdirSync(path.join(__dirname, '.cache'), { recursive: true });
     fs.writeFileSync(path.join(__dirname, '.cache', 'build-failure.json'),
-      JSON.stringify({ page: p.page, problems: p.problems, file: p.file.slice(1, -1), summary }, null, 1));
+      JSON.stringify({ page: p.page, subject, problems: p.problems, file: p.file.slice(1, -1), summary }, null, 1));
   } catch (e) { /* the log above still says it */ }
 });
 // A build that gets as far as starting clears any record of an earlier failure
@@ -144,6 +145,17 @@ module.exports = function (eleventyConfig) {
   // a link (the New spaces cards are the only way to its two proposals) must not stop
   // publishing. tools/selftest.js fails on the same findings, so a developer cannot add a
   // page with no way to it.
+  // The pages a link can lead to, for the editor's link picker (site/admin/editor.js): every
+  // page built, by its title, written beside the editor. Left out: a stop not yet surveyed
+  // and a section with nothing in it yet, which nothing should link to (_includes/reach.js).
+  eleventyConfig.on('eleventy.after', ({ dir }) => {
+    const empty = (p) => /^\/(stops\/|gallery\/$|articles\/$)/.test(p.url) && /<meta name="robots" content="[^"]*noindex/i.test(p.html);
+    const list = built.filter((p) => !empty(p) && p.url !== '/404.html')
+      .map((p) => ({ url: p.url, title: p.url === '/' ? 'Home page' : ((/<title>([^<]*)<\/title>/.exec(p.html) || [])[1] || p.url).replace(/&amp;/g, '&').replace(/\s+-\s+Cáirde Corrin$/, '') }))
+      .sort((a, b) => (a.url === '/' ? -1 : b.url === '/' ? 1 : a.url.localeCompare(b.url)));
+    fs.mkdirSync(path.join(dir.output, 'admin'), { recursive: true });
+    fs.writeFileSync(path.join(dir.output, 'admin', 'site-pages.json'), JSON.stringify(list, null, 1));
+  });
   eleventyConfig.on('eleventy.after', () => {
     try {
       for (const f of reach.check(everyPage, sitemap).findings) console.warn(`[reach] ${f}`);

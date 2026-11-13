@@ -238,10 +238,20 @@ buttons by Decap's internal labels, which an update can rename.
   Wikimedia Commons. Commit `site/_commons/` and `site/assets/img/commons/` so later builds
   do not need Commons to be reachable. On Netlify the photo is fetched each build until
   then.
-- **A new recording, or a film kept on the site rather than on YouTube.** Strip the location and phone details first (an audio or video
-  file from a phone carries them), add the file under `site/assets/audio/` or
-  `site/assets/video/`, and the editor can then add it to a Recording, List of recordings or
-  Films block.
+- **A new recording.** Editors upload MP3, M4A or WAV themselves; it is cleaned in the
+  browser and again at build. Only a recording in another format needs you: convert it to
+  MP3 (`ffmpeg -i in.ogg -map_metadata -1 -ac 1 -b:a 64k out.mp3`), then strip any tag the
+  encoder added (`CONTRIBUTING.md`, "Audio") and give it to the editor to upload.
+- **`[audio] ... still carries` in a build log.** A recording in `site/assets/audio/` has a
+  tag again. Strip it as `CONTRIBUTING.md`, "Audio", says, and commit it.
+- **`[youtube] fetched the title ... commit it` in a local build.** Commit
+  `site/_youtube/` with the still, so later builds need not ask YouTube.
+- **`[elevation] ... kept height` in a build log.** Stop 1, 2 or 3 was moved and its
+  hand-checked height no longer fits. Remove `elevation` from its page data so the height is
+  read from the elevation grid, or check it against the GPS track and correct it.
+- **A film kept on the site rather than on YouTube.** Strip the location and phone details
+  first (a video file from a phone carries them), add the file under `site/assets/video/`,
+  and the editor can then add it to a Films block.
 - **A `[reach]` warning in a deploy log.** A page that no link leads to any more, or a
   sitemap that disagrees with the pages. It is usually an editor removing a page's only
   link, such as the New spaces cards that lead to its two proposals: put the link back,

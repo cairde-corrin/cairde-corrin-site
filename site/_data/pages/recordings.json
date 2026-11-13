@@ -19,134 +19,96 @@
       "items": [
         {
           "start": "07:10:03",
-          "end": "07:17:37",
-          "duration": "7:34",
           "note": "also on stop 1",
           "file": "/assets/audio/stop-1.mp3"
         },
         {
           "start": "07:21:08",
-          "end": "07:29:13",
-          "duration": "8:05",
           "note": "",
           "file": "/assets/audio/clip-0721.mp3"
         },
         {
           "start": "07:31:57",
-          "end": "07:40:57",
-          "duration": "8:59",
           "note": "",
           "file": "/assets/audio/clip-0731.mp3"
         },
         {
           "start": "07:42:23",
-          "end": "07:45:25",
-          "duration": "3:01",
           "note": "",
           "file": "/assets/audio/clip-0742.mp3"
         },
         {
           "start": "07:46:11",
-          "end": "07:48:01",
-          "duration": "1:50",
           "note": "",
           "file": "/assets/audio/clip-0746.mp3"
         },
         {
           "start": "07:49:10",
-          "end": "07:52:34",
-          "duration": "3:23",
           "note": "",
           "file": "/assets/audio/clip-0749.mp3"
         },
         {
           "start": "07:54:28",
-          "end": "07:57:53",
-          "duration": "3:25",
           "note": "",
           "file": "/assets/audio/clip-0754.mp3"
         },
         {
           "start": "07:58:21",
-          "end": "08:00:43",
-          "duration": "2:21",
           "note": "",
           "file": "/assets/audio/clip-0758.mp3"
         },
         {
           "start": "08:01:29",
-          "end": "08:04:27",
-          "duration": "2:57",
           "note": "",
           "file": "/assets/audio/clip-0801.mp3"
         },
         {
           "start": "08:07:02",
-          "end": "08:11:34",
-          "duration": "4:32",
           "note": "",
           "file": "/assets/audio/clip-0807.mp3"
         },
         {
           "start": "08:12:10",
-          "end": "08:16:10",
-          "duration": "3:59",
           "note": "",
           "file": "/assets/audio/clip-0812.mp3"
         },
         {
           "start": "08:17:39",
-          "end": "08:19:12",
-          "duration": "1:32",
           "note": "",
           "file": "/assets/audio/clip-0817.mp3"
         },
         {
           "start": "08:21:37",
-          "end": "08:23:51",
-          "duration": "2:13",
           "note": "",
           "file": "/assets/audio/clip-0821.mp3"
         },
         {
           "start": "08:25:06",
-          "end": "08:28:12",
-          "duration": "3:05",
           "note": "",
           "file": "/assets/audio/clip-0825.mp3"
         },
         {
           "start": "08:29:18",
-          "end": "08:34:51",
-          "duration": "5:33",
           "note": "",
           "file": "/assets/audio/clip-0829.mp3"
         },
         {
           "start": "08:37:57",
-          "end": "08:42:26",
-          "duration": "4:28",
           "note": "",
           "file": "/assets/audio/clip-0837.mp3"
         },
         {
           "start": "08:51:12",
-          "end": "08:52:46",
-          "duration": "1:34",
           "note": "",
           "file": "/assets/audio/clip-0851.mp3"
         },
         {
           "start": "08:54:31",
-          "end": "08:56:24",
-          "duration": "1:52",
           "note": "",
           "file": "/assets/audio/clip-0854.mp3"
         },
         {
           "start": "08:58:38",
-          "end": "08:59:53",
-          "duration": "1:14",
           "note": "",
           "file": "/assets/audio/clip-0858.mp3"
         }

@@ -93,7 +93,7 @@ jobs:
             echo "::warning::The build failed, but not because of a page's content (no .cache/build-failure.json), so no issue was opened. See this run's log and Netlify's deploy log."
             exit 0
           fi
-          page=$(jq -r .page .cache/build-failure.json)
+          subject=$(jq -r '.subject // ("the page \"" + .page + "\"")' .cache/build-failure.json)
           # the same page with the same problems is the same failure, however often it is published
           fp=$(jq -c '{page, problems}' .cache/build-failure.json | sha256sum | cut -c1-16)
           [ "$TEST_FAILURE" = "true" ] && fp="test-$fp"
@@ -114,6 +114,6 @@ jobs:
             echo
             echo "<!-- build-check: $fp -->"
           } > issue.md
-          title="The website was not updated: the page \"$page\" needs fixing"
+          title="The website was not updated: $subject needs fixing"
           [ "$TEST_FAILURE" = "true" ] && title="[Test, close me] $title"
           gh issue create -R "$REPO" --title "$title" --body-file issue.md --label "$LABEL"

@@ -16,6 +16,8 @@ const images = require('./images.js');
 const youtube = require('./youtube.js');
 const gpx = require('./gpx.js');
 const commons = require('./commons.js');
+const audio = require('../admin/audio.js');
+const dem = require('../admin/dem.js');
 const crypto = require('node:crypto');
 
 const SITE_DIR = path.join(__dirname, '..');
@@ -285,8 +287,33 @@ function mediaFile(f, kind) {
   return v;
 }
 
+// A recording: one already on the site, or one an editor uploaded. Either way it is
+// cleaned of what the phone or recorder wrote into it (site/admin/audio.js; an upload was
+// cleaned in the editor's browser too), and its length is read from the file.
+const AUDIO_OUT = path.join(SITE_DIR, '..', '_site', 'assets', 'audio', 'uploads');
+function audioFile(f) {
+  const v = str(f);
+  const upload = /^\/assets\/uploads\/[\w.-]+\.(mp3|m4a|mp4|wav)$/i.test(v);
+  if (!(upload || /^\/assets\/audio\/[\w./-]+$/.test(v)) || !fs.existsSync(path.join(SITE_DIR, v.slice(1)))) {
+    fail(`refers to the recording "${v}", which is not a file on this website. Upload it in the recording's field`);
+  }
+  const r = audio.clean(new Uint8Array(fs.readFileSync(path.join(SITE_DIR, v.slice(1)))), v);
+  if (!r.ok) fail(`has a recording ("${v}") that cannot be read as MP3, M4A or WAV. Save or export it as MP3 or M4A and upload it again`);
+  if (!upload) {
+    if (r.removed.length) console.warn(`[audio] ${v} still carries ${r.removed.join(', ')}; it is published as it is in the repository. Strip it (docs/CONTRIBUTING.md).`);
+    return { path: v, seconds: r.seconds };
+  }
+  // an upload is never published as uploaded: its cleaned copy is
+  const name = path.basename(v).replace(/\.mp4$/i, '.m4a');
+  fs.mkdirSync(AUDIO_OUT, { recursive: true });
+  fs.writeFileSync(path.join(AUDIO_OUT, name), Buffer.from(r.bytes));
+  return { path: `/assets/audio/uploads/${name}`, seconds: r.seconds };
+}
+const clock = (s) => [Math.floor(s / 3600), Math.floor(s / 60) % 60, s % 60].map((x) => String(x).padStart(2, '0')).join(':');
+const secondsOf = (t) => { const p = str(t).split(':').map(Number); return p.length === 3 ? p[0] * 3600 + p[1] * 60 + p[2] : p[0] * 60 + p[1]; };
+
 R.audio = (b, c) => {
-  const file = c.r + mediaFile(b.file, 'audio').slice(1);
+  const file = c.r + audioFile(b.file).path.slice(1);
   return `<div class="audio">\n<h2 class="as-h4">${esc(str(b.heading) || 'Listen')}</h2>\n`
     + `${str(b.text) ? `<p class="audio-meta">${prose(b.text)}</p>\n` : ''}`
     + `<audio aria-label="${esc(str(b.label) || 'Recording')}" controls preload="none" src="${file}">\n<a href="${file}">Download the recording</a>\n</audio>\n</div>`;
@@ -296,9 +323,13 @@ const span = (start, end) => `${str(start)}${str(end) ? ` - ${str(end)}` : ''}`;
 R.recordings = (b, c) => {
   const list = items(b, 1, 'recordings');
   return `<ol class="reclist">\n${list.map((x, i) => {
-    const file = c.r + mediaFile(x.file, 'audio').slice(1);
+    const a = audioFile(x.file);
+    const file = c.r + a.path.slice(1);
     if (!str(x.start)) fail(`recording ${i + 1} has no start time`);
     const n = String(i + 1).padStart(2, '0');
+    // its length and end time, from the file: the length to the nearest second, the end
+    // rounded up, as the recordings first published were timed
+    x = { ...x, duration: audio.length(a.seconds), end: /^\d{1,2}:\d{2}(:\d{2})?$/.test(str(x.start)) ? clock(secondsOf(x.start) + Math.ceil(a.seconds)) : '' };
     const when = span(x.start, x.end);
     return `<li class="rec${c.rv}">\n<div class="rec-head">\n<span class="rec-n">${n}</span>\n<span class="rec-time">${esc(when)}</span>\n`
       + `<span class="rec-dur">${esc(x.duration)}</span>${str(x.note) ? ` <span class="rec-flag">${esc(x.note)}</span>` : ''}\n</div>\n`
@@ -330,9 +361,10 @@ function mp4Size(file) {
 
 // A YouTube video as a news post shows one: a self-hosted still with a play button, and
 // nothing loaded from YouTube until it is pressed (_includes/youtube.js, post.njk)
-async function youtubeFacade(url, title, c) {
+async function youtubeFacade(url, typed, fallback, c) {
   let v;
   try { v = await youtube.resolve(str(url), c.where); } catch (e) { fail(`has a YouTube address that cannot be read: ${e.message}`); }
+  const title = str(typed) || v.title || fallback;
   const rel = (u) => c.r + u.slice(1);
   const img = v.src ? `<img src="${rel(v.src)}" srcset="${v.srcset.map(rel).join(', ')}" sizes="(min-width:900px) 760px, calc(100vw - 64px)" width="${v.width}" height="${v.height}" alt="" loading="lazy" decoding="async">` : '';
   return `<figure class="mapfig yt${c.rv}"><a class="yt-play" href="https://www.youtube.com/watch?v=${v.id}" data-yt="${v.id}" data-title="${esc(title)}" aria-label="Play the video: ${esc(title)}">${img}<span class="yt-btn" aria-hidden="true"></span></a>`
@@ -344,7 +376,7 @@ R.films = async (b, c) => {
   const lis = await Promise.all(list.map(async (x, i) => {
     const when = longDate(isoDay(x.date, `film ${i + 1}`));
     const head = `<div class="rec-head">\n<span class="rec-time">${when}</span>\n<span class="rec-dur">${esc(x.duration)}</span>\n</div>`;
-    if (str(x.youtube)) return `<li class="rec rec-film">\n${head}\n${await youtubeFacade(x.youtube, str(x.title) || `Film, ${when}`, c)}\n</li>`;
+    if (str(x.youtube)) return `<li class="rec rec-film">\n${head}\n${await youtubeFacade(x.youtube, x.title, `Film, ${when}`, c)}\n</li>`;
     const file = mediaFile(x.file, 'video');
     const d = mp4Size(path.join(SITE_DIR, file.slice(1)));
     const poster = str(x.poster) ? c.r + str(x.poster).slice(1) : '';
@@ -356,8 +388,7 @@ R.films = async (b, c) => {
 
 R.video = (b, c) => {
   if (!str(b.url)) fail('has no YouTube address');
-  if (!str(b.title)) fail('has no title');
-  return youtubeFacade(b.url, str(b.title), c);
+  return youtubeFacade(b.url, b.title, 'the video', c);
 };
 
 const slug = (s) => str(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -557,7 +588,9 @@ async function hero(h, c) {
       + `<div class="film-panel" data-at="0.40">\n<p class="film-line">${line(h.line2)}</p>\n</div>\n<div class="film-panel" data-at="0.75">\n<p class="film-line">${line(h.line3)}</p>\n</div>\n</div>\n</div>\n</section>`;
   }
   const rv = c.rv;
-  const parts = [`<p class="eyebrow${rv}">${esc(h.eyebrow)}</p>`, `<h1 class="${`${rv.trim()} page-title`.trim()}">${heading(h.title)}</h1>`];
+  // a stop's sign line comes from its number, as the sign codes do
+  const eyebrow = c.stop ? `Stop ${c.stopNo} - cairdecorrin.ie/s/${+c.stopNo}` : h.eyebrow;
+  const parts = [`<p class="eyebrow${rv}">${esc(eyebrow)}</p>`, `<h1 class="${`${rv.trim()} page-title`.trim()}">${heading(h.title)}</h1>`];
   if (c.stop) {
     parts.push(`<div class="stophero">${await picture(h.photo, h.alt, 'stophero', c.r)}</div>`);
     const s = c.stop;
@@ -584,12 +617,30 @@ function stopNav(n, c) {
     + `${next ? `<a href="stop-${next.n}.html">Stop ${next.no} →</a>` : `<a href="${c.r}trails/">All stops →</a>`}</div>`;
 }
 
-// A stop's position and elevation, checked, as the trails page and structured data use them
+// The elevation grid (tools/dem_clip.py, site/admin/dem.js): Copernicus GLO-30 in metres
+// above Malin Head OD, which gives a stop its height from its position
+let grid = null;
+const demGrid = () => grid || (grid = dem.grid(JSON.parse(fs.readFileSync(path.join(SITE_DIR, 'admin', 'dem', 'copernicus-od.json'), 'utf8')),
+  fs.readFileSync(path.join(SITE_DIR, 'admin', 'dem', 'copernicus-od.bin'))));
+
+// A stop's position and height, checked, as the trails page and structured data use them.
+// The height is read from the elevation grid at the position, to the nearest 5 m; stops 1 to
+// 3 keep the heights checked by hand against the walked GPS track, which their pages carry.
 function stopPlace(h, label) {
-  const lat = +h.latitude, lon = +h.longitude, elev = +h.elevation;
+  const lat = +h.latitude, lon = +h.longitude;
   if (!(lat > 51 && lat < 53) || !(lon > -9.5 && lon < -7)) fail(`${label}: the position (${h.latitude}, ${h.longitude}) is not near Fermoy. Give it as two numbers, such as 52.12752 and -8.29878`);
-  if (!(elev >= 0 && elev < 400)) fail(`${label}: the elevation "${h.elevation}" is not a height in metres`);
-  return { lat: str(h.latitude), lon: str(h.longitude), lonAbs: str(h.longitude).replace(/^-/, ''), elevation: str(h.elevation) };
+  let elev = str(h.elevation);
+  if (!elev) {
+    const m = demGrid().height(lat, lon);
+    if (m == null) fail(`${label}: the position (${h.latitude}, ${h.longitude}) is outside the area the website has heights for. Check the latitude and longitude`);
+    elev = String(dem.nearest5(m));
+  } else if (!(+elev >= 0 && +elev < 400)) fail(`${label}: the elevation "${h.elevation}" is not a height in metres`);
+  else {
+    // a kept height that no longer fits the position: the stop was moved, so its height should be read again
+    const m = demGrid().height(lat, lon);
+    if (m != null && Math.abs(m - +elev) > 10) console.warn(`[elevation] ${label}: the kept height ${elev} m is ${Math.round(m)} m on the elevation grid; if the stop has moved, remove "elevation" from its page data`);
+  }
+  return { lat: str(h.latitude), lon: str(h.longitude), lonAbs: str(h.longitude).replace(/^-/, ''), elevation: elev };
 }
 
 // Every stop, 1 to 10, as the trails page lists it: recorded once its page has content
@@ -680,7 +731,7 @@ async function render(key, data, ctx) {
     if (stopN && !(data.hero && str(data.hero.title))) return reserved(stopN[1], c);
     if (!data.page || !str(data.page.title)) fail(stopN ? 'has no name for the stop (under "About this page")' : 'has no page title (under "About this page")');
     if (!str(data.page.description)) fail('has no summary for search results (under "About this page")');
-    if (stopN) c.stop = stopPlace(data.hero || {}, 'The top of the page');
+    if (stopN) { c.stop = stopPlace(data.hero || {}, 'The top of the page'); c.stopNo = stopN[1].padStart(2, '0'); }
     await commonsPhotos(data.hero, 'The top of the page');
     const top = await hero(data.hero, c);
     const blocks = Array.isArray(data.blocks) ? data.blocks : [];
@@ -818,8 +869,13 @@ function ldItems(data, url) {
       numberOfItems: stories.length, itemListElement: stories.map((b, i) => ({ '@type': 'ListItem', position: i + 1, item: item(b) })) });
   }
   for (const b of of('recordings')) {
-    (b.items || []).forEach((x, i) => nodes.push({ '@type': 'AudioObject', name: `Field recording ${String(i + 1).padStart(2, '0')}, ${str(x.start).slice(0, 5)}`,
-      duration: duration(x.duration), uploadDate: str(b.date) || undefined, contentUrl: SITE + str(x.file), encodingFormat: 'audio/mpeg', isPartOf: { '@id': `${SITE}/#website` } }));
+    (b.items || []).forEach((x, i) => {
+      let a = { path: str(x.file), seconds: 0 };
+      try { a = audioFile(x.file); } catch (e) { /* the page itself reports it */ }
+      nodes.push({ '@type': 'AudioObject', name: `Field recording ${String(i + 1).padStart(2, '0')}, ${str(x.start).slice(0, 5)}`,
+        duration: a.seconds ? duration(audio.length(a.seconds)) : undefined, uploadDate: str(b.date) || undefined, contentUrl: SITE + a.path,
+        encodingFormat: /\.m4a$/.test(a.path) ? 'audio/mp4' : /\.wav$/.test(a.path) ? 'audio/wav' : 'audio/mpeg', isPartOf: { '@id': `${SITE}/#website` } });
+    });
   }
   for (const b of of('films')) {
     (b.items || []).forEach((x) => {
@@ -827,7 +883,7 @@ function ldItems(data, url) {
         let id = '';
         try { id = youtube.youtubeId(str(x.youtube)); } catch (e) { return; }
         const still = youtube.cached(id).pop();
-        nodes.push({ '@type': 'VideoObject', name: str(x.title) || `Film, ${str(x.date)}`, duration: duration(x.duration), uploadDate: str(x.date),
+        nodes.push({ '@type': 'VideoObject', name: str(x.title) || youtube.savedTitle(id) || `Film, ${str(x.date)}`, duration: duration(x.duration), uploadDate: str(x.date),
           ...(still && { thumbnailUrl: `${SITE}/assets/img/video/${still.file}` }), embedUrl: `https://www.youtube-nocookie.com/embed/${id}`, isPartOf: { '@id': `${SITE}/#website` } });
         return;
       }
@@ -899,4 +955,4 @@ function unsurveyedSentence(pages) {
   return n === 0 ? '' : ` ${word} of the ten stops ${n === 1 ? 'has' : 'have'} not been surveyed at all.`;
 }
 
-module.exports = { mp4Size, render, ldItems, counts, unsurveyedSentence, mapLayers, sitePhotos, lastProblem: () => lastProblem, stopList, stopPlace, usage, photoSet, webpSize, creditFor, LABELS, SINGULAR, root, BlockError };
+module.exports = { mp4Size, render, ldItems, counts, unsurveyedSentence, mapLayers, sitePhotos, lastProblem: () => lastProblem, report: (p) => { lastProblem = p; }, stopList, stopPlace, usage, photoSet, webpSize, creditFor, LABELS, SINGULAR, root, BlockError };

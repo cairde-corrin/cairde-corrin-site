@@ -17,6 +17,25 @@ const ID = /^[A-Za-z0-9_-]{11}$/;
 const STILLS = path.join(__dirname, '..', 'assets', 'img', 'video');
 const OUT = path.join(__dirname, '..', '..', '_site', 'assets', 'img', 'video');
 const URL_PATH = '/assets/img/video/';
+// The video's title, from YouTube's public oEmbed address, saved beside the stills in
+// site/_youtube/<id>.json (not published), so nobody types a title YouTube already has
+const TITLES = path.join(__dirname, '..', '_youtube');
+function savedTitle(id) {
+  try { return JSON.parse(fs.readFileSync(path.join(TITLES, `${id}.json`), 'utf8')).title || ''; } catch (e) { return ''; }
+}
+async function fetchTitle(id) {
+  try {
+    const r = await fetch(`https://www.youtube.com/oembed?format=json&url=${encodeURIComponent(`https://www.youtube.com/watch?v=${id}`)}`, { signal: AbortSignal.timeout(15000) });
+    if (!r.ok) return '';
+    const t = String((await r.json()).title || '').replace(/[\u2013\u2014]/g, '-').trim();
+    if (t) {
+      fs.mkdirSync(TITLES, { recursive: true });
+      fs.writeFileSync(path.join(TITLES, `${id}.json`), `${JSON.stringify({ id, title: t }, null, 1)}\n`);
+      say(console.log, `[youtube] fetched the title of video ${id} into site/_youtube/; commit it.`);
+    }
+    return t;
+  } catch (e) { return ''; }
+}
 const said = new Set();  // Eleventy computes a post's data more than once; say each thing once
 const say = (fn, msg) => { if (!said.has(msg)) { said.add(msg); fn(msg); } };
 
@@ -74,7 +93,7 @@ async function resolve(value, where) {
     } else {
       say(console.warn, `[youtube] ${where}: could not fetch the still for video ${id}. The post shows the play `
         + 'button without it. Check the address is right and the video is public, then build again.');
-      return { id };
+      return { id, title: savedTitle(id) || await fetchTitle(id) };
     }
   }
   const stills = cached(id);
@@ -82,8 +101,9 @@ async function resolve(value, where) {
   fs.mkdirSync(OUT, { recursive: true });
   stills.forEach((s) => fs.copyFileSync(path.join(STILLS, s.file), path.join(OUT, s.file)));
   const main = stills[stills.length - 1];
-  return { id, src: URL_PATH + main.file, width: main.width, height: main.height,
+  const title = savedTitle(id) || await fetchTitle(id);
+  return { id, title, src: URL_PATH + main.file, width: main.width, height: main.height,
     srcset: stills.map((s) => `${URL_PATH}${s.file} ${s.width}w`) };
 }
 
-module.exports = { resolve, youtubeId, cached };
+module.exports = { resolve, youtubeId, cached, savedTitle };

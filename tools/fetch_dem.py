@@ -4,7 +4,9 @@
     python3 tools/fetch_dem.py
 
 Downloads into ~/.cache/cairde-corrin-dem (or $DEM_CACHE), outside the repository.
-Raster data is never committed. Needs Pillow and numpy only.
+The tiles are never committed. The one exception is the small cut that dem_clip.py makes
+for the build and the editor (site/admin/dem/), converted to Malin Head OD. Needs Pillow
+and numpy only.
 
 Sources
   Copernicus DEM GLO-30 Public, 1x1 degree COG tiles from the AWS open data bucket.

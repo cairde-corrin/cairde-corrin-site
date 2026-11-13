@@ -33,6 +33,9 @@
   function str(v) { return v == null ? '' : String(v).trim(); }
   // the same test as a news post's YouTube field (site/admin/config.yml)
   var YOUTUBE = /^\s*([A-Za-z0-9_-]{11}|https:\/\/(www\.|m\.)?(youtube\.com|youtu\.be|youtube-nocookie\.com)\/\S+)\s*$/;
+  // a recording on the site, or one uploaded as MP3, M4A or WAV (site/admin/audio.js)
+  var RECORDING = /^\/assets\/(audio\/[\w.\/-]+|uploads\/[\w.-]+\.(mp3|m4a|mp4|wav))$/i;
+  var RECORDING_HOW = 'Upload it as an MP3 or M4A file in "The recording".';
   var YOUTUBE_HOW = 'On YouTube, press Share under the video, copy the address and paste it here.';
   function list(b) { return Array.isArray(b && b.items) ? b.items : []; }
   function nth(i) { return String(i + 1); }
@@ -103,12 +106,12 @@
       if (!str(b.url)) o.push(w + ' has nothing in "Link to". Add where the button should lead.');
       else if (badLink(b.url)) o.push(w + ' has "' + str(b.url) + '" in "Link to". ' + LINK + ', or mailto: and an email address.');
     },
-    audio: function (b, w, o) { if (!/^\/assets\/audio\//.test(str(b.file))) o.push(w + ' needs a recording already on the website, such as /assets/audio/stop-1.mp3.'); },
+    audio: function (b, w, o) { if (!RECORDING.test(str(b.file))) o.push(w + ' has no recording. ' + RECORDING_HOW); },
     recordings: function (b, w, o) {
       if (atLeast(b, 1, 'recordings', w, o)) list(b).forEach(function (x, i) {
         var at = w + ', recording ' + nth(i) + ',';
         if (!str(x.start)) o.push(at + ' has nothing in "Started at".');
-        if (!/^\/assets\/audio\//.test(str(x.file))) o.push(at + ' needs a recording already on the website, such as /assets/audio/stop-1.mp3.');
+        if (!RECORDING.test(str(x.file))) o.push(at + ' has no recording. ' + RECORDING_HOW);
       });
     },
     films: function (b, w, o) {
@@ -122,7 +125,6 @@
     video: function (b, w, o) {
       if (!str(b.url)) o.push(w + ' has nothing in "YouTube address".');
       else if (!YOUTUBE.test(str(b.url))) o.push(w + ' has a "YouTube address" that is not one. ' + YOUTUBE_HOW);
-      if (!str(b.title)) o.push(w + ' has nothing in "Title of the video".');
     },
     story: function (b, w, o) {
       var at = w + (str(b.title) ? ' ("' + str(b.title) + '")' : '');
@@ -157,11 +159,10 @@
   };
 
   function stopProblems(h, out) {
-    var lat = +h.latitude, lon = +h.longitude, elev = +h.elevation;
+    var lat = +h.latitude, lon = +h.longitude;
     if (!str(h.photo)) out.push('The top of the page has no photo. Choose one or upload one.');
     else photo(h, 'The top of the page', out, true);
     if (!(lat > 51 && lat < 53) || !(lon > -9.5 && lon < -7)) out.push('The top of the page: "Latitude" and "Longitude" are not a position near Fermoy. Give them as numbers, such as 52.12752 and -8.29878.');
-    if (!str(h.elevation) || !(elev >= 0 && elev < 400)) out.push('The top of the page: "Height in metres" needs the height as a number, such as 60.');
     if (!str(h.facing)) out.push('The top of the page has nothing in "Facing".');
     if (!str(h.recorded)) out.push('The top of the page has nothing in "Recorded".');
   }
@@ -198,7 +199,21 @@
     return out;
   }
 
-  var api = { problems: problems, PAGES: PAGES, LABELS: LABELS, SINGULAR: SINGULAR, ONLY_ON: ONLY_ON };
+  // A news post's photos: every one is described for people who cannot see it, the main
+  // photo, the extra photos and any photo placed in the text. body: the post's Markdown.
+  var DESCRIBE = 'Say what is in the photo, in one sentence.';
+  function newsProblems(d, body) {
+    var out = [], hero = (d && d.hero) || {};
+    if (str(hero.src) && !str(hero.alt)) out.push('The main photo has nothing in "Describe the photo for people who cannot see it". ' + DESCRIBE);
+    ((d && Array.isArray(d.gallery)) ? d.gallery : []).forEach(function (g, i) {
+      if (g && str(g.src) && !str(g.alt)) out.push('More photos, photo ' + nth(i) + ', has nothing in "Describe the photo for people who cannot see it". ' + DESCRIBE);
+    });
+    var bare = (String(body || '').match(/!\[\s*\]\(/g) || []).length;
+    if (bare) out.push((bare === 1 ? 'A photo' : bare + ' photos') + ' in the text of the post ' + (bare === 1 ? 'has' : 'have') + ' nothing in "Alt Text". Click ' + (bare === 1 ? 'the photo' : 'each one') + ' in the text and ' + DESCRIBE.charAt(0).toLowerCase() + DESCRIBE.slice(1));
+    return out;
+  }
+
+  var api = { problems: problems, newsProblems: newsProblems, PAGES: PAGES, LABELS: LABELS, SINGULAR: SINGULAR, ONLY_ON: ONLY_ON };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof window !== 'undefined') window.CairdeChecks = api;
 })();

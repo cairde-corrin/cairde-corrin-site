@@ -81,6 +81,11 @@ line. Press the **+** button at the right of the buttons above the text and choo
 **Image**. Press **Choose an image**, upload or pick the photo, and fill in **Alt Text**
 with the one-sentence description. Leave **Title** empty.
 
+**Every photo needs its description.** A post with a photo that is not described, whether
+the main photo, one of the extra photos or one in the text, is not saved: the editor says
+which photo, and nothing you typed is lost. Blind visitors hear the description instead of
+seeing the photo.
+
 **On an iPhone,** Photo Library, Take Photo and Choose File all work. On a computer, an
 iPhone photo in Apple's own format (HEIC) works in Safari; in Chrome or Firefox the
 editor says it cannot read it, and nothing is uploaded. Upload a JPEG copy instead, or use
@@ -91,7 +96,7 @@ Safari.
 Only for videos Cáirde Corrin made and put on its own YouTube channel.
 
 On YouTube, open the video, press **Share**, copy the address, and paste it into the
-**YouTube video (optional)** box. That is all.
+**YouTube video (optional)** box. That is all. The video's title is taken from YouTube.
 
 On the website the post shows a still picture from the video with a play button. Nothing
 is loaded from YouTube until a visitor presses play, which keeps the site's promise not
@@ -216,6 +221,11 @@ The kinds of block are the parts the website was already built from:
 `[the words](/trails/)` for a page on this site, or `[the words](https://...)` for
 another website. In a heading, press Enter to start a new line.
 
+**Links.** A **Link to** box is a list of the website's pages: choose the one it should
+lead to. For anything else, choose **Another website...** and give its full address,
+starting `https://`, or **An email address...**. A YouTube video needs no title: the one
+it has on YouTube is used unless you type another.
+
 **Figures are ordinary words.** "About 360 hectares" is typed like the rest of the
 sentence, and you can change it. The same figure often appears on more than one page, so
 if you change one, change the others too. Nothing stops you publishing, but if two pages
@@ -243,7 +253,17 @@ warned and will check which is right. The same goes for counts: if the species p
   shown: choose another. The photographer and licence appear under the photo on the
   website and on the Credits page automatically; you never type them.
 
-Whichever you use, say in one sentence in **What the photo shows** what is in the photo. Some photos on the website, on the species and water pages,
+Whichever you use, say in one sentence in **What the photo shows** what is in the photo.
+
+**Where and when a photo was taken.** When you upload a photo straight from a phone, the
+editor reads where it was taken, which way the camera faced and when, before it removes
+them, and shows them under the photo. It offers to fill them in for you: on a stop, its
+latitude, longitude, direction and time; under one of two photos side by side or in a
+carousel, the small line, with the height worked out from the position (for example
+"about 80 m OD - 11 April 2026, 07:54"). Check what it fills in before you save. None of
+it is in the photo that is uploaded, and only what you choose to fill in is published.
+
+Some photos on the website, on the species and water pages,
 are other people's, used under a licence that requires their name and the licence beneath
 the photo. That credit is attached to the photo itself: wherever you put the photo, its
 credit goes with it, and you cannot separate them. If you want to use a photo of someone
@@ -262,9 +282,12 @@ put back at the end of the page. Everything else on the Credits page is yours to
 **The stops.** Stops 01 to 10 are all under **Pages**. A stop whose title is empty shows
 "Not yet surveyed", and search engines are kept away from it. To bring a stop to life, fill
 in the top of its page: the title, the photo and what it shows, the latitude and longitude,
-the height in metres, the direction the photo faces, and when it was recorded; and its name
-and summary under **About this page**. Publish, and the stop appears on the trails page, on
-the map and in search engines. Take the position from the photo, not from memory.
+the direction the photo faces, and when it was recorded; and its name and summary under
+**About this page**. Publish, and the stop appears on the trails page, on the map and in
+search engines. Take the position from the photo, not from memory: upload the photo first
+and press **Fill in the stop's position, direction and time from the photo**. The line
+above the title ("Stop 05 - cairdecorrin.ie/s/5") and the stop's height are worked out by
+the website, from its number and its position.
 
 **New routes on the trails page.** To add a route the group has walked, add a **Walked
 route** block to the Trails page, give it a name, and upload the walk's GPS track: export
@@ -286,12 +309,18 @@ an upload: add a new walk as a **Walked route** instead.
 YouTube channel, then add a film to the **Films** block and paste its address (on
 YouTube, press **Share** under the video and copy the address). The page shows a still
 from the film with a play button, and nothing loads from YouTube until a visitor presses
-play. Give it a name if you like, and the date it was filmed. The films already on the
-page are kept on the website itself and have no address; leave them as they are.
+play. Give the date it was filmed; its name is the one it has on YouTube unless you type
+another. The films already on the page are kept on the website itself and have no address;
+leave them as they are.
 
-**Recordings** use sound files already on the website. A new recording is added by the
-person who looks after the website, because a phone's recording carries its location and
-details, and they remove them first.
+**Recordings.** A **Recording** block, or a new entry in the **List of recordings**, takes
+a sound file: press **Upload** under **The recording** and choose an MP3 or M4A file (a WAV
+works too). Before it leaves your computer, the editor takes out the details the phone or
+recorder stored in it, which can include where it was made; the sound itself is not
+changed. Other kinds of sound file (Ogg, Opus, WebM, WMA) cannot be cleaned this way and
+are refused with a message: save or export the recording as MP3 or M4A and upload that. In
+the list, give the time the recording started; its length and the time it ended are read
+from the file.
 
 **Species.** Add only a species recorded in the Glenabo-Corrin catchment on one of the
 group's own surveys: not one that is likely to be there, or was seen somewhere else. In
@@ -368,14 +397,14 @@ pages for up to five minutes. Wait two minutes, then do a hard refresh (see "Aft
 publish"). If the change appears, that was all it was.
 
 **2. The editor would not save the page.** You would have seen it at the time: when you
-saved, a message said "This page has not been saved" and listed what to fix, in words such
+saved, a message said "This page has not been saved" (or "This post") and listed what to fix, in words such
 as *Block 3 (Two photos side by side) needs exactly two photos, and it has 1.* The page at
 the top of the editor still says **Unsaved changes**. Fix what the message says, and save
 and publish again.
 
 **3. The website could not update.** The editor checks everything it can before saving,
 but a few things can only be checked when the website is built: whether an uploaded photo
-can be read, or whether a GPS track can be used. If one of those fails, the website does
+or recording can be read, or whether a GPS track can be used. If one of those fails, the website does
 not update at all and stays exactly as it was, so nothing is broken or half-changed. You
 can tell it is this when the editor said **Changes saved** and the post or page is no
 longer in the **Workflow** tab, but ten minutes and a hard refresh later the website still
@@ -386,8 +415,8 @@ who knows what you just changed, and you may notice first. So when it happens:
 
 1. **Do not publish the same change again.** It will stop in the same place each time.
    Nothing else you or anyone else publishes will appear either until it is fixed.
-2. **Think about what you added that the editor could not check: a new photo you
-   uploaded, or a GPS track.** That is almost always the cause. If you can, open the page,
+2. **Think about what you added that the editor could not check: a new photo or
+   recording you uploaded, or a GPS track.** That is almost always the cause. If you can, open the page,
    remove that photo or that Walked route block (or choose a photo already on the
    website instead), save and publish. If the website then updates, that file was the
    problem: keep it aside and tell the person who looks after the website.

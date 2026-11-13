@@ -1,0 +1,13 @@
+{
+ "west": -8.349583333333333,
+ "north": 52.14388888888889,
+ "dx": 0.00041666666666666664,
+ "dy": 0.0002777777777777778,
+ "cols": 208,
+ "rows": 154,
+ "scale": 0.1,
+ "units": "metres above Malin Head OD (OSGM15)",
+ "source": "Copernicus DEM GLO-30, converted from EGM2008 heights with the EGM2008 and OSGM15 geoid grids (tools/dem_clip.py)",
+ "attribution": "(c) DLR e.V. 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved",
+ "method": "Copernicus GLO-30 at the position, bilinear, in metres above Malin Head OD, rounded to the nearest 5 m. A surface model: under trees it reads a few metres high."
+}

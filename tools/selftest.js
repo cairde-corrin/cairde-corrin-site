@@ -118,7 +118,7 @@ for (const q of fc.WATCH.filter((w) => !w.ref.startsWith('counts.'))) {
 // The editor's photo step: strip() must leave no EXIF, XMP or comment in what it uploads
 const photos = { exports: {} };
 new Function('module', 'window', require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'site', 'admin', 'photos.js'), 'utf8'))(photos, undefined);
-const { strip } = photos.exports;
+const { strip, exif } = photos.exports;
 const seg = (marker, text) => { const body = Buffer.from(text, 'latin1'); const n = body.length + 2; return Buffer.concat([Buffer.from([0xFF, marker, n >> 8, n & 255]), body]); };
 const scan = Buffer.from([0xFF, 0xDA, 0, 2, 1, 2, 3, 0xFF, 0xD9]);  // start of scan, data, end of image
 const jpeg = Buffer.concat([Buffer.from([0xFF, 0xD8]), seg(0xE0, 'JFIF\0\x01\x01'), seg(0xE1, 'Exif\0\0GPS 52.12 N Pixel 8a'),
@@ -206,7 +206,7 @@ const webp = Buffer.concat([Buffer.from('RIFF'), Buffer.from([(webpBody.length +
   const checks = require('../site/admin/checks.js');
   for (const [k, d] of Object.entries(real)) assert.deepEqual(checks.problems(k, d), [], `${k} fails the checks`);
   assert.deepEqual(checks.problems('stop_4', { page: { title: '', description: '' }, hero: { eyebrow: 'Stop 04', title: '' }, blocks: [] }), []);
-  assert.match(checks.problems('stop_4', { page: { title: 'X', description: 'Y' }, hero: { title: 'T' }, blocks: [] }).join(' '), /no photo.*Latitude.*Height in metres.*Facing.*Recorded/);
+  assert.match(checks.problems('stop_4', { page: { title: 'X', description: 'Y' }, hero: { title: 'T' }, blocks: [] }).join(' '), /no photo.*Latitude.*Facing.*Recorded/);
   assert.match((await blocks.render('stop_4', real.stop_4, ctx('/stops/stop-4.html'))), /Not yet surveyed/);
 
   // Uploaded routes: the walked loop survives the same cleaning unchanged; a stretch walked
@@ -317,6 +317,98 @@ const webp = Buffer.concat([Buffer.from('RIFF'), Buffer.from([(webpBody.length +
   assert.ok(!/Photo:/.test(own));
   const theirs = await blocks.render('about', page({ type: 'image', photo: '/assets/img/stream-1800.webp', alt: 'A stream', by: 'A. Neighbour' }), ctx('/about/'));
   assert.match(theirs, /<figcaption>Photo: A\. Neighbour<\/figcaption>/);
+
+  // The photo's position, direction and time, read before they are stripped (photos.js):
+  // a little-endian TIFF block as Android writes, with an Exif and a GPS directory
+  {
+    const T = [];
+    const u16 = (v) => [v & 255, v >> 8], u32 = (v) => [v & 255, (v >> 8) & 255, (v >> 16) & 255, v >>> 24];
+    const entry = (tag, type, count, val) => [...u16(tag), ...u16(type), ...u32(count), ...u32(val)];
+    const ascii = (s) => [...Buffer.from(`${s}\0`, 'latin1')];
+    // header 8, IFD0 at 8 (2 entries: 2+24+4=30) -> Exif IFD at 38 (1 entry: 18) -> GPS IFD at 56 (6 entries: 78) -> data at 134
+    const D = 134, when = ascii('2026:04:11 07:54:12');
+    const rats = (...pairs) => pairs.flatMap(([n, d]) => [...u32(n), ...u32(d)]);
+    const lat = rats([52, 1], [7, 1], [39072, 1000]), lon = rats([8, 1], [17, 1], [55608, 1000]), dir = rats([1594, 10]);
+    T.push(0x49, 0x49, 42, 0, ...u32(8));
+    T.push(...u16(2), ...entry(0x8769, 4, 1, 38), ...entry(0x8825, 4, 1, 56), ...u32(0));
+    T.push(...u16(1), ...entry(0x9003, 2, when.length, D), ...u32(0));
+    T.push(...u16(6), ...entry(1, 2, 2, 0x4E), ...entry(2, 5, 3, D + 20), ...entry(3, 2, 2, 0x57), ...entry(4, 5, 3, D + 44),
+      ...entry(16, 2, 2, 0x54), ...entry(17, 5, 1, D + 68), ...u32(0));
+    assert.equal(T.length, D);
+    T.push(...when, 0, ...lat, ...lon, ...dir);
+    const app1 = Buffer.concat([Buffer.from('Exif\0\0', 'latin1'), Buffer.from(T)]);
+    const geo = Buffer.concat([Buffer.from([0xFF, 0xD8, 0xFF, 0xE1, (app1.length + 2) >> 8, (app1.length + 2) & 255]), app1, scan]);
+    assert.deepEqual(exif(new Uint8Array(geo)), { taken: '2026-04-11 07:54', lat: 52.12752, lon: -8.29878, facing: 159 });
+    assert.equal(exif(new Uint8Array(jpeg)), null, 'Exif without a TIFF block reads as nothing');
+    assert.equal(exif(new Uint8Array(webp)), null);
+    // and the copy that is uploaded keeps none of it
+    assert.ok(!Buffer.from(await strip(new Uint8Array(geo), 'image/jpeg').arrayBuffer()).includes('Exif'));
+  }
+
+  // A stop's sign line comes from its number, not from a field
+  const s5 = await blocks.render('stop_1', { ...real.stop_1 }, ctx('/stops/stop-1.html'));
+  assert.match(s5, /<p class="eyebrow">Stop 01 - cairdecorrin\.ie\/s\/1<\/p>/);
+
+  // A stop's height from the elevation grid at its position, to the nearest 5 m; stops 1 to
+  // 3 keep the heights checked against the walked GPS track
+  const dem = require('../site/admin/dem.js');
+  const dd = pth.join(__dirname, '..', 'site', 'admin', 'dem');
+  const grid = dem.grid(JSON.parse(fsp.readFileSync(pth.join(dd, 'copernicus-od.json'), 'utf8')), fsp.readFileSync(pth.join(dd, 'copernicus-od.bin')));
+  for (const [la, lo, m] of [[52.12752, -8.29878, 66.7], [52.12240, -8.30604, 112.4], [52.12344, -8.30538, 107.0]]) {
+    assert.ok(Math.abs(grid.height(la, lo) - m) < 0.2, `grid height at ${la}, ${lo}: ${grid.height(la, lo)}`);
+  }
+  assert.equal(grid.height(51.9, -8.47), null, 'outside the grid there is no height');
+  assert.equal(dem.nearest5(66.7), 65);
+  assert.equal(blocks.stopPlace({ latitude: '52.12752', longitude: '-8.29878' }, 'x').elevation, '65');
+  assert.equal(blocks.stopPlace({ latitude: '52.12752', longitude: '-8.29878', elevation: '60' }, 'x').elevation, '60');
+  assert.throws(() => blocks.stopPlace({ latitude: '52.30', longitude: '-8.10' }, 'x'), /outside the area the website has heights for/);
+
+  // Recordings: cleaned without re-encoding, length read from the file, other formats refused
+  {
+    const au = require('../site/admin/audio.js');
+    const mp3 = fsp.readFileSync(pth.join(__dirname, '..', 'site', 'assets', 'audio', 'clip-0721.mp3'));
+    const frame = (id, text) => { const body = Buffer.from(`\0${text}`, 'latin1'); return Buffer.concat([Buffer.from(id), Buffer.from([0, 0, 0, body.length, 0, 0]), body]); };
+    const frames = Buffer.concat([frame('TXXX', 'com.android.version\x0013'), frame('TSSE', 'Lavf63.1.101')]);
+    const n = frames.length, id3 = Buffer.concat([Buffer.from('ID3'), Buffer.from([4, 0, 0, 0, 0, n >> 7, n & 127]), frames]);
+    const v1 = Buffer.concat([Buffer.from('TAG'), Buffer.alloc(125, 0x41)]);
+    const r = au.clean(Buffer.concat([id3, mp3, v1]), 'a.mp3');
+    assert.ok(r.ok && Buffer.from(r.bytes).equals(mp3), 'the MP3 frames come out byte for byte');
+    assert.deepEqual(r.removed, ['ID3v2 tag (TXXX, TSSE)', 'ID3v1 tag']);
+    assert.deepEqual(au.clean(mp3, 'a.mp3').removed, [], 'the published recordings carry no tags');
+    assert.equal(au.length(r.seconds), '8:05');
+    const box = (type, ...parts) => { const body = Buffer.concat(parts); const h = Buffer.alloc(8); h.writeUInt32BE(body.length + 8); h.write(type, 4, 'latin1'); return Buffer.concat([h, body]); };
+    const mvhd = Buffer.alloc(100); mvhd.writeUInt32BE(3786825600, 4); mvhd.writeUInt32BE(3786825601, 8); mvhd.writeUInt32BE(1000, 12); mvhd.writeUInt32BE(65500, 16);
+    const m4a = Buffer.concat([box('ftyp', Buffer.from('M4A \0\0\0\0', 'latin1')), box('moov', box('mvhd', mvhd), box('udta', box('\xA9xyz', Buffer.from('+52.1275-008.2988/', 'latin1')))), box('mdat', Buffer.from('sound'))]);
+    const r4 = au.clean(m4a, 'a.m4a');
+    assert.ok(r4.ok && r4.bytes.length === m4a.length && !Buffer.from(r4.bytes).includes('+52.1275') && Buffer.from(r4.bytes).includes('sound'));
+    assert.deepEqual(r4.removed, ['mvhd times', 'udta box']);
+    assert.equal(au.length(r4.seconds), '1:06');
+    const chunkLE = (id, body) => { const h = Buffer.alloc(8); h.write(id, 0, 'latin1'); h.writeUInt32LE(body.length, 4); return Buffer.concat([h, body, body.length & 1 ? Buffer.alloc(1) : Buffer.alloc(0)]); };
+    const fmt = Buffer.alloc(16); fmt.writeUInt16LE(1, 0); fmt.writeUInt16LE(1, 2); fmt.writeUInt32LE(8000, 4); fmt.writeUInt32LE(16000, 8); fmt.writeUInt16LE(2, 12); fmt.writeUInt16LE(16, 14);
+    const wbody = Buffer.concat([Buffer.from('WAVE'), chunkLE('fmt ', fmt), chunkLE('LIST', Buffer.from('INFOIART\x06\0\0\0Pixel\0', 'latin1')), chunkLE('data', Buffer.alloc(32000))]);
+    const wav = Buffer.concat([Buffer.from('RIFF'), Buffer.from([wbody.length & 255, (wbody.length >> 8) & 255, wbody.length >> 16, 0]), wbody]);
+    const rw = au.clean(wav, 'a.wav');
+    assert.ok(rw.ok && !Buffer.from(rw.bytes).includes('Pixel') && rw.seconds === 2 && Buffer.from(rw.bytes).readUInt32LE(4) === rw.bytes.length - 8);
+    assert.deepEqual(rw.removed, ['LIST chunk']);
+    for (const [bytes, name, re] of [[Buffer.from('OggS\0\2xxxxxxxx'), 'a.opus', /Ogg or Opus format/], [Buffer.from([0x1A, 0x45, 0xDF, 0xA3, 0, 0, 0, 0]), 'a.webm', /WebM format/],
+      [Buffer.from([0x30, 0x26, 0xB2, 0x75, 0, 0, 0, 0]), 'a.wma', /WMA format/]]) {
+      const x = au.clean(bytes, name);
+      assert.ok(!x.ok && re.test(x.why) && /as MP3 or M4A/.test(x.why), name);
+    }
+    // the recordings list takes each length and end time from its file
+    const recs = await blocks.render('recordings', real.recordings, ctx('/recordings/'));
+    assert.ok(recs.includes('8:05') && /07:21:\d\d/.test(recs), 'derived length and end time');
+  }
+
+  // A news post's photos are all described: the main photo, the extra ones, any in the text
+  assert.deepEqual(checksC.newsProblems({ hero: { src: '/assets/uploads/a.webp', alt: 'A stream' }, gallery: [{ src: '/x.webp', alt: 'x' }] }, 'Text ![A wall](/y.webp)'), []);
+  assert.deepEqual(checksC.newsProblems({ hero: {} }, 'Text only'), [], 'a post with no photo needs no description');
+  const np = checksC.newsProblems({ hero: { src: '/assets/uploads/a.webp' }, gallery: [{ src: '/x.webp', alt: ' ' }] }, '![](/y.webp) and ![ ](/z.webp)');
+  assert.equal(np.length, 3);
+  assert.match(np.join(' '), /main photo.*More photos, photo 1.*2 photos in the text/);
+
+  // A YouTube video's title comes from YouTube when none is typed
+  assert.deepEqual(checksC.problems('about', page({ type: 'video', url: 'https://youtu.be/aqz-KE-bpKQ' })), []);
 
   console.log('selftest: all checks passed');
 })().catch((e) => { console.error(e); process.exit(1); });

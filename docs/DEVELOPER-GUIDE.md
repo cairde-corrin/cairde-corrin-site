@@ -30,7 +30,10 @@ nothing from any other site until they press play on a video.
                      pages/ (every editable page, as blocks), social.json
     site/_content/   news, gallery and articles, one Markdown file each
     site/_instagram/ the saved Instagram posts and their re-encoded pictures
-    site/admin/      the editor: index.html, config.yml, photos.js, tracks.js, checks.js,
+    site/_commons/   the saved credits of Wikimedia Commons photos
+    site/_youtube/   the saved titles of YouTube videos (created by the first build that needs one)
+    site/admin/      the editor: index.html, config.yml, photos.js, tracks.js, audio.js,
+                     dem.js and dem/ (the elevation grid), checks.js, commons.js,
                      editor.js, help.njk, site-photos.njk
     .github/         the editor-content-only check, the weekly rebuild and the build check
     docs/            the documents (index: docs/README.md)
@@ -88,6 +91,7 @@ editor text, `_includes/prose.js`), `editLink`, `navItems`, `domain`, `socialPos
 | Social posts | `site/_data/social.json` | editors (Home page) | home page cards, `_includes/social.js`, when there is no Instagram feed |
 | Instagram posts | Behold, saved in `site/_instagram/` | the group, on Instagram | home page carousel, `_includes/instagram.js` |
 | Uploaded routes | a GPX file in `site/assets/uploads/` | editors (Trails, Walked route) | stripped in the browser (`site/admin/tracks.js`), cleaned at build (`_includes/gpx.js`); `/assets/data/routes/`, `/assets/data/layers.json` |
+| Uploaded recordings | an MP3, M4A or WAV in `site/assets/uploads/` | editors (Recording, List of recordings) | cleaned in the browser and at build (`site/admin/audio.js`); `/assets/audio/uploads/`, length and end time read from the file |
 | Privacy, terms | the `.njk` page itself | developers only | as written |
 
 An entry with `hidden: true` (the editor's "Take this off the website" tick) is added to
@@ -145,7 +149,7 @@ drafts, gets a deploy preview. Details and checks: `DEPLOY.md`. The domain: `DOM
 | Netlify Identity | editor logins | Netlify: Identity |
 | Netlify Git Gateway | editor saves to GitHub | Netlify: Identity -> Services; `config.yml` `backend` |
 | Decap CMS | the editor | `site/admin/config.yml`; `tools/vendor_cms.sh` |
-| YouTube | video stills at build, the player after a click | `_includes/youtube.js`; `site/assets/js/site.js` |
+| YouTube | video stills and titles (oEmbed) at build, the player after a click | `_includes/youtube.js`, saved in `site/assets/img/video/` and `site/_youtube/`; `site/assets/js/site.js` |
 | Behold | the group's Instagram posts, read at build | `FEED_ID` in `_includes/instagram.js`; Behold account |
 | GitHub Actions schedule | rebuilds the live site weekly through a Netlify build hook | `.github/workflows/weekly-rebuild.yml`; secret `NETLIFY_BUILD_HOOK` |
 | Wikimedia Commons | an editor's Commons photos: author, licence and the photo, read at build | `site/admin/commons.js` (rules), `site/_includes/commons.js`; saved in `site/_commons/` and `site/assets/img/commons/` |

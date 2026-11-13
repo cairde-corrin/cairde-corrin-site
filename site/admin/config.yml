@@ -94,7 +94,8 @@ collections:
         hint: >-
           Write the post here. Use the buttons above the box for bold text,
           links, subheadings and lists. To put a photo between paragraphs, use
-          the + button above the box and choose Image. The main photo and the
+          the + button above the box and choose Image, and fill in its "Alt Text"
+          with what the photo shows: the post cannot be saved without it. The main photo and the
           extra photos go in the sections below.
 
       - label: Main photo
@@ -122,6 +123,7 @@ collections:
             widget: string
             required: false
             hint: >-
+              Needed whenever there is a photo: the post cannot be saved without it.
               One sentence saying what is in the photo, for example "Moss-covered
               branches of broadleaf trees coming into leaf". Screen readers read
               this aloud to blind visitors. Do not start with "A photo of".
@@ -453,7 +455,7 @@ collections:
                       - { label: "Heading", name: heading, widget: string }
                       - { label: "Text", name: text, widget: text, required: false }
                       - &link_text { label: "Link words", name: link_text, widget: string, required: false, hint: "Optional. The words people click, for example: See the trail →" }
-                      - &link { label: "Link to", name: link, widget: string, required: false, hint: "A page on this site, starting with / (for example /trails/), or a full address starting with https://" }
+                      - &link { label: "Link to", name: link, widget: sitelink, required: false, hint: "Choose a page of this website from the list, or choose \"Another website\" and give its full address, starting https://" }
                   - *copy
               - &b_cards
                 label: "Cards"
@@ -516,7 +518,7 @@ collections:
                 summary: "{{fields.text}}"
                 fields:
                   - { label: "Words on the button", name: text, widget: string }
-                  - { label: "Link to", name: url, widget: string, hint: "A page on this site, starting with / (for example /about/), a full address starting with https://, or mailto: and an email address." }
+                  - { label: "Link to", name: url, widget: sitelink, hint: "Choose a page of this website from the list, or choose \"Another website\" and give its full address, starting https://, or \"An email address\"." }
                   - *copy
               - &b_video
                 label: "YouTube video"
@@ -525,7 +527,7 @@ collections:
                 summary: "{{fields.title}}"
                 fields:
                   - { label: "YouTube address", name: url, widget: string, hint: "Copy it from YouTube's Share button. Nothing is loaded from YouTube until a visitor presses play." }
-                  - { label: "Title of the video", name: title, widget: string }
+                  - { label: "Title of the video", name: title, widget: string, required: false, hint: "Optional. Without it, the title the video has on YouTube is used." }
                   - *copy
               - &b_audio
                 label: "Recording"
@@ -535,7 +537,7 @@ collections:
                   - { label: "Heading", name: heading, widget: string, default: "Listen" }
                   - { label: "About the recording", name: text, widget: text, required: false }
                   - { label: "What the recording is", name: label, widget: string, hint: "Read out to people using a screen reader." }
-                  - &audio_file { label: "The recording", name: file, widget: string, hint: "A recording already on the website, such as /assets/audio/stop-1.mp3. New recordings are added by whoever looks after the website, who first removes the phone's location and details from them." }
+                  - &audio_file { label: "The recording", name: file, widget: file, choose_url: false, media_library: { config: { max_file_size: 50000000 } }, hint: "Upload the recording as an MP3 or M4A file (a WAV works too). Before it leaves your computer, everything the phone or recorder wrote into it, sometimes including where it was made, is removed; the sound is not changed. Ogg, Opus, WebM and WMA files are refused: save the recording as MP3 or M4A instead. Its length is read from the file." }
                   - *copy
               - &b_story
                 label: "Folklore story"
@@ -597,9 +599,7 @@ collections:
                     label_singular: recording
                     summary: "{{fields.start}}"
                     fields:
-                      - { label: "Started at", name: start, widget: string, hint: "For example: 07:10:03" }
-                      - { label: "Ended at", name: end, widget: string, required: false }
-                      - { label: "Length", name: duration, widget: string, hint: "Minutes and seconds, for example 7:34" }
+                      - { label: "Started at", name: start, widget: string, hint: "The time of day it began, for example: 07:10:03. Its length and the time it ended are worked out from the file." }
                       - { label: "Short note", name: note, widget: string, required: false, hint: "Optional. For example: also on stop 1." }
                       - *audio_file
                   - *copy
@@ -620,7 +620,7 @@ collections:
                         required: false
                         pattern: ['^\s*([A-Za-z0-9_-]{11}|https://(www\.|m\.)?(youtube\.com|youtu\.be|youtube-nocookie\.com)/\S+)\s*$', 'Paste the address of the video on YouTube, starting https://, or just the 11 letters and numbers after "watch?v=".']
                         hint: "Only for films Cáirde Corrin made and put on its own YouTube channel. On YouTube, press Share under the video, copy the address and paste it here. The page shows a still from the film with a play button; nothing loads from YouTube until a visitor presses play. (The films already on this page are kept on the website itself, and have no address here.)"
-                      - { label: "What the film is called", name: title, widget: string, required: false, hint: "Optional. Read out on the play button. Without it, the film is called by its date." }
+                      - { label: "What the film is called", name: title, widget: string, required: false, hint: "Optional. Read out on the play button. Without it, the title the film has on YouTube is used." }
                       - { label: "Filmed on", name: date, widget: datetime, format: "YYYY-MM-DD", date_format: "D MMMM YYYY", time_format: false }
                       - { label: "Length", name: duration, widget: string, required: false, hint: "Optional. Minutes and seconds, for example 0:23" }
                       - { label: "Film kept on the website", name: file, widget: hidden, required: false }
@@ -829,16 +829,16 @@ collections:
           - label: "The top of the page"
             name: hero
             widget: object
-            hint: "A stop with no title shows as \"Not yet surveyed\" and is kept out of search engines. Give it a title, and fill in its name and summary above, its photo, position, height, direction and time, and it goes live: it appears on the trails page, on the map and in search engines."
+            hint: "A stop with no title shows as \"Not yet surveyed\" and is kept out of search engines. Give it a title, and fill in its name and summary above, its photo, position, direction and time, and it goes live: it appears on the trails page, on the map and in search engines."
             fields:
-              - { label: "Small line above the title", name: eyebrow, widget: string }
-              - { label: "Title", name: title, widget: text, required: false, hint: "Press Enter to start a new line. Leave empty until the stop is ready." }
+              - { label: "Title", name: title, widget: text, required: false, hint: "Press Enter to start a new line. Leave empty until the stop is ready. The small line above it, such as \"Stop 05 - cairdecorrin.ie/s/5\", is written from the stop's number." }
               - { label: "Photo", name: photo, widget: sitephoto, required: false, media_library: { config: { max_file_size: 20000000 } }, hint: "The photo taken at the stop, by the group." }
               - { label: "What the photo shows", name: alt, widget: string, required: false, hint: "For people who cannot see the photo: what is in it, in one sentence." }
               - *by
               - { label: "Latitude", name: latitude, widget: string, required: false, hint: "Degrees north, for example 52.12752" }
-              - { label: "Longitude", name: longitude, widget: string, required: false, hint: "Degrees east, so negative here, for example -8.29878" }
-              - { label: "Height in metres", name: elevation, widget: string, required: false, hint: "Above sea level, to the nearest 5 metres, for example 60" }
+              - { label: "Longitude", name: longitude, widget: string, required: false, hint: "Degrees east, so negative here, for example -8.29878. The stop's height is worked out from its position." }
+              # stops 1 to 3 keep their heights checked against the walked GPS track; any other stop's height is read from the elevation grid at its position
+              - { label: "Height in metres", name: elevation, widget: hidden, required: false }
               - { label: "Facing", name: facing, widget: string, required: false, hint: "The compass direction the photo faces, in degrees, for example 159" }
               - { label: "Recorded", name: recorded, widget: string, required: false, hint: "When, for example: 11 Apr 2026, 07:10" }
           - *blocks
